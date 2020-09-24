@@ -16,7 +16,7 @@
         readonly
         clickable
         :value="aa"
-        name="datetimePicker"
+        name="starttime"
         label="开始日期"
         placeholder="点击选择时间"
         @click="showPicker = true"
@@ -36,7 +36,7 @@
         readonly
         clickable
         :value="bb"
-        name="datetimePicker"
+        name="endtime"
         label="结束日期"
         placeholder="点击选择时间"
         @click="endshowPicker = true"
@@ -123,7 +123,6 @@ export default {
       console.log("submit", values);
     },
     onConfirm() {
-      console.log(this.currentDate);
       this.aa =
         this.currentDate.getFullYear() +
         "-" +
@@ -133,7 +132,6 @@ export default {
       this.showPicker = false;
     },
     onendConfirm() {
-      console.log(this.currentDate);
       this.bb =
         this.endcurrentDate.getFullYear() +
         "-" +

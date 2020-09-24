@@ -17,7 +17,7 @@
         clickable
         :value="aa"
         name="datetimePicker"
-        label="开始"
+        label="开始日期"
         placeholder="点击选择时间"
         @click="showPicker = true"
       />
@@ -30,6 +30,26 @@
           :max-date="maxDate"
           @confirm="onConfirm"
           @cancel="showPicker = false"
+        />
+      </van-popup>
+      <van-field
+        readonly
+        clickable
+        :value="bb"
+        name="datetimePicker"
+        label="结束日期"
+        placeholder="点击选择时间"
+        @click="endshowPicker = true"
+      />
+      <van-popup v-model="endshowPicker" position="bottom">
+        <van-datetime-picker
+          v-model="endcurrentDate"
+          title="选择年月日"
+          type="date"
+          :min-date="minDate"
+          :max-date="maxDate"
+          @confirm="onendConfirm"
+          @cancel="endshowPicker = false"
         />
       </van-popup>
 
@@ -70,12 +90,15 @@ import {
 export default {
   data() {
     return {
+      bb: "",
       aa: "",
       value: "",
       showPicker: false,
+      endshowPicker: false,
       minDate: new Date(2020, 0, 1),
       maxDate: new Date(2025, 10, 1),
-      currentDate: new Date().toISOString().slice(0, 10),
+      endcurrentDate: new Date(),
+      currentDate: new Date(),
     };
   },
   components: {
@@ -107,6 +130,17 @@ export default {
         (this.currentDate.getMonth() + 1) +
         "-" +
         this.currentDate.getDate();
+      this.showPicker = false;
+    },
+    onendConfirm() {
+      console.log(this.currentDate);
+      this.bb =
+        this.endcurrentDate.getFullYear() +
+        "-" +
+        (this.endcurrentDate.getMonth() + 1) +
+        "-" +
+        this.endcurrentDate.getDate();
+      this.endshowPicker = false;
     },
     onClickLeft() {
       //   this.$sotre.commit('changesata')

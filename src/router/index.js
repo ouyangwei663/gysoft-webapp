@@ -11,6 +11,7 @@ import vipcheck from '@/components/vipperson/vipperson'
 import operate from '@/components/operate/operate'
 import detailed from '@/components/detailed/detailed'
 import bank from '@/components/bank/bank'
+import listcheck from '@/components/listcheck/listcheck'
 
 
 
@@ -69,6 +70,11 @@ export default new Router({
           path:'/bank',
           name:bank,
           component:bank
+        },
+        {
+          path:'/listcheck',
+          name:listcheck,
+          component:listcheck
         }
 
 

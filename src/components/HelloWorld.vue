@@ -1,24 +1,39 @@
 <template>
   <div class="hello">
-    <van-nav-bar title="新增会员" :fixed="true" :left-arrow="true" @click-left="onClickLeft">
+    <van-nav-bar
+      title="会员操作"
+      :fixed="true"
+      :left-arrow="true"
+      @click-left="onClickLeft"
+    >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
 
     <van-form @submit="onSubmit" class="infoform">
-      <van-field  v-model="crashid" name="crashid" placeholder="请输入姓名" :required="true">
+      <van-field
+        v-model="crashid"
+        name="crashid"
+        placeholder="请输入姓名"
+        :required="true"
+      >
         <template #label>
           <span>名称</span>
         </template>
       </van-field>
-      <van-field  v-model="phone" name="phone" placeholder="1365323" :required="true">
+      <van-field
+        v-model="phone"
+        name="phone"
+        placeholder="1365323"
+        :required="true"
+      >
         <template #label>
           <span>手机号码</span>
         </template>
       </van-field>
 
-      <van-field  name="sex" label="性别" input-align="right" :required="true">
+      <van-field name="sex" label="性别" input-align="right" :required="true">
         <template #input>
           <van-radio-group v-model="sex" direction="horizontal">
             <van-radio name="1">男</van-radio>
@@ -26,7 +41,12 @@
           </van-radio-group>
         </template>
       </van-field>
-      <van-field v-model="shop" name="shop" placeholder="请输入店铺名" :required="true">
+      <van-field
+        v-model="shop"
+        name="shop"
+        placeholder="请输入店铺名"
+        :required="true"
+      >
         <template #label>
           <span>所属分店</span>
         </template>
@@ -39,6 +59,7 @@
         label="会员级别"
         placeholder="点击选择会员级别"
         @click="showPicker = true"
+        :required="true"
       />
       <van-popup v-model="showPicker" position="bottom" :required="true">
         <van-picker
@@ -48,7 +69,7 @@
           @cancel="showPicker = false"
         />
       </van-popup>
-      <van-field  v-model="card" name="card" placeholder="可以为空">
+      <van-field v-model="card" name="card" placeholder="可以为空">
         <template #label>
           <span>卡号</span>
         </template>
@@ -72,7 +93,12 @@
           :max-date="maxDate"
         />
       </van-popup>
-      <van-field  v-model="password" type="password" name="password" placeholder="*****">
+      <van-field
+        v-model="password"
+        type="password"
+        name="password"
+        placeholder="*****"
+      >
         <template #label>
           <span>密码</span>
         </template>
@@ -86,7 +112,9 @@
         </template>
       </van-field>
 
-      <van-button round block type="info" native-type="submit">新增会员</van-button>
+      <van-button round block type="info" native-type="submit"
+        >保存资料</van-button
+      >
     </van-form>
   </div>
 </template>
@@ -126,8 +154,7 @@ export default {
       value: "",
       columns: ["超级会员", "普通会员", "白金会员", "散客", "龙腾VIP"],
       showPicker: false,
-      showtime:false,
-
+      showtime: false,
 
       minDate: new Date(2020, 0, 1),
       maxDate: new Date(2025, 10, 1),
@@ -161,10 +188,7 @@ export default {
     },
     onClickLeft() {
       //   this.$sotre.commit('changesata')
-      Toast("返回");
-    },
-    onClickRight() {
-      Toast("按钮");
+      this.$router.go(-1);
     },
   },
 };
@@ -209,7 +233,7 @@ export default {
 .van-radio-grou {
   float: right;
 }
-.infoform{
+.infoform {
   width: 90%;
   margin-left: 5%;
 }

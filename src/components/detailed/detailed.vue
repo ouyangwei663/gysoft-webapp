@@ -6,6 +6,8 @@
       left-text="返回"
       right-text="按钮"
       :left-arrow="true"
+    
+      @click-left="onClickLeft"
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
@@ -125,6 +127,10 @@ export default {
     [CellGroup.name]: CellGroup,
   },
   methods: {
+    onClickLeft() {
+      //   this.$sotre.commit('changesata')
+      this.$router.go(-1);
+    },
     onSelect(item) {
       // 默认情况下点击选项时不会自动收起
       // 可以通过 close-on-click-action 属性开启自动收起

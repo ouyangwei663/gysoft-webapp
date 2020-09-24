@@ -75,7 +75,7 @@ export default {
       showPicker: false,
       minDate: new Date(2020, 0, 1),
       maxDate: new Date(2025, 10, 1),
-      currentDate: new Date().toISOString().slice(0,10),
+      currentDate: new Date().toISOString().slice(0, 10),
     };
   },
   components: {
@@ -100,10 +100,13 @@ export default {
       console.log("submit", values);
     },
     onConfirm() {
-      console.log(this.currentDate)
-      this.aa=this.currentDate.getFullYear()+'-'+ (this.currentDate.getMonth()+1) +'-' +this.currentDate.getDate()
-  
-
+      console.log(this.currentDate);
+      this.aa =
+        this.currentDate.getFullYear() +
+        "-" +
+        (this.currentDate.getMonth() + 1) +
+        "-" +
+        this.currentDate.getDate();
     },
     onClickLeft() {
       //   this.$sotre.commit('changesata')

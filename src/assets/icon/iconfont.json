@@ -1,0 +1,30 @@
+{
+  "id": "1992612",
+  "name": "666",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5524661",
+      "name": "money",
+      "font_class": "money",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "1392013",
+      "name": "man",
+      "font_class": "57",
+      "unicode": "e68f",
+      "unicode_decimal": 59023
+    },
+    {
+      "icon_id": "1394756",
+      "name": "lady",
+      "font_class": "87",
+      "unicode": "e6ae",
+      "unicode_decimal": 59054
+    }
+  ]
+}

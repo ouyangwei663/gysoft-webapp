@@ -1,0 +1,106 @@
+<template>
+  <div class="hello">
+    <van-grid :column-num="3" icon-size="30" gutter="30" :border="false" :square="true">
+      <van-grid-item id="first" icon="friends" text="会员资料" to="/vipcheck"></van-grid-item>
+      <van-grid-item id="second" icon="gold-coin" text="收银" to="/bank"/>
+      <van-grid-item id="second" icon="gold-coin" text="会员账本" />
+      <van-grid-item id="third" icon="star" text="会员积分" />
+
+      <van-grid-item id="fourth" icon="calendar-o" text="预约管理" />
+      <van-grid-item id="fifth" icon="credit-pay" text="护理卡" />
+      <van-grid-item id="sixth" icon="bell" text="失客提醒" />
+      <van-grid-item id="seventh" icon="aim" text="回访跟踪" />
+      <van-grid-item id="eigth" icon="fire" text="今日生日" />
+      <van-grid-item id="ninth" icon="bill-o" text="充值" />
+      <van-grid-item id="tenth" icon="paid" text="取现" />
+      <van-grid-item id="eleventh" icon="records" text="积分录入" />
+    </van-grid>
+  </div>
+</template>
+
+<script>
+import { Grid, GridItem } from "vant";
+
+export default {
+  name: "shouye",
+  data() {
+    return {
+      msg: "Welcome to Your Vue.js App",
+    };
+  },
+  components: {
+    [Grid.name]: Grid,
+    [GridItem.name]: GridItem,
+  },
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+/deep/ #first .van-grid-item__content {
+  background-color: #fefaf4;
+}
+/deep/ #second .van-grid-item__content {
+  background-color: #f1f8f6;
+}
+/deep/ #third .van-grid-item__content {
+  background-color: #f4f5ff;
+}
+/deep/ #fourth .van-grid-item__content {
+  background-color: #fdf4f7;
+}
+/deep/ #fifth .van-grid-item__content {
+  background-color: #fefaf4;
+}
+/deep/ #sixth .van-grid-item__content {
+  background-color: #f6f2ff;
+}
+/deep/ #seventh .van-grid-item__content {
+  background-color: #f4faff;
+}
+
+/deep/ #eigth .van-grid-item__content {
+  background-color: #f4faff;
+}
+/deep/ #ninth .van-grid-item__content {
+  background-color: #fefaf2;
+}
+/deep/ #tenth .van-grid-item__content {
+  background-color: #f1f8f6;
+}
+/deep/ #eleventh .van-grid-item__content {
+  background-color: #fdf4f7;
+}
+/deep/ .van-icon-friends {
+  color: #299cff;
+}
+/deep/ .van-icon-gold-coin {
+  color: #f7416c;
+}
+/deep/ .van-icon-star {
+  color: #0cd59e;
+}
+/deep/ .van-icon-calendar-o {
+  color: #4368ff;
+}
+/deep/ .van-icon-credit-pay {
+  color: #7963eb;
+}
+/deep/ .van-icon-bell {
+  color: #ff3440;
+}
+/deep/ .van-icon-aim {
+  color: #ffa31a;
+}
+/deep/ .van-icon-fire {
+  color: #f66b00;
+}
+/deep/ .van-icon-bill-o {
+  color: #25d07a;
+}
+/deep/ .van-icon-paid {
+  color:  #299cff;
+}
+</style>
+
+

@@ -6,7 +6,6 @@
       left-text="返回"
       right-text="按钮"
       :left-arrow="true"
-    
       @click-left="onClickLeft"
     >
       <template #left>
@@ -27,73 +26,41 @@
         </tr>
       </table>
     </div>-->
-    <div class="bb">
+    <div class="bb" v-for="(item,index) in List" :key="index">
       <van-card @click="show = true">
         <template #title>
           <div class="name">
-            欧阳威
-            <van-tag type="primary" round color="#FFD90B" size="medium">超级会员</van-tag>
+            {{item.cus_name}}
+            <van-tag type="primary" round color="#FFD90B" size="medium"
+              >超级会员</van-tag
+            >
           </div>
         </template>
         <template #desc>
           <p>
-            <span>充值余额：￥{{money}}</span>
-            <span class="one">卡号：{{phone}}</span>
+            <span>充值余额：￥{{ money }}</span>
+            <span class="one">卡号：{{item.cardno }}</span>
           </p>
           <p>
-            <span>赠送余额：￥{{money}}</span>
-            <span class="one">手机号码：{{phone}}</span>
+            <span>赠送余额：￥{{ money }}</span>
+            <span class="one">手机号码：{{item.mobile }}</span>
           </p>
           <p>
-            <span>性别：男</span>
+            <span>性别：{{item.sex=="女士"?"女士":"男士"}}</span>
           </p>
         </template>
       </van-card>
       <van-action-sheet v-model="show" title="会员操作">
         <div>
-          <van-cell title="充值" icon="gold-coin-o"  is-link />
-          <van-cell title="恢复会员" icon="share-o"  is-link />
-          <van-cell title="注销会员" icon="close"  is-link/>
-          <van-cell title="新增次卡" icon="add-o"  is-link/>
-          <van-cell title="赠送充值" icon="gift-o"  is-link/>
-          <van-cell title="赠送次卡" icon="gift-card-o"  is-link/>
+          <van-cell title="充值" icon="gold-coin-o" is-link />
+          <van-cell title="恢复会员" icon="share-o" is-link />
+          <van-cell title="注销会员" icon="close" is-link />
+          <van-cell title="新增次卡" icon="add-o" is-link />
+          <van-cell title="赠送充值" icon="gift-o" is-link />
+          <van-cell title="赠送次卡" icon="gift-card-o" is-link />
         </div>
       </van-action-sheet>
     </div>
-      <div class="bb">
-      <van-card @click="show = true">
-        <template #title>
-          <div class="name">
-            欧阳威
-            <van-tag type="primary" round color="#FFD90B" size="medium">超级会员</van-tag>
-          </div>
-        </template>
-        <template #desc>
-          <p>
-            <span>充值余额：￥{{money}}</span>
-            <span class="one">卡号：{{phone}}</span>
-          </p>
-          <p>
-            <span>赠送余额：￥{{money}}</span>
-            <span class="one">手机号码：{{phone}}</span>
-          </p>
-          <p>
-            <span>性别：男</span>
-          </p>
-        </template>
-      </van-card>
-      <van-action-sheet v-model="show" title="会员操作">
-        <div>
-          <van-cell title="充值" icon="gold-coin-o"  is-link />
-          <van-cell title="恢复会员" icon="share-o"  is-link />
-          <van-cell title="注销会员" icon="close"  is-link/>
-          <van-cell title="新增次卡" icon="add-o"  is-link/>
-          <van-cell title="赠送充值" icon="gift-o"  is-link/>
-          <van-cell title="赠送次卡" icon="gift-card-o"  is-link/>
-        </div>
-      </van-action-sheet>
-    </div>
-    
   </div>
 </template>
 <script>
@@ -114,6 +81,7 @@ export default {
       money: "100",
       phone: 13653035648,
       show: false,
+      List:[]
     };
   },
   components: {
@@ -126,6 +94,11 @@ export default {
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,
   },
+  created() {
+    this.getdate();
+
+  },
+
   methods: {
     onClickLeft() {
       //   this.$sotre.commit('changesata')
@@ -136,6 +109,33 @@ export default {
       // 可以通过 close-on-click-action 属性开启自动收起
       this.show = false;
       Toast(item.name);
+    },
+
+    getdate() {
+      var that=this
+      this.$axios
+        .get("erpcore/", {
+          params: {
+            action: "findby",
+            token: "lx_mf",
+            aspnetid: "lx_mf",
+            classname: "n_customer_small_find_mf",
+            funcname: "find",
+            classmemo: "会员查询",
+            cus_name: "",
+            Sex: "Y",
+          },
+        })
+        .then((res) => {
+          that.List=res.data.table
+          console.log(that.List)
+          
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+        
     },
   },
 };
@@ -195,6 +195,5 @@ p {
 }
 .van-cell__title span {
   color: black;
-
 }
 </style>

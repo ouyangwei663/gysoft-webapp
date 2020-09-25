@@ -1,14 +1,13 @@
 <template>
   <div class="hello">
-    <van-nav-bar class="check"
+    <van-nav-bar
+      class="check"
       title="会员资料查询"
       :fixed="true"
       right-text="新增会员"
-     
       :left-arrow="true"
       @click-left="onClickLeft"
       @click-right="onClickRight"
-   
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
@@ -16,33 +15,33 @@
     </van-nav-bar>
 
     <van-form @submit="onSubmit">
-      <van-field  v-model="crashid" name="crashid" placeholder="请输入姓名">
+      <van-field v-model="crashid" name="cus_name" placeholder="请输入姓名">
         <template #label>
           <span>姓名</span>
         </template>
       </van-field>
-      <van-field  v-model="phone" name="phone" placeholder="请输入手机号码">
+      <van-field v-model="Mobile" name="Mobile" placeholder="请输入手机号码">
         <template #label>
           <span>手机号码</span>
         </template>
       </van-field>
 
-      <van-field  v-model="sex" name="sex" placeholder="请输入性别">
+      <van-field v-model="Sex" name="Sex" placeholder="请输入性别">
         <template #label>
           <span>性别</span>
         </template>
       </van-field>
-      <van-field  v-model="shop" name="shop" placeholder="请输入店铺名">
+      <van-field v-model="shop" name="Address" placeholder="请输入店铺名">
         <template #label>
           <span>店铺</span>
         </template>
       </van-field>
-      <van-field  v-model="card" name="card" placeholder="请输入卡号">
+      <van-field v-model="card" name="Cardno" placeholder="请输入卡号">
         <template #label>
           <span>卡号</span>
         </template>
       </van-field>
-      <van-field  v-model="vipsex" name="vipsex" placeholder="普通卡">
+      <van-field v-model="vipsex" name="vipsex" placeholder="普通卡">
         <template #label>
           <span>会员类型</span>
         </template>
@@ -58,7 +57,12 @@
         @click="showCalendar = true"
       />
 
-      <van-calendar v-model="showCalendar" :show-confirm="false" type="range" @confirm="onConfirm" />
+      <van-calendar
+        v-model="showCalendar"
+        :show-confirm="false"
+        type="range"
+        @confirm="onConfirm"
+      />
 
       <van-field
         readonly
@@ -70,7 +74,12 @@
         @click="show = true"
       />
 
-      <van-calendar v-model="show" :show-confirm="false" type="range" @confirm="onConfirm2" />
+      <van-calendar
+        v-model="show"
+        :show-confirm="false"
+        type="range"
+        @confirm="onConfirm2"
+      />
 
       <van-field
         readonly
@@ -89,9 +98,10 @@
           @cancel="showPicker = false"
         />
       </van-popup>
-      
 
-      <van-button round block type="info" native-type="submit">查询会员资料</van-button>
+      <van-button round block type="info" native-type="submit"
+        >查询会员资料</van-button
+      >
     </van-form>
   </div>
 </template>
@@ -113,14 +123,14 @@ import {
   Calendar,
   Picker,
   Popup,
-  
 } from "vant";
 export default {
   data() {
     return {
       crashid: "",
-      phone: "",
-      sex: "",
+      Mobile: "",
+      
+      Sex: "",
       value: "",
       shop: "",
       card: "",
@@ -132,8 +142,8 @@ export default {
       date: "",
       showCalendar: false,
       show: false,
-      sata:"",
-       columns: ['状态1', '状态2', '状态3', '状态4', '状态5'],
+      sata: "",
+      columns: ["状态1", "状态2", "状态3", "状态4", "状态5"],
       showPicker: false,
     };
   },
@@ -152,7 +162,7 @@ export default {
     [RadioGroup.name]: RadioGroup,
     [Calendar.name]: Calendar,
     [Picker.name]: Picker,
-      [Popup.name]: Popup,
+    [Popup.name]: Popup,
   },
   methods: {
     onSubmit(values) {
@@ -163,15 +173,15 @@ export default {
         }
       }
       console.log(pam);
-      this.$router.push('/detailed')
-
+      this.$router.push("/detailed");
     },
     onClickLeft() {
       //   this.$sotre.commit('changesata')
       this.$router.go(-1);
-    },   onClickRight() {
+    },
+    onClickRight() {
       //   this.$sotre.commit('changesata')
-       this.$router.push('/info')
+      this.$router.push("/info");
     },
     formatDate(date) {
       return `${date.getMonth() + 1}/${date.getDate()}`;
@@ -190,7 +200,6 @@ export default {
       this.sata = value;
       this.showPicker = false;
     },
-    
   },
 };
 </script>
@@ -233,7 +242,7 @@ export default {
 .van-checkbox-group {
   margin-left: 20%;
 }
-/deep/ .check .van-nav-bar__text{
+/deep/ .check .van-nav-bar__text {
   color: white;
 }
 </style>

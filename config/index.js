@@ -11,13 +11,13 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api':{
+      '/api': {
         target: "https://wintop.36x.cn/",
-        changeOrigin:true,
-        pathRewrite:{
-            '^/api':''
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
         }
-    }
+      }
 
     },
 
@@ -29,7 +29,7 @@ module.exports = {
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */

@@ -14,7 +14,7 @@
     <van-form @submit="onSubmit" class="infoform">
       <van-field
         v-model="crashid"
-        name="crashid"
+        name="cus_name"
         placeholder="请输入姓名"
         :required="true"
       >
@@ -24,8 +24,8 @@
       </van-field>
       <van-field
         v-model="phone"
-        name="phone"
-        placeholder="1365323"
+        name="Mobile"
+        placeholder="请输入手机号码"
         :required="true"
       >
         <template #label>
@@ -36,8 +36,8 @@
       <van-field name="sex" label="性别" input-align="right" :required="true">
         <template #input>
           <van-radio-group v-model="sex" direction="horizontal">
-            <van-radio name="1">男</van-radio>
-            <van-radio name="2">女</van-radio>
+            <van-radio name="Y">男</van-radio>
+            <van-radio name="N">女</van-radio>
           </van-radio-group>
         </template>
       </van-field>
@@ -106,8 +106,8 @@
       <van-field name="radio" label="状态" input-align="right">
         <template #input>
           <van-radio-group v-model="radio" direction="horizontal">
-            <van-radio name="1">有卡状态</van-radio>
-            <van-radio name="2">无卡状态</van-radio>
+            <van-radio name="男">有卡状态</van-radio>
+            <van-radio name="女">无卡状态</van-radio>
           </van-radio-group>
         </template>
       </van-field>
@@ -180,7 +180,13 @@ export default {
   },
   methods: {
     onSubmit(values) {
-      console.log("submit", values);
+      let pam = {};
+      for (let i in values) {
+        if (values[i]) {
+          pam[i] = values[i];
+        }
+      }
+      console.log(pam);
     },
     onConfirm(value) {
       this.value = value;

@@ -125,6 +125,11 @@ export default {
 
     getdate() {
       var that = this;
+      console.log(this.$route.params)
+      var source = {
+        cus_name: "福海",
+        Sex: "Y",
+      };
       var par = {
         action: "findby",
         token: "lx_mf",
@@ -133,13 +138,12 @@ export default {
         funcname: "find",
         classmemo: "会员查询",
       };
-
-      var returnedTarget = Object.assign(par, this.$route.params);
+      const newpar = Object.assign(par, source);
+      console.log(newpar);
       this.$axios
-        .post("erpcore/", returnedTarget)
+        .post("erpcore/", newpar)
         .then((res) => {
           that.List = res.data.table;
-          console.log(that.List);
         })
         .catch((err) => {
           console.log(err);

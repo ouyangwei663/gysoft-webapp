@@ -13,6 +13,8 @@ import detailed from '@/components/detailed/detailed'
 import bank from '@/components/bank/bank'
 import listcheck from '@/components/listcheck/listcheck'
 import vipbookdetail from '@/components/vipbook/vipbookdetail/vipbookdetail'
+import vipbookflow from '@/components/vipbook/vipbookflow/vipbookflow'
+
 
 
 
@@ -79,6 +81,10 @@ export default new Router({
       path: '/vipbookdetail',
       name: vipbookdetail,
       component: vipbookdetail
+    }, {
+      path: '/vipbookflow',
+      name: 'vipbookflow',
+      component: vipbookflow
     }
 
 

@@ -20,15 +20,18 @@
           <span>姓名</span>
         </template>
       </van-field>
-      <van-field v-model="Mobile" name="Mobile" placeholder="请输入手机号码">
+      <van-field v-model="mobile" name="mobile" placeholder="请输入手机号码">
         <template #label>
           <span>手机号码</span>
         </template>
       </van-field>
 
-      <van-field v-model="Sex" name="Sex" placeholder="请输入性别">
-        <template #label>
-          <span>性别</span>
+      <van-field name="sex" label="性别" input-align="right" :required="true">
+        <template #input>
+          <van-radio-group v-model="sex" direction="horizontal">
+            <van-radio name="Y">男</van-radio>
+            <van-radio name="N">女</van-radio>
+          </van-radio-group>
         </template>
       </van-field>
       <van-field v-model="shop" name="Address" placeholder="请输入店铺名">
@@ -62,6 +65,8 @@
         :show-confirm="false"
         type="range"
         @confirm="onConfirm"
+        :min-date="minDate"
+        :max-date="maxDate"
       />
 
       <van-field
@@ -128,9 +133,9 @@ export default {
   data() {
     return {
       crashid: "",
-      Mobile: "",
+      mobile: "",
 
-      Sex: "",
+      sex: "",
       value: "",
       shop: "",
       card: "",
@@ -144,7 +149,10 @@ export default {
       show: false,
       sata: "",
       columns: ["状态1", "状态2", "状态3", "状态4", "状态5"],
+      newvalues:[11,22,33,44,55],
       showPicker: false,
+      minDate: new Date(2017, 0, 1),
+      maxDate: new Date(2020, 9, 28),
     };
   },
   components: {
@@ -166,15 +174,20 @@ export default {
   },
   methods: {
     onSubmit(values) {
-      let pam = {
- 
+      var pam = {
+        action: "findby",
+        token: "lx_mf",
+        aspnetid: "lx_mf",
+        classname: "n_customer_small_find_mf",
+        funcname: "find",
+        classmemo: "会员查询",
+        
       };
       for (let i in values) {
         if (values[i]) {
           pam[i] = values[i];
         }
       }
-      console.log(pam);
 
       this.$router.push({ name: "detailed", pam });
     },
@@ -187,7 +200,7 @@ export default {
       this.$router.push("/info");
     },
     formatDate(date) {
-      return `${date.getMonth() + 1}/${date.getDate()}`;
+      return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
     },
     onConfirm(date) {
       const [start, end] = date;
@@ -199,8 +212,10 @@ export default {
       this.show = false;
       this.time = `${this.formatDate(start)} - ${this.formatDate(end)}`;
     },
-    onConfirm3(value) {
-      this.sata = value;
+    onConfirm3(value,index) {
+     
+      console.log(index) 
+      this.sata = this.newvalues[index];
       this.showPicker = false;
     },
   },

@@ -64,7 +64,7 @@ export default new Router({
       component: operate
     }, {
       path: '/detailed',
-      name: detailed,
+      name: 'detailed',
       component: detailed
     }, {
       path: '/bank',

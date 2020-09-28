@@ -16,45 +16,43 @@
         <van-icon name="bars" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
+    <van-dialog v-model="show" title="详情信息"   theme="round">
+      <table class="alert">
+        <tr>
+          <td>公司名称：</td>
+          <td>{{comname}}</td>
+        </tr>
+        <tr>
+          <td>使用人：</td>
+          <td>{{username}}</td>
+        </tr>
+      </table>
+    </van-dialog>
   </div>
 </template>
 
 <script>
-import { NavBar, Toast, Icon } from "vant";
+import { NavBar, Toast, Icon, Dialog } from "vant";
 import jsonp from "jsonp";
 export default {
   name: "Nav",
   data() {
     return {
-      msg: "Welcome to Your Vue.js App",
+      comname: "",
+      username: "",
+      show: false,
     };
   },
   components: {
     [NavBar.name]: NavBar,
     [Toast.name]: Toast,
     [Icon.name]: Icon,
+    [Dialog.Component.name]: Dialog.Component,
   },
   methods: {
     onClickLeft() {
-      this.$axios
-        .get("erpcore/", {
-          params: {
-            action: "findby",
-            token: "lx_mf",
-            aspnetid: "lx_mf",
-            classname: "n_customer_small_find_mf",
-            funcname: "find",
-            classmemo:"会员查询",
-            cus_name:"",
-            Sex:"Y"
-          },
-        })
-        .then((res) => {
-          console.log(res.data.table);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      this.$store.commit("change");
+      console.log(this.$store.state.sata);
     },
     //jsonp请求数据
     //     var keyword = "李白";
@@ -75,15 +73,17 @@ export default {
           params: {
             action: "getuser",
             token: "lx_mf",
-
           },
         })
         .then((res) => {
-          console.log(res.data);
+            console.log(res.data.user)
+          this.comname=res.data.user.comname;
+          this.username=res.data.user.username
         })
         .catch((err) => {
           console.log(err);
         });
+      this.show = true;
     },
     // onClickRight() {
     //   this.$axios
@@ -111,5 +111,13 @@ export default {
 }
 /deep/ .van-nav-bar__title {
   color: #ffffff;
+}
+.alert {
+margin-left: auto;
+margin-right: auto;
+}
+.alert td{
+  text-align: left;
+ width: 50%;
 }
 </style>

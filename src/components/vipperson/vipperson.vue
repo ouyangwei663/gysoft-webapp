@@ -129,7 +129,7 @@ export default {
     return {
       crashid: "",
       Mobile: "",
-      
+
       Sex: "",
       value: "",
       shop: "",
@@ -166,14 +166,17 @@ export default {
   },
   methods: {
     onSubmit(values) {
-      let pam = {};
+      let pam = {
+ 
+      };
       for (let i in values) {
         if (values[i]) {
           pam[i] = values[i];
         }
       }
       console.log(pam);
-      this.$router.push("/detailed");
+
+      this.$router.push({ name: "detailed", pam });
     },
     onClickLeft() {
       //   this.$sotre.commit('changesata')

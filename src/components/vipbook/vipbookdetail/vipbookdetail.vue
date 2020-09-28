@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <van-nav-bar
-      title="收银查询"
+      title="会员账本"
       :fixed="true"
       :left-arrow="true"
       @click-left="onClickLeft"
@@ -11,11 +11,22 @@
       </template>
     </van-nav-bar>
     <van-sticky :offset-top="46">
-      <van-button type="primary">基础用法</van-button>
-      <van-button type="primary">基础用法</van-button>
-      <van-button type="primary">基础用法</van-button>
-      <van-button type="primary">基础用法</van-button>
-      <van-button type="primary">基础用法</van-button>
+      <table class="booktop">
+        <tr>
+          <td><van-button type="primary">作废</van-button></td>
+          <td><van-button type="primary">存取款重打</van-button></td>
+
+          <td><van-button type="primary">会员资料</van-button></td>
+
+          <td><van-button type="primary">修改</van-button></td>
+          <td>
+            <van-button type="primary">充值提成录入</van-button>
+          </td>
+          <td>
+            <van-button type="primary">其他</van-button>
+          </td>
+        </tr>
+      </table>
     </van-sticky>
     <div v-for="(item, index) in List" :key="index">
       <van-cell-group @click="item.show = !item.show">
@@ -226,10 +237,20 @@ export default {
 }
 .van-sticky {
   padding: 0;
-  
 }
-.van-sticky .van-button{
+.van-sticky .van-button {
+  width: 100%;
+  font-size: 0.5rem;
+  padding: 0;
+}
+.booktop {
+  padding: 0;
+  border: black solid 1px;
+}
+
+.booktop td {
   margin: 0;
-  width: 20%;
+  width: 16.67%;
+  background-color: chartreuse;
 }
 </style>

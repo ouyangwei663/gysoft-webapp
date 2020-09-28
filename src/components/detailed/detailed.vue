@@ -26,28 +26,40 @@
         </tr>
       </table>
     </div>-->
-    <div class="bb" v-for="(item,index) in List" :key="index">
+    <div class="bb" v-for="(item, index) in List" :key="index">
       <van-card @click="show = true">
         <template #title>
           <div class="name">
-            {{item.cus_name}}
+            {{ item.cus_name }}
             <van-tag type="primary" round color="#FFD90B" size="medium"
               >超级会员</van-tag
             >
           </div>
         </template>
         <template #desc>
-          <p>
-            <span>充值余额：￥{{ money }}</span>
-            <span class="one">卡号：{{item.cardno }}</span>
-          </p>
-          <p>
-            <span>赠送余额：￥{{ money }}</span>
-            <span class="one">手机号码：{{item.mobile }}</span>
-          </p>
-          <p>
-            <span>性别：{{item.sex=="女士"?"女士":"男士"}}</span>
-          </p>
+          <table class="vipinfo">
+            <tr>
+              <td>
+                充值余额：￥{{
+                  item.givehavemoney === null ? 0 : item.givehavemoney
+                }}
+              </td>
+              <td>卡号：{{ item.cardno }}</td>
+            </tr>
+            <tr>
+              <td>赠送余额：￥{{ item.lastmoney }}</td>
+              <td>手机号码：{{ item.mobile }}</td>
+            </tr>
+            <tr>
+              <td>性别：{{ item.sex == "女士" ? "女士" : "男士" }}</td>
+              <td>备注：{{ item.memo === null ? "无" : item.memo }}</td>
+            </tr>
+            <tr>
+              <td>
+                地址：{{ item.address === null ? "暂无记录" : item.address }}
+              </td>
+            </tr>
+          </table>
         </template>
       </van-card>
       <van-action-sheet v-model="show" title="会员操作">
@@ -81,7 +93,7 @@ export default {
       money: "100",
       phone: 13653035648,
       show: false,
-      List:[]
+      List: [],
     };
   },
   components: {
@@ -95,8 +107,8 @@ export default {
     [CellGroup.name]: CellGroup,
   },
   created() {
+    this.$route.params;
     this.getdate();
-
   },
 
   methods: {
@@ -112,30 +124,26 @@ export default {
     },
 
     getdate() {
-      var that=this
+      var that = this;
+      var par = {
+        action: "findby",
+        token: "lx_mf",
+        aspnetid: "lx_mf",
+        classname: "n_customer_small_find_mf",
+        funcname: "find",
+        classmemo: "会员查询",
+      };
+
+      var returnedTarget = Object.assign(par, this.$route.params);
       this.$axios
-        .get("erpcore/", {
-          params: {
-            action: "findby",
-            token: "lx_mf",
-            aspnetid: "lx_mf",
-            classname: "n_customer_small_find_mf",
-            funcname: "find",
-            classmemo: "会员查询",
-            cus_name: "",
-            Sex: "Y",
-          },
-        })
+        .post("erpcore/", returnedTarget)
         .then((res) => {
-          that.List=res.data.table
-          console.log(that.List)
-          
+          that.List = res.data.table;
+          console.log(that.List);
         })
         .catch((err) => {
           console.log(err);
         });
-
-        
     },
   },
 };
@@ -179,17 +187,10 @@ export default {
 .name {
   font-size: 1rem;
 }
-span {
-  color: white;
+.vipinfo td {
+  width: 50%;
 }
-p {
-  margin-bottom: 0.5rem;
-  font-size: 0.6rem;
-}
-.one {
-  position: relative;
-  left: 15vw;
-}
+
 .van-action-sheet__name {
   color: black;
 }

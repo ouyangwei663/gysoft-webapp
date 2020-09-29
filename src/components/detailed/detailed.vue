@@ -27,7 +27,7 @@
       </table>
     </div>-->
     <div class="bb" v-for="(item, index) in List" :key="index">
-      <van-card @click="show = true">
+      <van-card @click="showoperate(item)">
         <template #title>
           <div class="name">
             {{ item.cus_name }}
@@ -64,7 +64,7 @@
       </van-card>
       <van-action-sheet v-model="show" title="会员操作">
         <div>
-          <van-cell title="充值" icon="gold-coin-o" is-link />
+          <van-cell title="充值" icon="gold-coin-o" is-link @click="tocrash()" />
           <van-cell title="恢复会员" icon="share-o" is-link />
           <van-cell title="注销会员" icon="close" is-link />
           <van-cell title="新增次卡" icon="add-o" is-link />
@@ -94,6 +94,7 @@ export default {
       phone: 13653035648,
       show: false,
       List: [],
+      params: {},
     };
   },
   components: {
@@ -107,7 +108,7 @@ export default {
     [CellGroup.name]: CellGroup,
   },
   created() {
-    this.$route.params;
+    console.log(this.$route.params);
     this.getdate();
   },
 
@@ -125,23 +126,8 @@ export default {
 
     getdate() {
       var that = this;
-      console.log(this.$route.params)
-      var source = {
-        cus_name: "福海",
-        Sex: "Y",
-      };
-      var par = {
-        action: "findby",
-        token: "lx_mf",
-        aspnetid: "lx_mf",
-        classname: "n_customer_small_find_mf",
-        funcname: "find",
-        classmemo: "会员查询",
-      };
-      const newpar = Object.assign(par, source);
-      console.log(newpar);
       this.$axios
-        .post("erpcore/", newpar)
+        .post("erpcore/", this.$route.params)
         .then((res) => {
           that.List = res.data.table;
         })
@@ -149,6 +135,19 @@ export default {
           console.log(err);
         });
     },
+    showoperate(item) {
+      this.show = true;
+      this.params = item;
+      console.log(this.params);
+    },
+    tocrash(){
+      var params=this.params
+      this.$router.push({
+        name: "crash",
+        params,
+      });
+    }
+
   },
 };
 </script>

@@ -35,7 +35,7 @@ export default new Router({
     },
     {
       path: '/crash',
-      name: crash,
+      name: 'crash',
       component: crash
     },
     {

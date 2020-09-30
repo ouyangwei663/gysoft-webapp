@@ -166,6 +166,7 @@ import {
   Popup,
   Sticky,
 } from "vant";
+import { apiShop, apiVip } from "@/API/api";
 export default {
   data() {
     return {
@@ -229,14 +230,7 @@ export default {
 
   methods: {
     onSubmit(values) {
-      var pam = {
-        action: "findby",
-        token: "lx_mf",
-        aspnetid: "lx_mf",
-        classname: "n_customer_small_find_mf",
-        funcname: "find",
-        classmemo: "会员查询",
-      };
+      var pam = {};
       for (let i in values) {
         if (values[i]) {
           pam[i] = values[i];
@@ -244,9 +238,13 @@ export default {
       }
       if (pam.shop != "") {
         pam.shop = this.viplevelreally;
+      } else {
+        delete pam.shop;
       }
       if (pam.sata != "") {
         pam.sata = this.satareall;
+      } else {
+        delete pam.sata;
       }
       var params = pam;
       this.$router.push({
@@ -297,55 +295,30 @@ export default {
       //获取下拉菜单的数据
 
       var that = this;
-      this.$axios
-        .get("erpcore/", {
-          params: {
-            action: "getlist",
-            token: "lx_mf",
-            aspnetid: "lx_mf",
-            name: "分店",
-          },
-        })
-        .then((res) => {
-          console.log(res.data.table);
-
-          that.columns2 = res.data.table.map(function (item) {
-            return item.name;
-          });
-          that.columns22 = res.data.table.map(function (item) {
-            return item.no;
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+      apiShop({}).then((res) => {
+        that.columns2 = res.table.map(function (item) {
+          return item.name;
         });
+        that.columns22 = res.table.map(function (item) {
+          return item.no;
+        });
+      });
     },
 
     getvip() {
-      //获取下拉菜单的数据
+   
 
       var that = this;
-      this.$axios
-        .get("erpcore/", {
-          params: {
-            action: "getlist",
-            token: "lx_mf",
-            aspnetid: "lx_mf",
-            name: "会员卡类型",
-          },
-        })
-        .then((res) => {
-          console.log(res.data.table);
-          that.columns = res.data.table.map(function (item) {
-            return item.name;
-          });
-          that.columns1 = res.data.table.map(function (item) {
-            return item.no;
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+      apiVip({}).then((res) => {
+        that.columns = res.table.map(function (item) {
+          return item.name;
         });
+        that.columns1 = res.table.map(function (item) {
+          return item.no;
+        });
+      });
+
+
     },
   },
   mounted() {

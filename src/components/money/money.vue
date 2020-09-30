@@ -4,7 +4,7 @@
       title="储蓄卡提现"
       :fixed="true"
       :left-arrow="true"
-      :style="{color:'#000000'}"
+      :style="{ color: '#000000' }"
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#000000" />
@@ -13,7 +13,7 @@
     <div class="card">
       <p class="one">可提现金额</p>
       <p class="two">
-        <b>{{max}}</b>
+        <b>{{$route.params.lastmoney}}</b>
         <button>
           <span>全部提现</span>
         </button>
@@ -23,16 +23,63 @@
 
     <van-form @submit="onSubmit">
       <p>请输入取现金额</p>
-      <van-field class="big" v-model="digit" type="digit" name="money">
+      <van-field
+        class="big"
+        v-model="digit"
+        type="digit"
+        name="money"
+        :required="true"
+      >
         <template #left-icon>
-          <van-icon class="iconfont" class-prefix="icon" name="money" size="30" />
+          <van-icon
+            class="iconfont"
+            class-prefix="icon"
+            name="money"
+            size="30"
+          />
         </template>
       </van-field>
       <p>取现必填</p>
-      <van-field class="bg" label="卡号" v-model="crashid" type="number" name="crashid" />
-      <van-field class="bg" label="会员名称" v-model="person" type="string" name="person" />
-      <van-field class="bg" label="取现店铺" v-model="moneyshop" type="string" name="moneyshop" />
-      <van-field class="bg" label="备注" v-model="tip" type="string" name="tip" />
+      <van-field
+        class="bg"
+        label="卡号"
+        v-model="crashid"
+        type="number"
+        name="crashid"
+        :required="true"
+      />
+      <van-field
+        class="bg"
+        label="会员名称"
+        v-model="person"
+        type="string"
+        name="person"
+        :required="true"
+      />
+      <van-field
+        readonly
+        clickable
+        name="shop"
+        :value="value"
+        label="取现店铺"
+        placeholder="点击选择店铺"
+        @click="showPicker = true"
+      />
+      <van-popup v-model="showPicker" position="bottom">
+        <van-picker
+          show-toolbar
+          :columns="columns"
+          @confirm="onConfirm"
+          @cancel="showPicker = false"
+        />
+      </van-popup>
+      <van-field
+        class="bg"
+        label="备注"
+        v-model="tip"
+        type="string"
+        name="tip"
+      />
       <div>
         <div id="first">
           <van-field name="radio" class="bg">
@@ -47,15 +94,22 @@
         <div id="second">
           <van-field name="checkboxGroup" class="bg">
             <template #input>
-              <van-checkbox-group v-model="checkboxGroup" direction="horizontal">
-                <van-checkbox name="1" icon-size="0.8rem">取款后短信通知</van-checkbox>
+              <van-checkbox-group
+                v-model="checkboxGroup"
+                direction="horizontal"
+              >
+                <van-checkbox name="1" icon-size="0.8rem"
+                  >取款后短信通知</van-checkbox
+                >
               </van-checkbox-group>
             </template>
           </van-field>
         </div>
       </div>
-      <div style="margin: 16px;">
-        <van-button round block type="info" native-type="submit">立即取现</van-button>
+      <div style="margin: 16px">
+        <van-button round block type="info" native-type="submit"
+          >立即取现</van-button
+        >
       </div>
     </van-form>
   </div>
@@ -73,19 +127,28 @@ import {
   Checkbox,
   RadioGroup,
   CheckboxGroup,
+  Picker,
+  Popup,
 } from "vant";
 import "@/assets/icon/iconfont.css";
+import { apiShop } from "@/API/api";
 export default {
   data() {
     return {
       max: 568523,
-      digit: "5000",
-      crashid: "2598445545565",
-      person: "愤怒的阿三",
+      digit: "",
+      crashid: this.$route.params.cardno,
+      person: this.$route.params.cus_name,
       moneyshop: "株式会01",
       tip: "请多一点",
       radio: "1",
       checkboxGroup: [],
+      viplevel: "",
+      value: "",
+      columns: [],
+      showPicker: false,
+      reallshop: "",
+      no: [],
     };
   },
   components: {
@@ -99,10 +162,40 @@ export default {
     [RadioGroup.name]: RadioGroup,
     [Checkbox.name]: Checkbox,
     [CheckboxGroup.name]: CheckboxGroup,
+    [Picker.name]: Picker,
+    [Popup.name]: Popup,
+  },
+  created() {
+    this.getshop();
   },
   methods: {
     onSubmit(values) {
-      console.log("submit", values);
+      values.shop = this.reallshop;
+      console.log(values);
+    },
+    onConfirm(value, index) {
+      this.value = value;
+      this.reallshop = this.no[index];
+      this.showPicker = false;
+    },
+    getshop() {
+      var that = this;
+      apiShop({}).then((res) => {
+        var no = res.table.map(function (item) {
+          return item.no;
+        });
+        that.no = no;
+        console.log(that.no)
+        var shop = res.table.map(function (item) {
+          return item.name;
+        });
+
+        let last = [];
+        for (var i = 0; i < shop.length; i++) {
+          last[i] = shop[i] + "  " + "编号：" + no[i];
+        }
+        this.columns = last;
+      });
     },
   },
 };
@@ -158,22 +251,22 @@ export default {
   font-size: 2rem;
 }
 #first {
-    float: left;
+  float: left;
   width: 58%;
 }
 #second {
-float: right;
+  float: right;
   width: 42%;
 }
-/deep/ .van-radio__label{
-    margin-left: 0;
-    font-size: 0.5rem;
+/deep/ .van-radio__label {
+  margin-left: 0;
+  font-size: 0.5rem;
 }
-/deep/ .van-checkbox__label{
-    margin-left: 0;
-    font-size: 0.5rem;
+/deep/ .van-checkbox__label {
+  margin-left: 0;
+  font-size: 0.5rem;
 }
-.bg{
-    background-color: #FAFAFA;
+.bg {
+  background-color: #fafafa;
 }
 </style>

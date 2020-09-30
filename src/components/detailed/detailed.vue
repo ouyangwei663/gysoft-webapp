@@ -64,7 +64,13 @@
       </van-card>
       <van-action-sheet v-model="show" title="会员操作">
         <div>
-          <van-cell title="充值" icon="gold-coin-o" is-link @click="tocrash()" />
+          <van-cell
+            title="充值"
+            icon="gold-coin-o"
+            is-link
+            @click="tocrash()"
+          />
+          <van-cell title="取现" icon="idcard" is-link @click="tomoney()" />
           <van-cell title="恢复会员" icon="share-o" is-link />
           <van-cell title="注销会员" icon="close" is-link />
           <van-cell title="新增次卡" icon="add-o" is-link />
@@ -87,6 +93,7 @@ import {
   CellGroup,
 } from "vant";
 import "@/assets/icon/iconfont.css";
+import { apiVipinfo } from "@/API/api";
 export default {
   data() {
     return {
@@ -126,28 +133,30 @@ export default {
 
     getdate() {
       var that = this;
-      this.$axios
-        .post("erpcore/", this.$route.params)
-        .then((res) => {
-          that.List = res.data.table;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      apiVipinfo(this.$route.params).then((res) => {
+        console.log(res);
+        that.List = res.table;
+      });
     },
     showoperate(item) {
       this.show = true;
       this.params = item;
       console.log(this.params);
     },
-    tocrash(){
-      var params=this.params
+    tocrash() {
+      var params = this.params;
       this.$router.push({
         name: "crash",
         params,
       });
-    }
-
+    },
+    tomoney() {
+      var params = this.params;
+      this.$router.push({
+        name: "money",
+        params,
+      });
+    },
   },
 };
 </script>

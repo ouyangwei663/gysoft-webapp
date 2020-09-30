@@ -45,7 +45,7 @@ export default new Router({
     },
     {
       path: '/money',
-      name: money,
+      name: "money",
       component: money
     },
     {

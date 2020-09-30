@@ -5,8 +5,12 @@ import App from './App'
 import router from './router'
 import store from './store/store'
 import axios from 'axios'
+import { WindowsBalloon } from 'node-notifier'
 Vue.prototype.$axios = axios
 
+
+window.localStorage.setItem("token","lxmf")
+window.localStorage.setItem("second","erpcore/")
 
 axios.defaults.baseURL = process.env.API_ROOT
 axios.interceptors.request.use(function (config) {

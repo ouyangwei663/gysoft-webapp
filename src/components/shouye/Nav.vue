@@ -16,15 +16,15 @@
         <van-icon name="bars" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
-    <van-dialog v-model="show" title="详情信息"   theme="round">
+    <van-dialog v-model="show" title="详情信息" theme="round">
       <table class="alert">
         <tr>
           <td>公司名称：</td>
-          <td>{{comname}}</td>
+          <td>{{ comname }}</td>
         </tr>
         <tr>
           <td>使用人：</td>
-          <td>{{username}}</td>
+          <td>{{ username }}</td>
         </tr>
       </table>
     </van-dialog>
@@ -34,6 +34,7 @@
 <script>
 import { NavBar, Toast, Icon, Dialog } from "vant";
 import jsonp from "jsonp";
+import { apiAddress } from "@/API/api";
 export default {
   name: "Nav",
   data() {
@@ -49,7 +50,18 @@ export default {
     [Icon.name]: Icon,
     [Dialog.Component.name]: Dialog.Component,
   },
+  created() {
+    this.postone();
+    console.log(localStorage.getItem("token"))
+  },
   methods: {
+    postone() {
+      apiAddress({
+        action: "getuser",
+        
+      }).then(res=>{console.log(res);
+      });
+    },
     onClickLeft() {
       this.$store.commit("change");
       console.log(this.$store.state.sata);
@@ -76,9 +88,9 @@ export default {
           },
         })
         .then((res) => {
-            console.log(res.data.user)
-          this.comname=res.data.user.comname;
-          this.username=res.data.user.username
+          console.log(res.data.user);
+          this.comname = res.data.user.comname;
+          this.username = res.data.user.username;
         })
         .catch((err) => {
           console.log(err);
@@ -113,11 +125,11 @@ export default {
   color: #ffffff;
 }
 .alert {
-margin-left: auto;
-margin-right: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
-.alert td{
+.alert td {
   text-align: left;
- width: 50%;
+  width: 50%;
 }
 </style>

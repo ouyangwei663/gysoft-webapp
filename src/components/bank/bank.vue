@@ -1,12 +1,17 @@
 <template>
   <div class="hello">
-    <van-nav-bar title="收银查询" :fixed="true" :left-arrow="true" @click-left="onClickLeft">
+    <van-nav-bar
+      title="收银查询"
+      :fixed="true"
+      :left-arrow="true"
+      @click-left="onClickLeft"
+    >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
-    <div v-for="(item,index) in List " :key="index">
-      <van-cell-group @click="item.show=!item.show">
+    <div v-for="(item, index) in List" :key="index">
+      <van-cell-group @click="item.show = !item.show">
         <van-cell title="伊美东平店" center>
           <template #label>
             <table>
@@ -38,7 +43,13 @@
               <tr v-show="item.show">
                 <td>来店日期：2020/9/23</td>
                 <td class="fright">
-                  <van-button @click.stop="click(index)" round type="info" size="mini">获取详情</van-button>
+                  <van-button
+                    @click.stop="click(index)"
+                    round
+                    type="info"
+                    size="mini"
+                    >获取详情</van-button
+                  >
                 </td>
               </tr>
             </table>
@@ -54,7 +65,13 @@
           </template>
         </van-cell>
       </van-cell-group>
-      <van-popup class="bankpopup" v-model="item.bottom" position="bottom" round :style="{ }">
+      <van-popup
+        class="bankpopup"
+        v-model="item.bottom"
+        position="bottom"
+        round
+        :style="{}"
+      >
         <table class="bankone">
           <tr class="one">
             <td></td>
@@ -199,6 +216,6 @@ export default {
   font-size: 0.7rem;
   margin-left: 10%;
   color: white;
-  background-color: #25D07A;
+  background-color: #25d07a;
 }
 </style>

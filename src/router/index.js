@@ -14,6 +14,7 @@ import bank from '@/components/bank/bank'
 import listcheck from '@/components/listcheck/listcheck'
 import vipbookdetail from '@/components/vipbook/vipbookdetail/vipbookdetail'
 import vipbookflow from '@/components/vipbook/vipbookflow/vipbookflow'
+import qindan from '@/components/qindan/qindan'
 
 
 
@@ -85,6 +86,10 @@ export default new Router({
       path: '/vipbookflow',
       name: 'vipbookflow',
       component: vipbookflow
+    }, {
+      path: '/qindan',
+      name: 'qindan',
+      component: qindan
     }
 
 

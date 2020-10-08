@@ -5,6 +5,7 @@
       :fixed="true"
       :left-arrow="true"
       :style="{ color: '#000000' }"
+      @click-left="onClickLeft"
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#000000" />
@@ -13,8 +14,8 @@
     <div class="card">
       <p class="one">可提现金额</p>
       <p class="two">
-        <b>{{$route.params.lastmoney}}</b>
-        <button>
+        <b>{{ $route.params.lastmoney }}</b>
+        <button @click="clickBig()">
           <span>全部提现</span>
         </button>
       </p>
@@ -64,6 +65,7 @@
         label="取现店铺"
         placeholder="点击选择店铺"
         @click="showPicker = true"
+        :required="true"
       />
       <van-popup v-model="showPicker" position="bottom">
         <van-picker
@@ -129,6 +131,7 @@ import {
   CheckboxGroup,
   Picker,
   Popup,
+  Toast,
 } from "vant";
 import "@/assets/icon/iconfont.css";
 import { apiShop } from "@/API/api";
@@ -169,9 +172,28 @@ export default {
     this.getshop();
   },
   methods: {
+    onClickLeft() {
+      //   this.$sotre.commit('changesata')
+      this.$router.go(-1);
+    },
     onSubmit(values) {
-      values.shop = this.reallshop;
-      console.log(values);
+      if (values.money == "") {
+        this.$toast("请填写取款余额");
+      } else if (values.money < 100) {
+        this.$toast("取款余额应该大于一百");
+      }
+      else if (values.money > this.$route.params.lastmoney) {
+        this.$toast("取款金额超出已有余额");
+      } else if (values.crashid == "") {
+        this.$toast("请填写卡号");
+      } else if (values.person == "") {
+        this.$toast("请填持卡人");
+      } else if (values.shop == "") {
+        this.$toast("请填写店铺");
+      } else {
+        values.shop = this.reallshop;
+        console.log(values);
+      }
     },
     onConfirm(value, index) {
       this.value = value;
@@ -185,7 +207,7 @@ export default {
           return item.no;
         });
         that.no = no;
-        console.log(that.no)
+
         var shop = res.table.map(function (item) {
           return item.name;
         });
@@ -196,6 +218,9 @@ export default {
         }
         this.columns = last;
       });
+    },
+    clickBig() {
+      this.digit = this.$route.params.lastmoney;
     },
   },
 };

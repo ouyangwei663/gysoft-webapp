@@ -69,16 +69,16 @@
       />
       <van-field
         v-model="time"
-        name="storedate"
+        name="moneychangedate"
         label="存钱时间"
         placeholder="存钱时间"
       />
-      <van-field
+      <!-- <van-field
         v-model="person"
         name="cus_name"
         label="提钱人"
         placeholder=""
-      />
+      /> -->
       <van-field
         v-model="memo"
         name="memo"
@@ -211,8 +211,6 @@ export default {
     getshop() {
       var that = this;
       apiShop({}).then((res) => {
-        console.log(res.table);
-
         that.columns2 = res.table.map(function (item) {
           return item.name;
         });
@@ -224,6 +222,7 @@ export default {
     getkaidan() {
       var that = this;
       apiKaidan({}).then((res) => {
+        console.log(res);
         that.memo = res.table[0].memo;
         that.time = res.table[0].storedate;
         that.selfno = res.table[0].selfno;
@@ -242,22 +241,25 @@ export default {
     },
 
     onSubmit(values) {
-      var pam = {
+      var data = {
         cusid: this.$route.params.cusid,
       };
       for (let i in values) {
         if (values[i]) {
-          pam[i] = values[i];
+          data[i] = values[i];
         }
       }
-      pam.subcom = this.reallyshop;
-      console.log(pam);
-      apiChongzhi(pam).then((res) => {
-        console.log(res);
-        if (res.errmsg == "OK") {
-          alert("充值成功");
-        }
-      });
+      data.subcom = this.reallyshop;
+      if (this.money == "") {
+        this.$toast.fail("请输入金额");
+      } else {
+        apiChongzhi({ data }).then((res) => {
+          console.log(res);
+          if (res.errmsg == "OK") {
+            alert("充值成功");
+          }
+        });
+      }
     },
   },
   created() {

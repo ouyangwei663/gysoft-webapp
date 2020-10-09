@@ -30,6 +30,7 @@ export const apiKaidan = p => { //   这个是会员开单的接口
   p.classname = "n_storemoney_hy";
   p.funcname = "open";
   p.classmemo = "会员充值开单"
+  p.subcom=14
   return post(second, p)
 };
 export const apiChongzhi = p => { //   这个是会员充值的接口

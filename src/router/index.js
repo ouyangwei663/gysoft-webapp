@@ -11,6 +11,8 @@ import vipcheck from '@/components/vipperson/vipperson'
 import operate from '@/components/operate/operate'
 import detailed from '@/components/detailed/detailed'
 import bank from '@/components/bank/bank'
+import bankcheck from '@/components/bank/bankcheck'
+import bankadd from '@/components/bank/bankadd/bankadd'
 import listcheck from '@/components/listcheck/listcheck'
 import vipbookdetail from '@/components/vipbook/vipbookdetail/vipbookdetail'
 import vipbookflow from '@/components/vipbook/vipbookflow/vipbookflow'
@@ -71,7 +73,7 @@ export default new Router({
       component: detailed
     }, {
       path: '/bank',
-      name: bank,
+      name: 'bank',
       component: bank
     },
     {
@@ -90,6 +92,16 @@ export default new Router({
       path: '/qindan',
       name: 'qindan',
       component: qindan
+    },
+    {
+      path: '/bankcheck',
+      name: 'bankcheck',
+      component: bankcheck
+    },
+    {
+      path: '/bankadd',
+      name: 'bankadd',
+      component: bankadd
     }
 
 

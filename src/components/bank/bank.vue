@@ -12,26 +12,33 @@
     </van-nav-bar>
     <div v-for="(item, index) in List" :key="index">
       <van-cell-group @click="item.show = !item.show">
-        <van-cell title="伊美东平店" center>
+        <van-cell title="" center>
           <template #label>
             <table>
-              <tr>
-                <td>姓名：欧阳威</td>
-                <td>性别：男</td>
-              </tr>
               <tr>
                 <td>手工单号：0050197</td>
                 <td>系统单号：14G17040003</td>
               </tr>
               <tr>
-                <td>收款金额：￥400</td>
-                <td>抵扣金额：￥0</td>
-              </tr>
-              <tr v-show="item.show">
                 <td>会员卡类型：VIP龙腾卡</td>
                 <td>会员卡号：dp111111746</td>
               </tr>
-
+              <tr>
+                <td>客户名称：欧阳威</td>
+                <td>性别：男</td>
+              </tr>
+              <tr>
+                <td>服务：洗剪吹</td>
+                <td>是否指名：是</td>
+              </tr>
+              <tr>
+                <td>员工：AMY（QA）</td>
+                <td>发型师业绩：</td>
+              </tr>
+              <tr>
+                <td>收款金额：￥400</td>
+                <td>抵扣金额：￥0</td>
+              </tr>
               <tr v-show="item.show">
                 <td>手机号码：13653035648</td>
                 <td>备注:</td>
@@ -42,6 +49,18 @@
               </tr>
               <tr v-show="item.show">
                 <td>来店日期：2020/9/23</td>
+              </tr>
+              <tr class="power">
+                <td class="fright">
+                  <van-button
+                    @click.stop="click(index)"
+                    round
+                    type="info"
+                    size="mini"
+                    >获取详情</van-button
+                  >
+                </td>
+
                 <td class="fright">
                   <van-button
                     @click.stop="click(index)"
@@ -195,7 +214,7 @@ export default {
   text-align: left;
 }
 .fright {
-  text-align: right;
+  text-align: left;
 }
 .bankpopup {
   padding-top: 3vh;

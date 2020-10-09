@@ -27,16 +27,14 @@ export function get(url, params) {
  * @param {Object} params [请求时携带的参数] 
  */
 export function post(url, params) {
+  console.log(params)
   params.token = "lx_mf"
   params.aspnetid = "lx_mf"
   return new Promise((resolve, reject) => {
     axios.post(url, params)
       .then(res => {
-        if (res.data.errcode == 0) {
           resolve(res.data);
-        } else {
-          Toast.fail(res.data.errmsg)
-        }
+        
       })
       .catch(err => {
         reject(err.data)

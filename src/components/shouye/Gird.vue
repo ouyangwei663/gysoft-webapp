@@ -1,8 +1,19 @@
 <template>
   <div class="hello">
-    <van-grid :column-num="3" icon-size="30" gutter="30" :border="false" :square="true">
-      <van-grid-item id="first" icon="friends" text="会员资料" to="/vipcheck"></van-grid-item>
-      <van-grid-item id="second" icon="gold-coin" text="收银" to="/bank"/>
+    <van-grid
+      :column-num="3"
+      icon-size="30"
+      gutter="30"
+      :border="false"
+      :square="true"
+    >
+      <van-grid-item
+        id="first"
+        icon="friends"
+        text="会员资料"
+        to="/vipcheck"
+      ></van-grid-item>
+      <van-grid-item id="second" icon="gold-coin" text="收银" to="/bankcheck" />
       <van-grid-item id="second" icon="gold-coin" text="会员账本" />
       <van-grid-item id="third" icon="star" text="会员积分" />
 
@@ -99,7 +110,7 @@ export default {
   color: #25d07a;
 }
 /deep/ .van-icon-paid {
-  color:  #299cff;
+  color: #299cff;
 }
 </style>
 

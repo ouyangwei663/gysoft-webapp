@@ -52,14 +52,16 @@ export default {
   },
   created() {
     this.postone();
-    console.log(localStorage.getItem("token"));
+ 
   },
   methods: {
     postone() {
       apiAddress({
         action: "getuser",
       }).then((res) => {
-        console.log(res);
+        console.log(res.user)
+        window.localStorage.setItem("subname",res.user.subname)
+        window.localStorage.setItem("subcom",res.user.subcom)
       });
     },
     onClickLeft() {
@@ -81,7 +83,7 @@ export default {
           this.username = res.data.user.username;
         })
         .catch((err) => {
-          console.log(err);
+       
         });
       this.show = true;
     },

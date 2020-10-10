@@ -71,6 +71,24 @@
       @click="show = true"
     />
     <van-popup v-model="show" position="bottom" :style="{ height: '100%' }">
+      <van-card
+        v-for="(item, index) in addList"
+        :key="index"
+        class="addcard"
+        num="1"
+        price="2.00"
+        :title="item.project"
+        origin-price="10.00"
+      >
+        <template #desc>
+          <p>员工信息</p>
+          工种： 员工：{{ item.person }} 业绩：
+        </template>
+        <template #footer>
+          <van-button size="mini" @click="addbankdelet(index)">删除</van-button>
+        </template>
+      </van-card>
+
       <van-button
         round
         class="bankaddbottom"
@@ -78,6 +96,14 @@
         @click="secondshow = true"
       >
         添加新项目</van-button
+      >
+      <van-button
+        round
+        class="bankaddbottom2"
+        @click="show = false"
+        size="mini"
+      >
+        返回</van-button
       >
       <van-popup
         v-model="secondshow"
@@ -95,17 +121,45 @@
             <div @click="onSearch2">查询</div>
           </template>
         </van-search>
-         <table class="bankaddtable">
-              <td>名称</td>
-              <td>品种编码</td>
-              <td>销售定价</td>
-              <tr v-for="(item, index) in List" :key="index">
-                  <td>{{item.name}}</td>
-                  <td>{{item.id}}</td>
-                  <td>{{item.money}}</td>
-                  <td><van-button>添加</van-button></td>
-              </tr>
-            </table>
+        <van-form @submit="onSubmit2">
+          <van-field
+            v-model="project"
+            name="project"
+            label="项目"
+            placeholder="请输入项目"
+            readonly
+          />
+          <van-field
+            v-model="person"
+            name="person"
+            label="员工"
+            placeholder="请输入员工"
+          />
+          <div style="margin: 16px">
+            <van-button round block type="info" native-type="submit2">
+              提交
+            </van-button>
+          </div>
+        </van-form>
+        <table class="bankaddtable">
+          <td>名称</td>
+          <td>品种编码</td>
+          <td>销售定价</td>
+          <tr v-for="(item, index) in List" :key="index">
+            <td>{{ item.name }}</td>
+            <td>{{ item.id }}</td>
+            <td>{{ item.money }}</td>
+            <td>
+              <van-button
+                round
+                type="primary"
+                size="mini"
+                @click="addproject(item.name)"
+                >添加</van-button
+              >
+            </td>
+          </tr>
+        </table>
       </van-popup>
     </van-popup>
   </div>
@@ -125,6 +179,8 @@ import {
   RadioGroup,
   Divider,
   Popup,
+  Card,
+  Dialog,
 } from "vant";
 import contact from "./contact";
 export default {
@@ -141,10 +197,11 @@ export default {
       project: "",
       person: "",
       List: [
-        { name: "洗头发", id: 100, money: 1000 },
-        { name: "吹头发", id: 101, money: 1001 },
-        { name: "剪头发", id: 102, money: 1002 },
+        // { name: "洗头发", id: 100, money: 1000 },
+        // { name: "吹头发", id: 101, money: 1001 },
+        // { name: "剪头发", id: 102, money: 1002 },
       ],
+      addList: [],
     };
   },
   components: {
@@ -161,6 +218,8 @@ export default {
     [Radio.name]: Radio,
     [Divider.name]: Divider,
     [Popup.name]: Popup,
+    [Card.name]: Card,
+    [Dialog.name]: Dialog,
   },
   methods: {
     onClickLeft() {
@@ -170,14 +229,41 @@ export default {
       alert("查询" + this.value);
     },
     onSearch2(val) {
-      alert("查询" + this.value);
+      this.List = [
+        { name: "洗头发", id: 100, money: 1000 },
+        { name: "吹头发", id: 101, money: 1001 },
+        { name: "剪头发", id: 102, money: 1002 },
+      ];
     },
     onSubmit(values) {
       console.log("submit", values);
     },
     onSubmit2(values) {
-      console.log("submit", values);
-      this.secondshow = false;
+      if (values.project == "") {
+        this.$toast.fail("项目不能为空");
+      } else {
+        console.log(values);
+        this.addList.push(values);
+        this.List = [];
+        this.secondshow = false;
+        this.project = "";
+        this.person = "";
+      }
+    },
+    addproject(name) {
+      this.project = name;
+    },
+    addbankdelet(index) {
+      Dialog.confirm({
+        title: "删除所选项目",
+        message: "确定删除所选项目吗",
+      })
+        .then(() => {
+          this.addList.splice(index, 1);
+        })
+        .catch(() => {
+          // on cancel
+        });
     },
   },
 };
@@ -211,9 +297,28 @@ export default {
   width: 90%;
   bottom: 2vh;
 }
-.bankaddtable{
-    width: 90%;
-    margin-left: 5%;
-    background-color:  #157aff;
+.bankaddbottom2 {
+  position: fixed;
+  right: 1vh;
+}
+.bankaddtable {
+  border-radius: 0.3rem;
+  width: 90%;
+  font-size: 0.7rem;
+  margin-left: 5%;
+  color: white;
+  background-color: #157aff;
+}
+.addcard {
+  width: 90%;
+  margin-left: 5%;
+  text-align: left;
+}
+.addcard .van-card__title {
+  margin-top: 1vh;
+  font-size: 1rem;
+}
+.addcard .van-card__bottom {
+  margin-top: 3vh;
 }
 </style>

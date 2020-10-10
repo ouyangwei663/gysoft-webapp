@@ -27,7 +27,7 @@
       </table>
     </div>-->
     <div class="bb" v-for="(item, index) in List" :key="index">
-      <van-card @click="showoperate(item)">
+      <van-card class="detailedcard" @click="showoperate(item)">
         <template #title>
           <div class="name">
             {{ item.cus_name }}
@@ -40,14 +40,16 @@
           <table class="vipinfo">
             <tr>
               <td>
-                充值余额：￥{{
-                  item.givehavemoney === null ? 0 : item.givehavemoney
-                }}
+                充值余额：￥{{ item.lastmoney === null ? 0 : item.lastmoney }}
               </td>
               <td>卡号：{{ item.cardno }}</td>
             </tr>
             <tr>
-              <td>赠送余额：￥{{ item.lastmoney }}</td>
+              <td>
+                赠送余额：￥{{
+                  item.givehavemoney === null ? 0 : item.givehavemoney
+                }}
+              </td>
               <td>手机号码：{{ item.mobile }}</td>
             </tr>
             <tr>
@@ -115,7 +117,6 @@ export default {
     [CellGroup.name]: CellGroup,
   },
   created() {
-    console.log(this.$route.params);
     this.getdate();
   },
 
@@ -141,7 +142,6 @@ export default {
     showoperate(item) {
       this.show = true;
       this.params = item;
-      console.log(this.params);
     },
     tocrash() {
       var params = this.params;
@@ -181,11 +181,11 @@ export default {
   font-size: 1rem;
   overflow-x: auto;
 }
-.vant-card {
-  margin-left: 10%;
-  width: 80%;
+.detailedcard {
+  margin-left: 5%;
+  width: 90%;
 }
-.van-card {
+.detailedcard {
   background-color: #157aff;
   color: white;
   border-radius: 0.4rem;

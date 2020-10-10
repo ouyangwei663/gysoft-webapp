@@ -24,22 +24,30 @@
         <template #desc>
           <table class="crashvipinfo">
             <tr>
-              <td>余额：￥{{ $route.params.lastmoney }}</td>
+              <td>会员卡类型：{{ $route.params.cus_type }}</td>
+
               <td>卡号：{{ $route.params.cardno }}</td>
             </tr>
             <tr>
               <td>手机号码：{{ $route.params.mobile }}</td>
-              <td>会员卡类型：{{ $route.params.cus_type }}</td>
+              <td>有效期：{{ effecttime }}</td>
             </tr>
             <tr>
-              <td colspan="2">有效期：{{ effecttime }}</td>
+              <td>充值余额：￥{{ $route.params.lastmoney }}</td>
+              <td>赠送余额：￥{{ $route.params.givehavemoney }}</td>
             </tr>
           </table>
         </template>
       </van-card>
     </div>
     <van-form @submit="onSubmit">
-      <van-field label="卡号" v-model="crashid" name="cardno" :required="true">
+      <van-field
+        label="卡号"
+        v-model="crashid"
+        name="cardno"
+        :required="true"
+        :disabled="first"
+      >
       </van-field>
 
       <van-field
@@ -49,6 +57,7 @@
         name="money"
         placeholder="请输入充值金额"
         :required="true"
+        :disabled="first"
       >
       </van-field>
 
@@ -57,6 +66,7 @@
         name="addmoney"
         label="赠送金额"
         placeholder="赠送金额（选填）"
+        :disabled="first"
       />
       <van-field
         readonly
@@ -65,13 +75,17 @@
         :value="viplevel"
         label="店铺名"
         placeholder="点击选择店铺"
-        @click="showviplevel = true"
+        @click="
+          first == false ? (showviplevel = true) : (showviplevel = showviplevel)
+        "
+        :disabled="first"
       />
       <van-field
         v-model="time"
         name="moneychangedate"
         label="存钱时间"
         placeholder="存钱时间"
+        :disabled="first"
       />
       <!-- <van-field
         v-model="person"
@@ -84,53 +98,72 @@
         name="memo"
         label="备注"
         placeholder="请填写备注"
+        :disabled="first"
       />
       <van-field
         v-model="selfno"
         name="selfno"
         label="手工单号"
         placeholder="请填写手工单号"
+        :disabled="first"
       />
       <van-field
         id="bg"
         name="payway"
         v-model="payway"
         label="充值方式"
+        :disabled="true"
       ></van-field>
       <van-radio-group v-model="payway">
         <van-cell-group>
-          <van-cell clickable @click="payway = '1'">
+          <van-cell
+            clickable
+            @click="first == false ? (payway = '1') : (payway = payway)"
+          >
             <template #title>
               <van-icon name="coupon" color="#0CD59E" size="25" />
               <span>现金</span>
             </template>
             <template #right-icon>
-              <van-radio name="1" />
+              <van-radio name="1" :disabled="first" />
             </template>
           </van-cell>
-          <van-cell clickable @click="payway = '2'">
+          <van-cell
+            clickable
+            @click="first == false ? (payway = '2') : (payway = payway)"
+          >
             <template #title>
               <van-icon name="card" color="#46B705" size="25" />
               <span>银行卡</span>
             </template>
             <template #right-icon>
-              <van-radio name="2" />
+              <van-radio name="2" :disabled="first" />
             </template>
           </van-cell>
-          <van-cell clickable @click="payway = '3'">
+          <van-cell
+            clickable
+            @click="first == false ? (payway = '3') : (payway = payway)"
+          >
             <template #title>
               <van-icon name="scan" color="#000000" size="25" />
               <span>扫码付款</span>
             </template>
             <template #right-icon>
-              <van-radio name="3" />
+              <van-radio name="3" :disabled="first" />
             </template>
           </van-cell>
         </van-cell-group>
       </van-radio-group>
 
       <div style="margin: 16px">
-        <van-button round block type="info" native-type="submit"
+        <van-button
+          round
+          block
+          type="info"
+          native-type="submit"
+          :loading="buttonsata"
+          loading-text="充值中..."
+          :disabled="isable"
           >确定充值</van-button
         >
         <van-popup v-model="showviplevel" position="bottom">
@@ -163,6 +196,7 @@ import {
   Tag,
   Popup,
   Picker,
+  Dialog,
 } from "vant";
 import { apiKaidan, apiChongzhi, apiShop } from "@/API/api";
 export default {
@@ -171,7 +205,7 @@ export default {
       crashid: this.$route.params.cardno,
       password: "",
       money: "",
-      exertmoney: "",
+      exertmoney: "0",
       moneyshop: "",
       time: "", //存钱时间
       person: this.$route.params.cus_name,
@@ -187,7 +221,10 @@ export default {
       viplevel: "伊美东平店",
       showviplevel: false,
       viplevelreally: "",
-      reallyshop: 15,
+      reallyshop: 14,
+      buttonsata: false,
+      isable: false,
+      first: false,
     };
   },
   components: {
@@ -206,6 +243,7 @@ export default {
     [Tag.name]: Tag,
     [Popup.name]: Popup,
     [Picker.name]: Picker,
+    [Dialog.name]: Dialog,
   },
   methods: {
     getshop() {
@@ -222,7 +260,6 @@ export default {
     getkaidan() {
       var that = this;
       apiKaidan({}).then((res) => {
-        console.log(res);
         that.memo = res.table[0].memo;
         that.time = res.table[0].storedate;
         that.selfno = res.table[0].selfno;
@@ -241,6 +278,7 @@ export default {
     },
 
     onSubmit(values) {
+      var that = this;
       var data = {
         cusid: this.$route.params.cusid,
       };
@@ -253,16 +291,53 @@ export default {
       if (this.money == "") {
         this.$toast.fail("请输入金额");
       } else {
-        apiChongzhi({ data }).then((res) => {
-          console.log(res);
-          if (res.errmsg == "OK") {
-            alert("充值成功");
-          }
-        });
+        Dialog.confirm({
+          title: "确定充值吗",
+          message:
+            `<table>
+          <tr><td>充值客户：</td><td>` +
+            that.$route.params.cus_name +
+            `</td></tr>
+            <tr><td>充值金额：</td><td>` +
+            that.money +
+            `</td></tr>
+              <tr><td>赠送金额：</td><td>` +
+            that.exertmoney +
+            `</td></tr>
+         
+            <tr><td>手工单号：</td><td>` +
+            that.selfno +
+            `</td></tr>
+           
+      
+          
+          </table>`,
+        })
+          .then(() => {
+            apiChongzhi({ data }).then((res) => {
+              if (res.errmsg == "OK") {
+                this.buttonsata = false;
+                this.isable = true;
+                Dialog.alert({
+                  title: "充值成功",
+                  message: res.table[0].hintstr,
+                });
+                that.first = true;
+                that.$route.params.lastmoney = res.table[0].aftermoney;
+              } else {
+                this.buttonsata = false;
+              }
+            });
+          })
+          .catch(() => {
+            // on cancel
+          });
       }
     },
   },
   created() {
+    this.viplevel = window.localStorage.getItem("subname");
+    this.reallyshop = window.localStorage.getItem("subcom");
     this.getkaidan();
     this.getshop();
   },

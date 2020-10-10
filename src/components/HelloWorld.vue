@@ -186,7 +186,6 @@ export default {
           pam[i] = values[i];
         }
       }
-      console.log(pam);
     },
     onConfirm(value) {
       this.value = value;

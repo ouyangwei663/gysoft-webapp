@@ -186,7 +186,6 @@ export default {
       this.$router.go(-1);
     },
     click(index) {
-      console.log(1);
       this.List[index].bottom = true;
     },
   },
@@ -246,19 +245,19 @@ export default {
 .booktop {
   width: 100%;
   padding: 0;
-  border: #FAFAFA solid 1px;
-  background-color:#FAFAFA;
+  border: #fafafa solid 1px;
+  background-color: #fafafa;
 }
 
 .booktop td {
   margin: 0;
   width: 16.67%;
-  background-color: #FAFAFA;
+  background-color: #fafafa;
 }
-.centertable{ 
+.centertable {
   width: 100%;
 }
-.bookcenter{
+.bookcenter {
   margin: auto;
 }
 </style>

@@ -13,6 +13,11 @@
     <div v-for="(item, index) in List" :key="index">
       <van-cell-group @click="item.show = !item.show">
         <van-cell title="" center>
+          <template #tltle>
+            <div>
+              
+             </div>
+          </template>
           <template #label>
             <table>
               <tr>
@@ -188,7 +193,6 @@ export default {
       this.$router.go(-1);
     },
     click(index) {
-      console.log(1);
       this.List[index].bottom = true;
     },
   },

@@ -46,21 +46,21 @@
         label="卡号"
         v-model="crashid"
         type="number"
-        name="crashid"
+        name="crashno"
         :required="true"
       />
-      <van-field
+      <!-- <van-field
         class="bg"
         label="会员名称"
         v-model="person"
         type="string"
         name="person"
         :required="true"
-      />
+      /> -->
       <van-field
         readonly
         clickable
-        name="shop"
+        name="subcom"
         :value="value"
         label="取现店铺"
         placeholder="点击选择店铺"
@@ -80,34 +80,16 @@
         label="备注"
         v-model="tip"
         type="string"
-        name="tip"
+        name="memo"
       />
-      <div>
-        <div id="first">
-          <van-field name="radio" class="bg">
-            <template #input>
-              <van-radio-group v-model="radio" direction="horizontal">
-                <van-radio name="1" icon-size="0.8rem">正常取款</van-radio>
-                <van-radio name="2" icon-size="0.8rem">合作商取款</van-radio>
-              </van-radio-group>
-            </template>
-          </van-field>
-        </div>
-        <div id="second">
-          <van-field name="checkboxGroup" class="bg">
-            <template #input>
-              <van-checkbox-group
-                v-model="checkboxGroup"
-                direction="horizontal"
-              >
-                <van-checkbox name="1" icon-size="0.8rem"
-                  >取款后短信通知</van-checkbox
-                >
-              </van-checkbox-group>
-            </template>
-          </van-field>
-        </div>
-      </div>
+      <van-field name="needsms" label="是否短信通知">
+        <template #input>
+          <van-radio-group v-model="radiosms" direction="horizontal">
+            <van-radio name="1">是</van-radio>
+            <van-radio name="0">否</van-radio>
+          </van-radio-group>
+        </template>
+      </van-field>
       <div style="margin: 16px">
         <van-button round block type="info" native-type="submit"
           >立即取现</van-button
@@ -132,9 +114,10 @@ import {
   Picker,
   Popup,
   Toast,
+  Switch,
 } from "vant";
 import "@/assets/icon/iconfont.css";
-import { apiShop } from "@/API/api";
+import { apiShop, apiQuxian } from "@/API/api";
 export default {
   data() {
     return {
@@ -143,8 +126,8 @@ export default {
       crashid: this.$route.params.cardno,
       person: this.$route.params.cus_name,
       moneyshop: "株式会01",
-      tip: "请多一点",
-      radio: "1",
+      tip: "客户取现",
+      radio: "",
       checkboxGroup: [],
       viplevel: "",
       value: "",
@@ -152,6 +135,8 @@ export default {
       showPicker: false,
       reallshop: "",
       no: [],
+      switchChecked: false,
+      radiosms:"1"
     };
   },
   components: {
@@ -167,8 +152,11 @@ export default {
     [CheckboxGroup.name]: CheckboxGroup,
     [Picker.name]: Picker,
     [Popup.name]: Popup,
+    [Switch.name]: Switch,
   },
   created() {
+    this.reallshop = window.localStorage.getItem("subcom");
+    this.value = window.localStorage.getItem("subname");
     this.getshop();
   },
   methods: {
@@ -177,12 +165,14 @@ export default {
       this.$router.go(-1);
     },
     onSubmit(values) {
+      var that = this;
+      var data = { cusid: this.$route.params.cusid };
+
       if (values.money == "") {
         this.$toast("请填写取款余额");
       } else if (values.money < 100) {
         this.$toast("取款余额应该大于一百");
-      }
-      else if (values.money > this.$route.params.lastmoney) {
+      } else if (values.money > this.$route.params.lastmoney) {
         this.$toast("取款金额超出已有余额");
       } else if (values.crashid == "") {
         this.$toast("请填写卡号");
@@ -191,8 +181,15 @@ export default {
       } else if (values.shop == "") {
         this.$toast("请填写店铺");
       } else {
-        values.shop = this.reallshop;
-        console.log(values);
+        values.subcom = this.reallshop;
+        for (let i in values) {
+          if (values[i]) {
+            data[i] = values[i];
+          }
+        }
+        apiQuxian({ data }).then((res) => {
+          alert();
+        });
       }
     },
     onConfirm(value, index) {

@@ -33,7 +33,7 @@ export default new Router({
     },
     {
       path: '/info',
-      name: HelloWorld,
+      name: 'HelloWorld',
       component: HelloWorld
     },
     {

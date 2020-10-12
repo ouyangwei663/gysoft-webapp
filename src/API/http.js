@@ -31,8 +31,12 @@ export function post(url, params) {
   params.aspnetid = "lx_mf"
   return new Promise((resolve, reject) => {
     axios.post(url, params)
+
+
       .then(res => {
+
         if (res.data.errcode == 0) {
+
           resolve(res.data);
         } else(alert(res.data.errmsg))
       })

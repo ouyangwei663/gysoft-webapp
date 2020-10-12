@@ -14,12 +14,13 @@
     <div class="card">
       <p class="one">可提现金额</p>
       <p class="two">
-        <b>{{ $route.params.lastmoney }}</b>
+        <b>{{ aftermoney }}</b>
         <button @click="clickBig()">
           <span>全部提现</span>
         </button>
       </p>
-      <p class="one">取现额度最小为：100</p>
+      <p class="one">会员姓名：{{ $route.params.cus_name }}</p>
+      <p class="one"></p>
     </div>
 
     <van-form @submit="onSubmit">
@@ -46,7 +47,7 @@
         label="卡号"
         v-model="crashid"
         type="number"
-        name="crashno"
+        name="cardno"
         :required="true"
       />
       <!-- <van-field
@@ -115,12 +116,14 @@ import {
   Popup,
   Toast,
   Switch,
+  Dialog,
 } from "vant";
 import "@/assets/icon/iconfont.css";
 import { apiShop, apiQuxian } from "@/API/api";
 export default {
   data() {
     return {
+      aftermoney: this.$route.params.lastmoney,
       max: 568523,
       digit: "",
       crashid: this.$route.params.cardno,
@@ -136,7 +139,7 @@ export default {
       reallshop: "",
       no: [],
       switchChecked: false,
-      radiosms:"1"
+      radiosms: "1",
     };
   },
   components: {
@@ -153,6 +156,7 @@ export default {
     [Picker.name]: Picker,
     [Popup.name]: Popup,
     [Switch.name]: Switch,
+    [Dialog.name]: Dialog,
   },
   created() {
     this.reallshop = window.localStorage.getItem("subcom");
@@ -167,6 +171,7 @@ export default {
     onSubmit(values) {
       var that = this;
       var data = { cusid: this.$route.params.cusid };
+      var panms = {};
 
       if (values.money == "") {
         this.$toast("请填写取款余额");
@@ -183,12 +188,23 @@ export default {
       } else {
         values.subcom = this.reallshop;
         for (let i in values) {
-          if (values[i]) {
+          if (values[i] && i != "needsms") {
             data[i] = values[i];
+          } else {
+            panms.needsms = this.radiosms;
           }
         }
-        apiQuxian({ data }).then((res) => {
-          alert();
+        panms.data = data;
+        apiQuxian(panms).then((res) => {
+          console.log(res.table[0]);
+          if (res.errmsg == "OK") {
+            Dialog.alert({
+              title: "取现成功",
+              message: res.table[0].hintstr,
+            });
+
+           that.aftermoney = res.table[0].aftermoney
+          }
         });
       }
     },

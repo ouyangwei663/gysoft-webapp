@@ -60,6 +60,14 @@
               <td>
                 地址：{{ item.address === null ? "暂无记录" : item.address }}
               </td>
+              <td>
+                <van-button
+                  type="primary"
+                  size="mini"
+                  @click.stop="clickperson(item)"
+                  >修改资料</van-button
+                >
+              </td>
             </tr>
           </table>
         </template>
@@ -154,6 +162,14 @@ export default {
       var params = this.params;
       this.$router.push({
         name: "money",
+        params,
+      });
+    },
+    clickperson(item) {
+       var params = item;
+      console.log(params)
+      this.$router.push({
+        name: "HelloWorld",
         params,
       });
     },

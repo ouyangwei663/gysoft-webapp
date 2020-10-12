@@ -6,14 +6,26 @@
 </template>
 <script>
 import echarts from "echarts";
-
+import {apiVipOpen} from "@/API/api"
 export default {
   data() {
     return {
       chartPie: null,
     };
   },
+  created(){
+    this.getopen()
+  },
   methods: {
+getopen(){
+  apiVipOpen({}).then((res)=>{
+    console.log(res)
+  })
+},
+    
+
+
+
     drawPieChart() {
       this.chartPie = echarts.init(document.getElementById("chartPie"));
       this.chartPie.setOption({

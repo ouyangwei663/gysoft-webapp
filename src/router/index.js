@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Shouye from '@/components/shouye/shouye'
 import HelloWorld from '@/components/HelloWorld'
+import HelloWorldmore from '@/components/HelloWorldmore'
 import crash from '@/components/crash/crash'
 import datanote from '@/components/datanote/datanote'
 import money from '@/components/money/money'
@@ -17,14 +18,7 @@ import listcheck from '@/components/listcheck/listcheck'
 import vipbookdetail from '@/components/vipbook/vipbookdetail/vipbookdetail'
 import vipbookflow from '@/components/vipbook/vipbookflow/vipbookflow'
 import qindan from '@/components/qindan/qindan'
-
-
-
-
-
-
 Vue.use(Router)
-
 export default new Router({
   routes: [{
       path: '/',
@@ -35,6 +29,10 @@ export default new Router({
       path: '/info',
       name: 'HelloWorld',
       component: HelloWorld
+    }, {
+      path: '/infomore',
+      name: 'HelloWorldmore',
+      component: HelloWorldmore
     },
     {
       path: '/crash',
@@ -82,7 +80,7 @@ export default new Router({
       component: listcheck
     }, {
       path: '/vipbookdetail',
-      name: vipbookdetail,
+      name: 'vipbookdetail',
       component: vipbookdetail
     }, {
       path: '/vipbookflow',
@@ -103,8 +101,5 @@ export default new Router({
       name: 'bankadd',
       component: bankadd
     }
-
-
-
   ]
 })

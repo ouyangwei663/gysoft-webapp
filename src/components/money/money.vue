@@ -203,7 +203,7 @@ export default {
               message: res.table[0].hintstr,
             });
 
-           that.aftermoney = res.table[0].aftermoney
+            that.aftermoney = res.table[0].aftermoney;
           }
         });
       }

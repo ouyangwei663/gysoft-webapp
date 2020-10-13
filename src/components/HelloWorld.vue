@@ -4,7 +4,9 @@
       title="会员操作"
       :fixed="true"
       :left-arrow="true"
+      right-text="高级"
       @click-left="onClickLeft"
+      @click-right="onClickRight"
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
@@ -22,11 +24,13 @@
           <span>名称</span>
         </template>
       </van-field>
+
       <van-field
         v-model="phone"
         name="mobile"
         placeholder="请输入手机号码"
         :required="true"
+        :rules="[{ validator, message: '请输入正确手机格式' }]"
       >
         <template #label>
           <span>手机号码</span>
@@ -96,6 +100,8 @@
       </van-field>
 
       <van-field
+        disabled
+        v-if="isshow"
         readonly
         clickable
         name="appenddate"
@@ -104,19 +110,7 @@
         placeholder="点击选择日期"
         @click="showtime = true"
       />
-      <van-popup v-model="showtime" position="bottom" :required="true">
-        <van-datetime-picker
-          v-model="currentDate"
-          type="date"
-          title="选择年月日"
-          :min-date="minDate"
-          :max-date="maxDate"
-          @change="endTimeChange"
-          @confirm="showtime = false"
-          @cancel="showtime = false"
-        />
-      </van-popup>
-      <van-field
+      <!-- <van-field
         v-model="password"
         type="password"
         name="password_enter"
@@ -125,7 +119,7 @@
         <template #label>
           <span>密码</span>
         </template>
-      </van-field>
+      </van-field> -->
       <!-- <van-field name="radio" label="状态" input-align="right">
         <template #input>
           <van-radio-group v-model="radio" direction="horizontal">
@@ -135,10 +129,25 @@
         </template>
       </van-field> -->
 
-      <van-button round block type="info" native-type="submit"
+      <van-button
+        round
+        block
+        type="info"
+        native-type="submit"
+        class="gudingfirst"
         >保存资料</van-button
       >
     </van-form>
+    <van-button
+      v-if="isshow"
+      round
+      block
+      type="danger"
+      class="gudingsecond"
+      @click="toMore()"
+      >更多资料</van-button
+    >
+    <div class="air"></div>
   </div>
 </template>
 
@@ -159,8 +168,10 @@ import {
   Popup,
   Picker,
   DatetimePicker,
+  Dialog,
 } from "vant";
 import { apiShop, apiVipSave, apiVipinfo, apiVip, apiVipOpen } from "@/API/api";
+import { time } from "@/methods/time";
 export default {
   created() {
     this.getvip(),
@@ -171,28 +182,35 @@ export default {
           return item.name;
         });
       });
-    if (this.$route.params.cus_name) {
+    if (this.$route.params.cusid) {
       console.log("这是修改资料");
       var that = this;
       var pam = {};
       pam.cusid = that.$route.params.cusid;
       apiVipinfo(pam).then((res) => {
         that.first = res.table[0];
-
         if (that.first.sex == "女士") {
           that.first.sex = "N";
         }
-
         this.crashid = res.table[0].cus_name;
         this.phone = res.table[0].mobile;
         this.sex = res.table[0].sex;
         this.card = res.table[0].cardno;
-        this.time = res.table[0].appenddate;
-        // this.vipsex = res.table[0].cardtype;
+        // this.comname = res.table[0].comname;
+        // ths.memo = res.table[0].memo;
+        var str = res.table[0].appenddate;
+        var arr = str.split("/");
+        var arr2 = arr[2].split(" "); //时间格式修改方法定位（可封装）
+        var timestr = arr2[0] + "-" + arr[0] + "-" + arr[1] + " " + arr2[1];
+        this.time = timestr;
         this.getshopname(res.table[0].subcom);
         if (res.table[0].cardtype) {
           that.getvipname(res.table[0].cardtype);
         }
+        this.comname = res.table[0].comname;
+        this.memo = res.table[0].memo;
+        this.first_date = res.table[0].first_date;
+        this.last_date = time(res.table[0].last_date);
       });
 
       // var pamns = {};
@@ -204,8 +222,10 @@ export default {
       //   console.log(res);
       // });
     } else {
+      this.isshow = false;
       apiVipOpen({}).then((res) => {
         this.time = res.table[0].insdate;
+        this.shop = window.localStorage.getItem("subname");
       });
       console.log("这是创建资料");
     }
@@ -240,6 +260,11 @@ export default {
       firstvip: [],
       secondvip: [],
       showvipPicker: false,
+      isshow: true,
+      comname: "", //公司名称
+      memo: "", //备注
+      first_date: "", //首次来店
+      last_date: "", //末次来店
     };
   },
   components: {
@@ -258,50 +283,86 @@ export default {
     [Popup.name]: Popup,
     [Picker.name]: Picker,
     [DatetimePicker.name]: DatetimePicker,
+    [Dialog.name]: Dialog,
   },
   methods: {
     onSubmit(values) {
       var that = this;
-      var pamns = that.first; //这是初始数据
+      if (values.cus_name == "") {
+        Toast.fail("姓名不能为空");
+      } else if (values.mobile == "") {
+        Toast.fail("手机号码不为空");
+      } else if (values.sex == "") {
+        Toast.fail("请选择性别");
+      } else {
+        var pamns = that.first; //这是初始数据
 
-      let pam = {};
-      let really = {};
-      let old = {};
-      for (let i in values) {
-        if (values[i]) {
-          pam[i] = values[i];
-        }
-      }
-      if (pam.subcom) {
-        for (let i = 0; i < that.firstshop.length; i++) {
-          if (that.firstshop[i].name == pam.subcom) {
-            pam.subcom = that.firstshop[i].no;
+        let pam = {};
+        let really = {};
+        let old = {};
+
+        for (let i in values) {
+          if (values[i]) {
+            pam[i] = values[i];
           }
         }
-      }
-      if (pam.cardtype) {
-        var sata = pam.cardtype;
-        for (let i = 0; i < that.firstvip.length; i++) {
-          if (sata == that.firstvip[i]) {
-            pam.cardtype = that.secondvip[i];
+        if (pam.subcom) {
+          for (let i = 0; i < that.firstshop.length; i++) {
+            if (that.firstshop[i].name == pam.subcom) {
+              pam.subcom = that.firstshop[i].no;
+            }
           }
         }
-      }
-      for (let i in pam) {
-        if (pam[i] != pamns[i]) {
-          really[i] = pam[i];
-          old[i] = pamns[i];
+        if (pam.cardtype) {
+          var sata = pam.cardtype;
+          for (let i = 0; i < that.firstvip.length; i++) {
+            if (sata == that.firstvip[i]) {
+              pam.cardtype = that.secondvip[i];
+            }
+          }
+        }
+        for (let i in pam) {
+          if (pam[i] != pamns[i]) {
+            really[i] = pam[i];
+            old[i] = pamns[i];
+          }
+        }
+
+        var last = {};
+        last.cusid = that.$route.params.cusid;
+        last.data = really;
+        last.old = old;
+        if (this.$route.params.cusid) {
+        } else {
+          var newobj = old;
+          for (let i in old) {
+            if (old[i]) {
+            } else {
+              newobj[i] = null;
+            }
+          }
+          last.old = newobj;
+          console.log(newobj);
+        }
+        var arr = Object.keys(really);
+        if (arr.length == 0) {
+          Dialog.alert({ message: "没有修改数据" });
+        } else {
+          apiVipSave(last).then((res) => {
+            console.log(res.table[0]);
+            Dialog.alert({
+              title: "保存成功",
+              message: res.table[0].hintstr,
+            }).then(() => {
+              console.log(res.table[0].cusid);
+              var params = {};
+              params.cusid = res.table[0].cusid;
+
+              //跳转节点
+            });
+          });
         }
       }
-      console.log("修改", really);
-      console.log("未修改", old);
-      var last = {};
-      last.cusid = that.$route.params.cusid;
-      last.data = really;
-      last.old = old;
-      apiVipSave(last).then((res) => {
-        console.log(res);
-      });
     },
     onConfirm(value) {
       this.shop = value;
@@ -316,6 +377,11 @@ export default {
       //   this.$sotre.commit('changesata')
       this.$router.go(-1);
     },
+    onClickRight() {
+      this.$router.push({
+        name: "vipbookdetail",
+      });
+    },
     endTimeChange(e) {
       var endTimeArr = e.getValues();
       this.time = `${endTimeArr[0]}-${endTimeArr[1]}-${endTimeArr[2]}`;
@@ -327,6 +393,7 @@ export default {
       apiShop({}).then((res) => {
         for (let i = 0; i < res.table.length; i++) {
           if (res.table[i].no == a) {
+            console.log("店铺名称", res.table[i].name);
             that.shop = res.table[i].name;
           }
         }
@@ -352,6 +419,20 @@ export default {
           return item.no;
         });
       });
+    },
+    toMore() {
+      var params = this.first;
+      this.$router.push({
+        name: "HelloWorldmore",
+        params,
+      });
+    },
+    validator(val) {
+      if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(val) || val == "") {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
 };
@@ -399,5 +480,18 @@ export default {
 .infoform {
   width: 90%;
   margin-left: 5%;
+}
+.gudingfirst {
+  position: fixed;
+  margin-left: 22.5%;
+  bottom: 13vh;
+}
+.gudingsecond {
+  position: fixed;
+  bottom: 5vh;
+}
+.air {
+  width: 100%;
+  height: 10vh;
 }
 </style>

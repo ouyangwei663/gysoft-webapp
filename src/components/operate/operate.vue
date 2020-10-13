@@ -6,7 +6,6 @@
       left-text="返回"
       right-text="按钮"
       :left-arrow="true"
-    
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
@@ -14,16 +13,22 @@
     </van-nav-bar>
 
     <div class="card">
-      <p class="one">姓名：{{name}}</p>
-      <p class="one">卡号：{{cid}}</p>
-      <p class="one">手机号：{{phone}}</p>
-      <p class="one">性别：{{sex}}</p>
-      <p class="one">充值余额：￥{{money}}</p>
-      <p class="one">赠送余额：￥{{secondmoney}}</p>
+      <p class="one">姓名：{{ name }}</p>
+      <p class="one">卡号：{{ cid }}</p>
+      <p class="one">手机号：{{ phone }}</p>
+      <p class="one">性别：{{ sex }}</p>
+      <p class="one">充值余额：￥{{ money }}</p>
+      <p class="one">赠送余额：￥{{ secondmoney }}</p>
       <button>查询流水</button>
     </div>
     <h3>会员操作</h3>
-    <van-grid :column-num="3" icon-size="30" gutter="30" :border="false" :square="true">
+    <van-grid
+      :column-num="3"
+      icon-size="30"
+      gutter="30"
+      :border="false"
+      :square="true"
+    >
       <van-grid-item id="first" text="充值">
         <template #icon>
           <van-icon name="gold-coin-o" size="30" color="#1989fa" />
@@ -59,7 +64,7 @@
   </div>
 </template>
 <script>
-import { NavBar, Icon, Button, Grid, GridItem,} from "vant";
+import { NavBar, Icon, Button, Grid, GridItem } from "vant";
 export default {
   data() {
     return {

@@ -190,7 +190,7 @@
         </div>
       </van-tab>
 
-      <van-tab title="会员疗程">
+      <van-tab title="疗程">
         <div v-for="(item, index) in liaocheng" :key="index">
           <van-cell-group>
             <van-cell>
@@ -258,7 +258,7 @@
           </van-cell-group>
         </div>
       </van-tab>
-      <van-tab title="会员对账单">
+      <van-tab title="对账单">
         <van-collapse v-model="activeNames">
           <van-collapse-item title="设置查询条件" name="1" left>
             <van-cell
@@ -341,7 +341,7 @@
                   </tr>
                   <tr>
                     <td>业务后金额：￥1000</td>
-                    <td>类型：{{item.type}}</td>
+                    <td>类型：{{ item.type }}</td>
                   </tr>
 
                   <tr v-show="item.show">

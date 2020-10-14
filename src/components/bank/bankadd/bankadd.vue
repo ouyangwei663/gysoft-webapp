@@ -59,7 +59,7 @@
       />
       <div style="margin: 16px">
         <van-button round block type="info" native-type="submit">
-          保存
+          下一步
         </van-button>
       </div>
     </van-form>
@@ -93,7 +93,7 @@
         round
         class="bankaddbottom"
         type="danger"
-        @click="secondshow = true"
+        @click="(secondshow = true), (isproject = true)"
       >
         添加新项目</van-button
       >
@@ -141,7 +141,7 @@
             </van-button>
           </div>
         </van-form>
-        <table class="bankaddtable">
+        <table v-if="isproject" class="bankaddtable">
           <td>名称</td>
           <td>品种编码</td>
           <td>销售定价</td>
@@ -155,6 +155,50 @@
                 type="primary"
                 size="mini"
                 @click="addproject(item.name)"
+                >添加</van-button
+              >
+            </td>
+          </tr>
+        </table>
+        <table v-if="isproject" class="bankaddtable addbottom">
+          <tr>
+            <td colspan="4">历史消费记录</td>
+          </tr>
+          <td>名称</td>
+          <td>品种编码</td>
+          <td>销售定价</td>
+          <tr v-for="(item, index) in Listhistory" :key="index">
+            <td>{{ item.name }}</td>
+            <td>{{ item.id }}</td>
+            <td>{{ item.money }}</td>
+            <td>
+              <van-button
+                round
+                type="primary"
+                size="mini"
+                @click="addproject(item.name)"
+                >添加</van-button
+              >
+            </td>
+          </tr>
+        </table>
+        <table v-if="worker" class="bankaddtable addbottom worker">
+          <tr>
+            <td colspan="4">员工列表</td>
+          </tr>
+          <td>姓名</td>
+          <td>编号</td>
+          <td>工种</td>
+          <tr v-for="(item, index) in Listwork" :key="index">
+            <td>{{ item.name }}</td>
+            <td>{{ item.id }}</td>
+            <td>{{ item.type }}</td>
+            <td>
+              <van-button
+                round
+                type="primary"
+                size="mini"
+                @click="addworker(item.name)"
                 >添加</van-button
               >
             </td>
@@ -196,10 +240,23 @@ export default {
       secondshow: false,
       project: "",
       person: "",
+      worker: false, //是否显示员工
+      isproject: true,
       List: [
         // { name: "洗头发", id: 100, money: 1000 },
         // { name: "吹头发", id: 101, money: 1001 },
         // { name: "剪头发", id: 102, money: 1002 },
+      ],
+      Listhistory: [
+        { name: "洗头发1", id: 1001, money: 10001 },
+        { name: "吹头发2", id: 1011, money: 10011 },
+        { name: "剪头发3", id: 1021, money: 10021 },
+      ],
+      Listwork: [
+        { name: "张三", id: 100, type: "助理" },
+        { name: "李四", id: 1001, type: "技师" },
+        { name: "王五", id: 1003, type: "助理" },
+        { name: "赵六", id: 1002, type: "技师" },
       ],
       addList: [],
     };
@@ -229,6 +286,7 @@ export default {
       alert("查询" + this.value);
     },
     onSearch2(val) {
+      this.isproject = true;
       this.List = [
         { name: "洗头发", id: 100, money: 1000 },
         { name: "吹头发", id: 101, money: 1001 },
@@ -252,6 +310,12 @@ export default {
     },
     addproject(name) {
       this.project = name;
+      this.isproject = false;
+      this.worker = true;
+    },
+    addworker(name) {
+      this.person = name;
+      this.worker = false;
     },
     addbankdelet(index) {
       Dialog.confirm({
@@ -261,9 +325,7 @@ export default {
         .then(() => {
           this.addList.splice(index, 1);
         })
-        .catch(() => {
-          // on cancel
-        });
+        .catch(() => {});
     },
   },
 };
@@ -320,5 +382,12 @@ export default {
 }
 .addcard .van-card__bottom {
   margin-top: 3vh;
+}
+.addbottom {
+  margin-top: 3vh;
+  background-color: #25d07a;
+}
+.worker {
+  background-color: #f7416c;
 }
 </style>

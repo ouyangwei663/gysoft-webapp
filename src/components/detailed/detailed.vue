@@ -166,13 +166,23 @@ export default {
       });
     },
     clickperson(item) {
-       var params = item;
-      console.log(params)
+      var params = item;
+      console.log(params);
       this.$router.push({
         name: "HelloWorld",
         params,
       });
     },
+  },
+  beforeRouteLeave(to, from, next) {
+    if (to.path === "/info") {
+      // 这是路由path
+
+      this.$store.commit("setKeepAlive", ["HellWorld"]); //这是此页面的name属性名字
+    } else {
+      this.$store.commit("setKeepAlive", []);
+    }
+    next();
   },
 };
 </script>

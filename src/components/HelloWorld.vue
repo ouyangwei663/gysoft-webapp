@@ -173,6 +173,7 @@ import {
 import { apiShop, apiVipSave, apiVipinfo, apiVip, apiVipOpen } from "@/API/api";
 import { time } from "@/methods/time";
 export default {
+  name: "HellWorld",
   created() {
     this.getvip(),
       apiShop({}).then((res) => {
@@ -434,6 +435,16 @@ export default {
         return false;
       }
     },
+  },
+  beforeRouteLeave(to, from, next) {
+    if (to.path === "/detailed") {
+      // 这是路由path
+
+      this.$store.commit("setKeepAlive", [""]); //这是此页面的name属性名字
+      console.log("置空");
+    } else {
+    }
+    next();
   },
 };
 </script>

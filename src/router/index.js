@@ -19,6 +19,9 @@ import vipbookdetail from '@/components/vipbook/vipbookdetail/vipbookdetail'
 import vipbookflow from '@/components/vipbook/vipbookflow/vipbookflow'
 import qindan from '@/components/qindan/qindan'
 Vue.use(Router)
+
+
+
 export default new Router({
   routes: [{
       path: '/',

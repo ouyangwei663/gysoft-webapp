@@ -5,12 +5,17 @@ import App from './App'
 import router from './router'
 import store from './store/store'
 import axios from 'axios'
-import { WindowsBalloon } from 'node-notifier'
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.css';
+import {
+  WindowsBalloon
+} from 'node-notifier'
+Vue.use(Antd);
 Vue.prototype.$axios = axios
 
 
-window.localStorage.setItem("token","lxmf")
-window.localStorage.setItem("second","erpcore/")
+window.localStorage.setItem("token", "lxmf")
+window.localStorage.setItem("second", "erpcore/")
 
 axios.defaults.baseURL = process.env.API_ROOT
 axios.interceptors.request.use(function (config) {

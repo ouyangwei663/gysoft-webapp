@@ -10,26 +10,47 @@
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
-    <van-search
-      v-model="value"
-      show-action
-      label="卡号"
-      placeholder="请输入卡号"
-      @search="onSearch"
-    >
-      <template #action>
-        <div @click="onSearch">查询</div>
-      </template>
-    </van-search>
+    <table class="banktoptable">
+      <tr>
+        <td class="diyi">查找用户</td>
+        <td class="dier">
+          <a-select
+            class="banksearch"
+            show-search
+            showArrow
+            :value="value"
+            placeholder="Tags Mode"
+            :default-active-first-option="false"
+            :show-arrow="false"
+            :filter-option="false"
+            :not-found-content="null"
+            @search="handleSearch"
+            @change="handleChange"
+          >
+            <a-select-option
+              v-for="(d, index) in data"
+              :key="index"
+              class="banktoselect"
+            >
+              {{ d.cus_name }} 余额：{{ d.lastmoney }} 手机号:{{
+                d.mobile
+              }}
+              性别：{{ d.sex }}
+            </a-select-option>
+          </a-select>
+        </td>
+      </tr>
+    </table>
+
     <van-cell title="号主信息" left>
       <template #label>
         <table class="bankadd">
           <tr>
-            <td>顾客名称：愤怒的张三</td>
-            <td>性别：dp111111746</td>
+            <td>顾客名称：{{ cus_name }}</td>
+            <td>性别：{{ sex }}</td>
           </tr>
           <tr>
-            <td>开卡店：东平店</td>
+            <td>开卡店:{{ subcom }}</td>
             <td>会员级别：VIP龙腾卡</td>
           </tr>
         </table>
@@ -42,6 +63,7 @@
         name="selfinfo"
         label="手工单号"
         placeholder="请输入手工单号"
+        disabled
       />
       <van-field name="radio" label="是否指名">
         <template #input>
@@ -225,8 +247,13 @@ import {
   Popup,
   Card,
   Dialog,
+  DropdownMenu,
+  DropdownItem,
 } from "vant";
 import contact from "./contact";
+import DropList from "vue-droplist";
+import { apiVipinfo } from "@/API/api";
+import { getshop } from "@/methods/getshop";
 export default {
   data() {
     return {
@@ -247,6 +274,7 @@ export default {
         // { name: "吹头发", id: 101, money: 1001 },
         // { name: "剪头发", id: 102, money: 1002 },
       ],
+
       Listhistory: [
         { name: "洗头发1", id: 1001, money: 10001 },
         { name: "吹头发2", id: 1011, money: 10011 },
@@ -258,6 +286,12 @@ export default {
         { name: "王五", id: 1003, type: "助理" },
         { name: "赵六", id: 1002, type: "技师" },
       ],
+      data: [],
+      cus_name: "",
+      sex: "",
+      subcom: "",
+
+      workerselect: {},
       addList: [],
     };
   },
@@ -277,13 +311,15 @@ export default {
     [Popup.name]: Popup,
     [Card.name]: Card,
     [Dialog.name]: Dialog,
+    [DropdownMenu.name]: DropdownMenu,
+    [DropdownItem.name]: DropdownItem,
   },
   methods: {
     onClickLeft() {
       this.$router.go(-1);
     },
     onSearch(val) {
-      alert("查询" + this.value);
+      this.$refs.droplist.show();
     },
     onSearch2(val) {
       this.isproject = true;
@@ -301,6 +337,7 @@ export default {
         this.$toast.fail("项目不能为空");
       } else {
         console.log(values);
+
         this.addList.push(values);
         this.List = [];
         this.secondshow = false;
@@ -326,6 +363,23 @@ export default {
           this.addList.splice(index, 1);
         })
         .catch(() => {});
+    },
+    handleSearch(value) {
+      var that = this;
+      console.log(value);
+      var pam = {};
+      // pam.card = value;
+      pam.cus_name = value;
+
+      apiVipinfo(pam).then((res) => {
+        console.log(res.table);
+        that.data = res.table;
+      });
+    },
+    handleChange(value) {
+      this.cus_name = this.data[value].cus_name;
+      this.sex = this.data[value].sex;
+   console.log(getshop(this.data[value].subcom))
     },
   },
 };
@@ -389,5 +443,22 @@ export default {
 }
 .worker {
   background-color: #f7416c;
+}
+.banktoptable {
+  width: 90%;
+  margin-left: 5%;
+}
+.banktoptable .diyi {
+  width: 20%;
+}
+.banktoptable .dier {
+  width: 80%;
+}
+.banktoptable .dier .banksearch {
+  width: 100%;
+}
+.banktoselect {
+  width: 100%;
+  background-color: #25d07a;
 }
 </style>

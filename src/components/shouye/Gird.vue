@@ -13,7 +13,12 @@
         text="会员资料"
         to="/vipcheck"
       ></van-grid-item>
-      <van-grid-item id="second" icon="gold-coin" text="收银" to="/bankcheck" />
+      <van-grid-item
+        id="second"
+        icon="gold-coin"
+        text="收银"
+        @click="toBank()"
+      />
       <van-grid-item id="second" icon="gold-coin" text="会员账本" />
       <van-grid-item id="third" icon="star" text="会员积分" />
 
@@ -24,7 +29,12 @@
       <van-grid-item id="eigth" icon="fire" text="今日生日" />
       <van-grid-item id="ninth" icon="bill-o" text="充值" />
       <van-grid-item id="tenth" icon="paid" text="取现" />
-      <van-grid-item id="eleventh" icon="records" text="积分录入" />
+      <van-grid-item
+        id="eleventh"
+        icon="records"
+        text="积分录入"
+        to="/bankadd"
+      />
     </van-grid>
   </div>
 </template>
@@ -38,6 +48,13 @@ export default {
     return {
       msg: "Welcome to Your Vue.js App",
     };
+  },
+  methods: {
+    toBank() {
+      this.$router.push({
+        name: "bank",
+      });
+    },
   },
   components: {
     [Grid.name]: Grid,

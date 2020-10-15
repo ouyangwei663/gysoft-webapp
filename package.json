@@ -10,10 +10,14 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "ant-design-vue": "^1.6.5",
     "echarts": "^4.9.0",
+    "iview": "^3.5.4",
     "vant": "^2.10.6",
     "vconsole": "^3.3.4",
+    "view-design": "^4.4.0-rc.4",
     "vue": "^2.5.2",
+    "vue-droplist": "^1.0.6",
     "vue-jsonp": "^0.1.8",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",

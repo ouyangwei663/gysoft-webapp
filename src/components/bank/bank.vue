@@ -4,19 +4,31 @@
       title="收银查询"
       :fixed="true"
       :left-arrow="true"
+      right-text="来客登记"
       @click-left="onClickLeft"
+      @click-right="onClickRight"
+      class="bank"
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
+    <van-notice-bar
+      color="#1989fa"
+      background="#ecf9ff"
+      left-icon="info-o"
+      :scrollable="false"
+      :wrapable="true"
+    >
+      起止日期： 开始日期从 {{ starttime }} 到 {{ starttime }}
+    </van-notice-bar>
+    <van-cell class="bankcenter" title="高级查询" is-link to="bankcheck" />
+
     <div v-for="(item, index) in List" :key="index">
       <van-cell-group @click="item.show = !item.show">
         <van-cell title="" center>
           <template #tltle>
-            <div>
-              
-             </div>
+            <div></div>
           </template>
           <template #label>
             <table>
@@ -56,16 +68,6 @@
                 <td>来店日期：2020/9/23</td>
               </tr>
               <tr class="power">
-                <td class="fright">
-                  <van-button
-                    @click.stop="click(index)"
-                    round
-                    type="info"
-                    size="mini"
-                    >获取详情</van-button
-                  >
-                </td>
-
                 <td class="fright">
                   <van-button
                     @click.stop="click(index)"
@@ -167,7 +169,19 @@
 </template>
 
 <script>
-import { Cell, NavBar, Icon, CellGroup, Card, Button, Popup } from "vant";
+import {
+  Cell,
+  NavBar,
+  Icon,
+  CellGroup,
+  Card,
+  Button,
+  Popup,
+  Collapse,
+  CollapseItem,
+  NoticeBar,
+} from "vant";
+import { timeday } from "@/methods/time";
 export default {
   data() {
     return {
@@ -176,6 +190,8 @@ export default {
         { show: false, bottom: false },
         { show: false, bottom: false },
       ],
+      activeNames: [],
+      starttime: "",
     };
   },
   components: {
@@ -186,15 +202,27 @@ export default {
     [Card.name]: Card,
     [Button.name]: Button,
     [Popup.name]: Popup,
+    [Collapse.name]: Collapse,
+    [CollapseItem.name]: CollapseItem,
+    [NoticeBar.name]: NoticeBar,
   },
+
   methods: {
     onClickLeft() {
       //   this.$sotre.commit('changesata')
       this.$router.go(-1);
     },
+    onClickRight() {
+      this.$router.push({
+        name: "bankadd",
+      });
+    },
     click(index) {
       this.List[index].bottom = true;
     },
+  },
+  created() {
+    this.starttime = timeday();
   },
 };
 </script>
@@ -240,5 +268,12 @@ export default {
   margin-left: 10%;
   color: white;
   background-color: #25d07a;
+}
+.bankcenter {
+  width: 90%;
+  margin-left: 5%;
+}
+/deep/ .van-nav-bar__text {
+  color: white;
 }
 </style>

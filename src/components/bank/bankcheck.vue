@@ -31,11 +31,11 @@
         :min-date="minDate"
         :max-date="maxDate"
       />
-      <van-field name="sex" label="性别" input-align="right">
+      <van-field name="pay" label="付款状态" input-align="right">
         <template #input>
           <van-radio-group v-model="sex" direction="horizontal">
-            <van-radio name="Y">男</van-radio>
-            <van-radio name="N">女</van-radio>
+            <van-radio name="Y">已付款</van-radio>
+            <van-radio name="N">未付款</van-radio>
           </van-radio-group>
         </template>
       </van-field>
@@ -91,19 +91,14 @@
 
       <van-field v-model="carperson" name="carperson" placeholder="">
         <template #label>
-          <span>开卡人</span>
-        </template>
-      </van-field>
-      <van-field v-model="workcom" name="workcom" placeholder="">
-        <template #label>
-          <span>工作公司</span>
+          <span>员工</span>
         </template>
       </van-field>
 
       <div class="guding" ref="container">
         <van-sticky :container="container">
           <van-button round block type="info" native-type="submit"
-            >查询会员资料</van-button
+            >流水查询</van-button
           ></van-sticky
         >
       </div>

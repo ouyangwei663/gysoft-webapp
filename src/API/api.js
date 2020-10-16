@@ -66,3 +66,39 @@ export const apiVipSave = p => { //   这个是会员资料保存/修改入口  
   p.classmemo = "会员查询"
   return post(second, p)
 };
+
+export const apiBankOpen = p => { //   这个是收银开单
+
+  p.action = "findby";
+  p.classname = "n_outone_hy";
+  p.funcname = "open";
+  p.classmemo = "会员查询"
+  return post(second, p)
+};
+
+
+
+
+export const apiBankSave = p => { //   这个是收银保存
+
+  p.action = "billsave";
+  p.classname = "n_outone_hy";
+  p.funcname = "save";
+  p.classmemo = "收银保存"
+  return post(second, p)
+};
+
+
+export const apiBankinfo = p => { //   这个是收银默认当天记录
+
+  p.action = "billsave";
+  p.classname = "n_outone_hy";
+  p.funcname = "find";
+  p.classmemo = "会员查询"
+  return post(second, p)
+};
+export const apiWorker = p => { //   这个员工下拉菜单的接口
+  p.action = "getlist";
+  p.name = "emp"
+  return post(second, p)
+};

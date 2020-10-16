@@ -32,6 +32,7 @@ export function post(url, params) {
   return new Promise((resolve, reject) => {
     axios.post(url, params)
       .then(res => {
+        console.log('查询条件', params)
         if (res.data.errcode == 0) {
           resolve(res.data);
         } else(alert(res.data.errmsg))

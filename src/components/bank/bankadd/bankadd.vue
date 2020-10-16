@@ -53,23 +53,27 @@
             <td>开卡店:{{ subcom }}</td>
             <td>会员级别：VIP龙腾卡</td>
           </tr>
+          <tr>
+            <td class="red">余额:{{ lastmoney }}</td>
+            <td class="red">赠送余额：{{ givehavemoney }}</td>
+          </tr>
         </table>
       </template>
     </van-cell>
     <van-divider>请填写资料</van-divider>
     <van-form @submit="onSubmit" class="bankaddform">
       <van-field
-        v-model="username"
-        name="selfinfo"
+        v-model="selfno"
+        name="selfno"
         label="手工单号"
         placeholder="请输入手工单号"
         disabled
       />
-      <van-field name="radio" label="是否指名">
+      <van-field name="oneisorder" label="是否指名">
         <template #input>
-          <van-radio-group v-model="radio" direction="horizontal">
-            <van-radio name="1">是</van-radio>
-            <van-radio name="2">否</van-radio>
+          <van-radio-group v-model="oneisorder" direction="horizontal">
+            <van-radio name="Y">是</van-radio>
+            <van-radio name="N">否</van-radio>
           </van-radio-group>
         </template>
       </van-field>
@@ -79,6 +83,23 @@
         label="备注"
         placeholder="请填写备注"
       />
+      <van-field
+        readonly
+        clickable
+        name="firstemp"
+        :value="firstemp"
+        label="选择器"
+        placeholder="点击选择城市"
+        @click="showPicker = true"
+      />
+      <van-popup v-model="showPicker" position="bottom">
+        <van-picker
+          show-toolbar
+          :columns="columns"
+          @confirm="onConfirm"
+          @cancel="showPicker = false"
+        />
+      </van-popup>
       <div style="margin: 16px">
         <van-button round block type="info" native-type="submit">
           下一步
@@ -249,20 +270,21 @@ import {
   Dialog,
   DropdownMenu,
   DropdownItem,
+  Picker,
 } from "vant";
 import contact from "./contact";
 import DropList from "vue-droplist";
-import { apiVipinfo } from "@/API/api";
+import { apiVipinfo, apiBankOpen, apiBankSave, apiWorker } from "@/API/api";
 import { getshop } from "@/methods/getshop";
 export default {
   data() {
     return {
       active: 0,
       value: "",
-      username: "",
+      selfno: "",
       password: "",
       memo: "",
-      radio: "",
+      oneisorder: "",
       show: false,
       secondshow: false,
       project: "",
@@ -290,9 +312,16 @@ export default {
       cus_name: "",
       sex: "",
       subcom: "",
-
+      subno: "",
+      datetime: "",
       workerselect: {},
       addList: [],
+      lastmoney: "",
+      givehavemoney: "",
+      firstemp: "",
+      columns: ["张三", "李四", "温州", "嘉兴", "湖州"],
+      showPicker: false,
+      cusid: "",
     };
   },
   components: {
@@ -313,6 +342,12 @@ export default {
     [Dialog.name]: Dialog,
     [DropdownMenu.name]: DropdownMenu,
     [DropdownItem.name]: DropdownItem,
+    [Picker.name]: Picker,
+  },
+  created() {
+    apiWorker({}).then((res)=>{
+      console.log(res)
+    })
   },
   methods: {
     onClickLeft() {
@@ -331,6 +366,22 @@ export default {
     },
     onSubmit(values) {
       console.log("submit", values);
+      values.cus_name = this.cus_name;
+      values.sex = this.sex;
+      values.subcom = this.subno;
+      values.lastmoney = this.lastmoney;
+      values.givehavemoney = this.givehavemoney;
+      var pam = {};
+      pam.cusid = this.cusid;
+      pam.data = values;
+
+      apiBankSave(pam).then((res) => {
+        console.log(res);
+      });
+    },
+    onConfirm(value) {
+      this.firstemp = value;
+      this.showPicker = false;
     },
     onSubmit2(values) {
       if (values.project == "") {
@@ -369,17 +420,29 @@ export default {
       console.log(value);
       var pam = {};
       // pam.card = value;
-      pam.cus_name = value;
-
-      apiVipinfo(pam).then((res) => {
-        console.log(res.table);
-        that.data = res.table;
-      });
+      pam.card = value;
+      if (value) {
+        apiVipinfo(pam).then((res) => {
+          console.log(res);
+          that.data = res.table;
+        });
+      }
     },
     handleChange(value) {
+      var that = this;
       this.cus_name = this.data[value].cus_name;
       this.sex = this.data[value].sex;
-   console.log(getshop(this.data[value].subcom))
+      this.subno = this.data[value].subcom;
+      this.subcom = getshop(this.data[value].subcom);
+      this.lastmoney = this.data[value].lastmoney;
+      this.givehavemoney = this.data[value].givehavemoney;
+      this.cusid = this.data[value].cusid;
+      console.log(this.cusid);
+
+      apiBankOpen({ subcom: that.subno }).then((res) => {
+        this.selfno = res.table[0].selfno;
+        this.datetime = res.table[0].out_date;
+      });
     },
   },
 };
@@ -460,5 +523,8 @@ export default {
 .banktoselect {
   width: 100%;
   background-color: #25d07a;
+}
+.red {
+  color: #f7416c;
 }
 </style>

@@ -13,18 +13,55 @@
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
-    <van-notice-bar
-      color="#1989fa"
-      background="#ecf9ff"
-      left-icon="info-o"
-      :scrollable="false"
-      :wrapable="true"
-    >
-      起止日期： 开始日期从 {{ starttime }} 到 {{ starttime }}
-    </van-notice-bar>
-    <van-cell class="bankcenter" title="高级查询" is-link to="bankcheck" />
+    <van-collapse v-model="activeNames" class="banktimecenter">
+      <van-collapse-item name="1" left>
+        <template #title> 日期：{{ begindate }} 到 {{ enddate }} </template>
+        <van-cell
+          title="开始时间"
+          is-link
+          :value="begindate"
+          @click="showtime = true"
+        />
+        <van-cell
+          title="结束时间"
+          is-link
+          :value="enddate"
+          @click="showendtime = true"
+        />
+        <van-popup v-model="showtime" position="bottom">
+          <van-datetime-picker
+            v-model="currentDate"
+            type="date"
+            title="选择年月日"
+            :min-date="minDate"
+            :max-date="maxDate"
+            @confirm="handleEndDateConfirm"
+            @cancel="showtime = false"
+          />
+        </van-popup>
+        <van-popup v-model="showendtime" position="bottom">
+          <van-datetime-picker
+            v-model="currentDate"
+            type="date"
+            title="选择年月日"
+            :min-date="minDate"
+            :max-date="maxDate"
+            @confirm="endhandleEndDateConfirm"
+            @cancel="showendtime = false"
+          />
+        </van-popup>
+      </van-collapse-item>
+    </van-collapse>
+    <van-cell
+      class="bankcenter"
+      title="高级查询"
+      is-link
+      @click="toBankcheck"
+    />
 
-    <div v-for="(item, index) in List" :key="index">
+    <van-empty v-if="empty" image="error" description="Data is empty" />
+
+    <div v-for="(item, index) in Listtrue" :key="index">
       <van-cell-group @click="item.show = !item.show">
         <van-cell title="" center>
           <template #tltle>
@@ -33,39 +70,39 @@
           <template #label>
             <table>
               <tr>
-                <td>手工单号：0050197</td>
-                <td>系统单号：14G17040003</td>
+                <td>手工单号：{{ item.selfno }}</td>
+                <td>系统单号：{{}}</td>
               </tr>
               <tr>
                 <td>会员卡类型：VIP龙腾卡</td>
-                <td>会员卡号：dp111111746</td>
+                <td>会员卡号：{{ item.cardno }}</td>
               </tr>
               <tr>
-                <td>客户名称：欧阳威</td>
-                <td>性别：男</td>
+                <td>客户名称：{{ item.salecusname }}</td>
+                <td>性别：{{ item.sex }}</td>
               </tr>
               <tr>
-                <td>服务：洗剪吹</td>
-                <td>是否指名：是</td>
+                <td>服务：{{}}</td>
+                <td>是否指名：{{ item.oneisorder ? "是" : "否" }}</td>
               </tr>
               <tr>
-                <td>员工：AMY（QA）</td>
-                <td>发型师业绩：</td>
+                <td>员工：{{ item.firstemp }}</td>
+                <td>发型师业绩：{{ item.firstmoney }}</td>
               </tr>
               <tr>
-                <td>收款金额：￥400</td>
-                <td>抵扣金额：￥0</td>
+                <td>收款金额：{{ item.cmp_money }}</td>
+                <td>抵扣金额：{{ item.ticketmoney }}</td>
               </tr>
               <tr v-show="item.show">
-                <td>手机号码：13653035648</td>
-                <td>备注:</td>
+                <td>手机号码：{{ item.mobile }}</td>
+                <td>备注:{{ item.memo }}</td>
               </tr>
               <tr v-show="item.show">
-                <td>是否付款：是</td>
-                <td>付款方式：会员卡消费</td>
+                <td>是否付款：{{ item.havepay }}</td>
+                <td>付款方式：{{ item.accountway }}</td>
               </tr>
               <tr v-show="item.show">
-                <td>来店日期：2020/9/23</td>
+                <td>来店日期：{{ item.orderday }}</td>
               </tr>
               <tr class="power">
                 <td class="fright">
@@ -180,8 +217,12 @@ import {
   Collapse,
   CollapseItem,
   NoticeBar,
+  DatetimePicker,
+  Image,
+  Empty,
 } from "vant";
 import { timeday } from "@/methods/time";
+import { apiBankinfo } from "@/API/api";
 export default {
   data() {
     return {
@@ -190,8 +231,17 @@ export default {
         { show: false, bottom: false },
         { show: false, bottom: false },
       ],
+      Listtrue: [],
       activeNames: [],
-      starttime: "",
+      begindate: "",
+      enddate: "",
+      showtime: false,
+      showendtime: false,
+      minDate: new Date(2016, 0, 1),
+      maxDate: new Date(2020, 10, 1),
+      currentDate: new Date(),
+      outno: "",
+      empty: false,
     };
   },
   components: {
@@ -205,6 +255,9 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [NoticeBar.name]: NoticeBar,
+    [DatetimePicker.name]: DatetimePicker,
+    [Image.name]: Image,
+    [Empty.name]: Empty,
   },
 
   methods: {
@@ -218,11 +271,111 @@ export default {
       });
     },
     click(index) {
-      this.List[index].bottom = true;
+      this.Listtrue[index].bottom = true;
+    },
+
+    handleEndDateConfirm(value) {
+      this.timeShow = false;
+      var date = value;
+      var m = date.getMonth() + 1;
+      var d = date.getDate();
+      if (m >= 1 && m <= 9) {
+        m = "0" + m;
+      }
+      if (d >= 0 && d <= 9) {
+        d = "0" + d;
+      }
+      var timer = date.getFullYear() + "-" + m + "-" + d;
+      this.begindate = timer;
+      this.showtime = false;
+      this.getbaninfo();
+    },
+    endhandleEndDateConfirm(value) {
+      this.timeShow = false;
+      var date = value;
+      var m = date.getMonth() + 1;
+      var d = date.getDate();
+      if (m >= 1 && m <= 9) {
+        m = "0" + m;
+      }
+      if (d >= 0 && d <= 9) {
+        d = "0" + d;
+      }
+      var timer = date.getFullYear() + "-" + m + "-" + d;
+      this.enddate = timer;
+      this.showendtime = false;
+      this.getbaninfo();
+    },
+    toBankcheck() {
+      var params = {};
+      params.begindate = this.begindate;
+      params.enddate = this.enddate;
+
+      this.$router.push({
+        name: "bankcheck",
+        params,
+      });
+    },
+    getbaninfo() {
+      var pam = {};
+      pam.begindate = this.begindate;
+      pam.enddate = this.enddate;
+      pam.subcom = window.localStorage.getItem("subcom");
+      apiBankinfo(pam).then((res) => {
+        console.log("查询结果", res.table);
+        if (res.table[0].subcom === null) {
+          this.empty = true;
+          this.Listtrue = [];
+        } else {
+          this.empty = false;
+          this.Listtrue = res.table.map(function (item) {
+            item.show = false;
+            item.bottom = false;
+            return item;
+          });
+        }
+      });
     },
   },
   created() {
-    this.starttime = timeday();
+    if (JSON.stringify(this.$route.params) !== "{}") {
+      var pam = this.$route.params;
+      this.begindate = pam.begindate;
+      this.enddate = pam.enddate;
+      apiBankinfo(pam).then((res) => {
+        if (res.table[0].cusid === null) {
+          this.empty = true;
+        } else {
+          this.empty = false;
+
+          this.Listtrue = res.table.map(function (item) {
+            item.show = false;
+            item.bottom = false;
+            return item;
+          });
+        }
+      });
+    } else {
+      this.begindate = timeday();
+      this.enddate = this.begindate;
+
+      var pam = {};
+      pam.begindate = this.begindate;
+      pam.enddate = this.enddate;
+      pam.subcom = window.localStorage.getItem("subcom");
+      apiBankinfo(pam).then((res) => {
+        if (res.table[0].cusid === null) {
+          this.empty = true;
+        } else {
+          this.empty = false;
+          this.Listtrue = res.table.map(function (item) {
+            item.show = false;
+            item.bottom = false;
+            return item;
+          });
+        }
+      });
+    }
   },
 };
 </script>
@@ -275,5 +428,10 @@ export default {
 }
 /deep/ .van-nav-bar__text {
   color: white;
+}
+.banktimecenter {
+  text-align: left;
+  width: 90%;
+  margin-left: 5%;
 }
 </style>

@@ -16,22 +16,45 @@
       <van-field
         readonly
         clickable
-        name="calendar"
-        :value="date"
-        label="录入时间"
-        placeholder="点击选择日期"
-        @click="showCalendar = true"
+        name="begindate"
+        :value="begindate"
+        label="开始时间"
+        placeholder="点击选择开始日期"
+        @click="showtime = true"
       />
+      <van-field
+        readonly
+        clickable
+        name="enddate"
+        :value="enddate"
+        label="结束时间"
+        placeholder="点击选择结束日期"
+        @click="showendtime = true"
+      />
+      <van-popup v-model="showtime" position="bottom">
+        <van-datetime-picker
+          v-model="currentDate"
+          type="date"
+          title="选择年月日"
+          :min-date="minDate"
+          :max-date="maxDate"
+          @confirm="handleEndDateConfirm"
+          @cancel="showtime = false"
+        />
+      </van-popup>
+      <van-popup v-model="showendtime" position="bottom">
+        <van-datetime-picker
+          v-model="currentDate"
+          type="date"
+          title="选择年月日"
+          :min-date="minDate"
+          :max-date="maxDate"
+          @confirm="endhandleEndDateConfirm"
+          @cancel="showendtime = false"
+        />
+      </van-popup>
 
-      <van-calendar
-        v-model="showCalendar"
-        :show-confirm="false"
-        type="range"
-        @confirm="onConfirm"
-        :min-date="minDate"
-        :max-date="maxDate"
-      />
-      <van-field name="pay" label="付款状态" input-align="right">
+      <van-field name="havepay" label="付款状态" input-align="right">
         <template #input>
           <van-radio-group v-model="sex" direction="horizontal">
             <van-radio name="Y">已付款</van-radio>
@@ -39,12 +62,12 @@
           </van-radio-group>
         </template>
       </van-field>
-      <van-field v-model="mobile" name="mobile" placeholder="请输入单号">
+      <van-field v-model="mobile" name="selfno" placeholder="请输入单号">
         <template #label>
           <span>单号</span>
         </template>
       </van-field>
-      <van-field v-model="card" name="Cardno" placeholder="请输入卡号">
+      <van-field v-model="card" name="cardno" placeholder="请输入卡号">
         <template #label>
           <span>卡号</span>
         </template>
@@ -52,7 +75,7 @@
       <van-field
         readonly
         clickable
-        name="picker"
+        name="cus_type"
         :value="sata"
         label="卡类型"
         placeholder="点击选择卡类型"
@@ -77,7 +100,7 @@
       <van-field
         readonly
         clickable
-        name="shop"
+        name="subcom"
         :value="viplevel"
         label="店铺名"
         placeholder="点击选择店铺"
@@ -89,7 +112,7 @@
         </template>
       </van-field>
 
-      <van-field v-model="carperson" name="carperson" placeholder="">
+      <van-field v-model="carperson" name="firstemp" placeholder="">
         <template #label>
           <span>员工</span>
         </template>
@@ -98,7 +121,7 @@
       <div class="guding" ref="container">
         <van-sticky :container="container">
           <van-button round block type="info" native-type="submit"
-            >流水查询</van-button
+            >查询</van-button
           ></van-sticky
         >
       </div>
@@ -140,6 +163,7 @@ import {
   Picker,
   Popup,
   Sticky,
+  DatetimePicker,
 } from "vant";
 import { apiShop, apiVip } from "@/API/api";
 export default {
@@ -172,13 +196,18 @@ export default {
       columns2: ["状态1", "状态2", "状态3", "状态4", "状态5"],
       columns22: [], //这个是下拉的值
       viplevel: "",
+      showtime: false,
+      showendtime: false,
       newvalues: [11, 22, 33, 44, 55],
       showPicker: false,
-      minDate: new Date(2017, 0, 1),
+      currentDate: new Date(),
+      minDate: new Date(2016, 0, 1),
       maxDate: new Date(2020, 9, 28),
       pattern: /^1(3|4|5|6|7|8|9)\d{9}$/,
       phonerule: /^1(3|4|5|6|7|8|9)\d{9}$/,
       bir: "", //shengri
+      begindate: "",
+      enddate: "",
     };
   },
   components: {
@@ -198,30 +227,31 @@ export default {
     [Picker.name]: Picker,
     [Popup.name]: Popup,
     [Sticky.name]: Sticky,
+    [DatetimePicker.name]: DatetimePicker,
   },
   created() {
     this.getpulldata();
     this.getvip();
+    console.log(this.$route.params)
+    this.begindate=this.$route.params.begindate
+    this.enddate=this.$route.params.enddate
   },
 
   methods: {
     onSubmit(values) {
       var pam = {};
+      if (values.subcom != "") {
+        values.subcom = this.viplevelreally;
+      }
+      if (values.cus_type != "") {
+        values.cus_type = this.satareall;
+      }
       for (let i in values) {
         if (values[i]) {
           pam[i] = values[i];
         }
       }
-      if (pam.shop != "") {
-        pam.shop = this.viplevelreally;
-      } else {
-        delete pam.shop;
-      }
-      if (pam.sata != "") {
-        pam.sata = this.satareall;
-      } else {
-        delete pam.sata;
-      }
+
       var params = pam;
       this.$router.push({
         name: "bank",
@@ -287,6 +317,37 @@ export default {
           return item.no;
         });
       });
+    },
+
+    handleEndDateConfirm(value) {
+      this.timeShow = false;
+      var date = value;
+      var m = date.getMonth() + 1;
+      var d = date.getDate();
+      if (m >= 1 && m <= 9) {
+        m = "0" + m;
+      }
+      if (d >= 0 && d <= 9) {
+        d = "0" + d;
+      }
+      var timer = date.getFullYear() + "-" + m + "-" + d;
+      this.begindate = timer;
+      this.showtime = false;
+    },
+    endhandleEndDateConfirm(value) {
+      this.timeShow = false;
+      var date = value;
+      var m = date.getMonth() + 1;
+      var d = date.getDate();
+      if (m >= 1 && m <= 9) {
+        m = "0" + m;
+      }
+      if (d >= 0 && d <= 9) {
+        d = "0" + d;
+      }
+      var timer = date.getFullYear() + "-" + m + "-" + d;
+      this.enddate = timer;
+      this.showendtime = false;
     },
   },
   mounted() {

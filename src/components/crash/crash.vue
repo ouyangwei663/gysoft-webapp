@@ -249,9 +249,24 @@ export default {
     getshop() {
       var that = this;
       apiShop({}).then((res) => {
-        that.columns2 = res.table.map(function (item) {
-          return item.name;
-        });
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         that.columns22 = res.table.map(function (item) {
           return item.no;
         });
@@ -280,7 +295,7 @@ export default {
     onSubmit(values) {
       var that = this;
       var data = {
-        cusid: this.$route.params.cusid,
+        cusid: params.cusid,
       };
       for (let i in values) {
         if (values[i]) {

@@ -3,19 +3,21 @@ import {
 } from '@/API/api'
 
 export function getshop(a) { //获取店铺
-  var name = {}
-  console.log(apiShop({}).then((res) => {
+  var shop = JSON.parse(localStorage.getItem("shop"))
+  var name={}
+ 
+ 
 
-    for (let i = 0; i < res.table.length; i++) {
-      if (res.table[i].no == a) {
+  for (let i = 0; i < shop.length; i++) {
 
-        name.name = '1'
-      }
+    if (shop[i].no == a) {
+
+      name.name=shop[i].name
+
     }
-
-  }))
-  return name.name
+  }
 
 
+ return name.name
 
 }

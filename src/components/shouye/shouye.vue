@@ -2,7 +2,7 @@
   <div class="hello">
     <Nav></Nav>
     <div>
-        <Left></Left>
+      <Left></Left>
       <Gird></Gird>
     </div>
   </div>
@@ -11,21 +11,32 @@
 <script>
 import Nav from "./Nav";
 import Gird from "./Gird";
-import Left from "./Left"
+import Left from "./Left";
+import { apiShop } from "@/API/api";
 
 export default {
   name: "shouye",
-  data() {
-    return {
+  created() {
+    this.getshop();
+  },
 
-    };
+  data() {
+    return { shop: [] };
   },
   components: {
     Nav,
     Gird,
-    Left
+    Left,
   },
-
+  methods: {
+    getshop() {
+      var that = this;
+      apiShop({}).then((res) => {
+        that.shop = res.table;
+        window.localStorage.setItem("shop", JSON.stringify(that.shop));
+      });
+    },
+  },
 };
 </script>
 

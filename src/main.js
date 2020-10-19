@@ -17,7 +17,11 @@ Vue.prototype.$axios = axios
 window.localStorage.setItem("token", "lxmf")
 window.localStorage.setItem("second", "erpcore/")
 
-axios.defaults.baseURL = process.env.API_ROOT
+
+
+var baseURL = window.global_url.BASE_URL
+
+axios.defaults.baseURL = baseURL
 axios.interceptors.request.use(function (config) {
   // Do something before request is sent
   let token = "lx_mf"

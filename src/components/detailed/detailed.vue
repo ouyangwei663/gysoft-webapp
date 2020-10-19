@@ -103,7 +103,7 @@ import {
   CellGroup,
 } from "vant";
 import "@/assets/icon/iconfont.css";
-import { apiVipinfo } from "@/API/api";
+import { Customer_find } from "@/API/customer";
 export default {
   data() {
     return {
@@ -142,7 +142,7 @@ export default {
 
     getdate() {
       var that = this;
-      apiVipinfo(this.$route.params).then((res) => {
+      Customer_find(this.$route.params).then((res) => {
         console.log(res);
         that.List = res.table;
       });

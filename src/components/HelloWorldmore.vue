@@ -75,7 +75,7 @@ import {
   RadioGroup,
   Dialog,
 } from "vant";
-import { apiVipSave } from "@/API/api";
+import { Customer_save } from "@/API/customer";
 export default {
   data() {
     return {
@@ -160,7 +160,7 @@ export default {
       if (arr.length == 0) {
         Dialog.alert({ message: "没有修改数据" });
       } else {
-        apiVipSave(last).then((res) => {
+        Customer_save(last).then((res) => {
           console.log(res.table[0]);
           Dialog.alert({
             title: "保存成功",

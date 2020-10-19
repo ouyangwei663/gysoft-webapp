@@ -59,7 +59,6 @@ export default {
       apiAddress({
         action: "getuser",
       }).then((res) => {
-        console.log(res.user)
         window.localStorage.setItem("subname",res.user.subname)
         window.localStorage.setItem("subcom",res.user.subcom)
       });

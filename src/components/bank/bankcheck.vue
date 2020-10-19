@@ -165,7 +165,7 @@ import {
   Sticky,
   DatetimePicker,
 } from "vant";
-import { apiShop, apiVip } from "@/API/api";
+import{GetList_Shop,apiVip} from "@/API/getlistvalue.js"
 export default {
   data() {
     return {
@@ -297,7 +297,7 @@ export default {
       //获取下拉菜单的数据
 
       var that = this;
-      apiShop({}).then((res) => {
+      GetList_Shop({}).then((res) => {
         that.columns2 = res.table.map(function (item) {
           return item.name;
         });

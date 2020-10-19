@@ -222,7 +222,7 @@ import {
   Empty,
 } from "vant";
 import { timeday } from "@/methods/time";
-import { apiBankinfo } from "@/API/api";
+import { OutOne_find } from "@/API/outone.js";
 export default {
   data() {
     return {
@@ -321,7 +321,7 @@ export default {
       pam.begindate = this.begindate;
       pam.enddate = this.enddate;
       pam.subcom = window.localStorage.getItem("subcom");
-      apiBankinfo(pam).then((res) => {
+      OutOne_find(pam).then((res) => {
         console.log("查询结果", res.table);
         if (res.table[0].subcom === null) {
           this.empty = true;
@@ -342,7 +342,7 @@ export default {
       var pam = this.$route.params;
       this.begindate = pam.begindate;
       this.enddate = pam.enddate;
-      apiBankinfo(pam).then((res) => {
+      OutOne_find(pam).then((res) => {
         if (res.table[0].cusid === null) {
           this.empty = true;
         } else {
@@ -363,7 +363,7 @@ export default {
       pam.begindate = this.begindate;
       pam.enddate = this.enddate;
       pam.subcom = window.localStorage.getItem("subcom");
-      apiBankinfo(pam).then((res) => {
+      OutOne_find(pam).then((res) => {
         if (res.table[0].cusid === null) {
           this.empty = true;
         } else {

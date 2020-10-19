@@ -12,7 +12,7 @@
 import Nav from "./Nav";
 import Gird from "./Gird";
 import Left from "./Left";
-import { apiShop } from "@/API/api";
+import{GetList_Shop} from "@/API/getlistvalue.js"
 
 export default {
   name: "shouye",
@@ -31,7 +31,7 @@ export default {
   methods: {
     getshop() {
       var that = this;
-      apiShop({}).then((res) => {
+      GetList_Shop({}).then((res) => {
         that.shop = res.table;
         window.localStorage.setItem("shop", JSON.stringify(that.shop));
       });

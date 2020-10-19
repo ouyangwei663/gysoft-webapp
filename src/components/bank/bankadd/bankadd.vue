@@ -88,8 +88,8 @@
         clickable
         name="firstemp"
         :value="firstemp"
-        label="选择器"
-        placeholder="点击选择城市"
+        label="员工"
+        placeholder="点击选择员工"
         @click="showPicker = true"
       />
       <van-popup v-model="showPicker" position="bottom">
@@ -274,8 +274,11 @@ import {
 } from "vant";
 import contact from "./contact";
 import DropList from "vue-droplist";
-import { apiVipinfo, apiBankOpen, apiBankSave, apiWorker } from "@/API/api";
+import { apiWorker } from "@/API/api";
+import { OutOne_open, OutOne_save } from "@/API/outone.js";
 import { getshop } from "@/methods/getshop";
+import { Customer_find } from "@/API/customer";
+import { clean } from "@/methods/clean";
 export default {
   data() {
     return {
@@ -345,9 +348,9 @@ export default {
     [Picker.name]: Picker,
   },
   created() {
-    apiWorker({}).then((res)=>{
-      console.log(res)
-    })
+    // apiWorker({}).then((res)=>{
+    //   console.log(res)
+    // })
   },
   methods: {
     onClickLeft() {
@@ -366,17 +369,25 @@ export default {
     },
     onSubmit(values) {
       console.log("submit", values);
-      values.cus_name = this.cus_name;
+      // values.cus_name = this.cus_name;
       values.sex = this.sex;
       values.subcom = this.subno;
-      values.lastmoney = this.lastmoney;
+      // values.lastmoney = this.lastmoney;
       values.givehavemoney = this.givehavemoney;
+      values.out_date = this.datetime;
+
+      var pams = clean(values);
+
       var pam = {};
       pam.cusid = this.cusid;
-      pam.data = values;
+      pam.data = pams;
 
-      apiBankSave(pam).then((res) => {
-        console.log(res);
+      OutOne_save(pam).then((res) => {
+        Dialog.alert({
+          message: res.table[0].hintstr,
+        }).then(() => {
+          // on close
+        });
       });
     },
     onConfirm(value) {
@@ -422,7 +433,7 @@ export default {
       // pam.card = value;
       pam.card = value;
       if (value) {
-        apiVipinfo(pam).then((res) => {
+        Customer_find(pam).then((res) => {
           console.log(res);
           that.data = res.table;
         });
@@ -439,7 +450,7 @@ export default {
       this.cusid = this.data[value].cusid;
       console.log(this.cusid);
 
-      apiBankOpen({ subcom: that.subno }).then((res) => {
+      OutOne_open({ subcom: that.subno }).then((res) => {
         this.selfno = res.table[0].selfno;
         this.datetime = res.table[0].out_date;
       });

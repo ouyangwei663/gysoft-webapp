@@ -170,13 +170,15 @@ import {
   DatetimePicker,
   Dialog,
 } from "vant";
-import { apiShop, apiVipSave, apiVipinfo, apiVip, apiVipOpen } from "@/API/api";
+
+import { GetList_Shop, apiVip } from "@/API/getlistvalue.js";
+import { Customer_find, Customer_open, Customer_save } from "@/API/customer.js";
 import { time } from "@/methods/time";
 export default {
   name: "HellWorld",
   created() {
     this.getvip(),
-      apiShop({}).then((res) => {
+      GetList_Shop({}).then((res) => {
         this.firstshop = res.table;
         console.log("店铺", this.firstshop);
         this.secondshop = this.firstshop.map(function (item) {
@@ -188,7 +190,7 @@ export default {
       var that = this;
       var pam = {};
       pam.cusid = that.$route.params.cusid;
-      apiVipinfo(pam).then((res) => {
+      Customer_find(pam).then((res) => {
         that.first = res.table[0];
         if (that.first.sex == "女士") {
           that.first.sex = "N";
@@ -224,7 +226,7 @@ export default {
       // });
     } else {
       this.isshow = false;
-      apiVipOpen({}).then((res) => {
+      Customer_open({}).then((res) => {
         this.time = res.table[0].insdate;
         this.shop = window.localStorage.getItem("subname");
       });
@@ -349,7 +351,7 @@ export default {
         if (arr.length == 0) {
           Dialog.alert({ message: "没有修改数据" });
         } else {
-          apiVipSave(last).then((res) => {
+          Customer_save(last).then((res) => {
             console.log(res.table[0]);
             Dialog.alert({
               title: "保存成功",
@@ -391,7 +393,7 @@ export default {
 
     getshopname(a) {
       var that = this;
-      apiShop({}).then((res) => {
+      GetList_Shop({}).then((res) => {
         for (let i = 0; i < res.table.length; i++) {
           if (res.table[i].no == a) {
             console.log("店铺名称", res.table[i].name);

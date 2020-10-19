@@ -1,6 +1,3 @@
-import {
-  apiShop
-} from '@/API/api'
 
 export function getshop(a) { //获取店铺
   var shop = JSON.parse(localStorage.getItem("shop"))

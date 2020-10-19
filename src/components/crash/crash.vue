@@ -198,7 +198,9 @@ import {
   Picker,
   Dialog,
 } from "vant";
-import { apiKaidan, apiChongzhi, apiShop } from "@/API/api";
+
+import { StoreMoney_open, StoreMoney_save } from "@/API/storemoney";
+import { GetList_Shop } from "@/API/getlistvalue.js";
 export default {
   data() {
     return {
@@ -248,25 +250,7 @@ export default {
   methods: {
     getshop() {
       var that = this;
-      apiShop({}).then((res) => {
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      GetList_Shop({}).then((res) => {
         that.columns22 = res.table.map(function (item) {
           return item.no;
         });
@@ -274,7 +258,7 @@ export default {
     },
     getkaidan() {
       var that = this;
-      apiKaidan({}).then((res) => {
+      StoreMoney_open({}).then((res) => {
         that.memo = res.table[0].memo;
         that.time = res.table[0].storedate;
         that.selfno = res.table[0].selfno;
@@ -329,7 +313,7 @@ export default {
           </table>`,
         })
           .then(() => {
-            apiChongzhi({ data }).then((res) => {
+            StoreMoney_save({ data }).then((res) => {
               if (res.errmsg == "OK") {
                 this.buttonsata = false;
                 this.isable = true;

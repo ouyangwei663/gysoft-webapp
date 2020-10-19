@@ -119,7 +119,8 @@ import {
   Dialog,
 } from "vant";
 import "@/assets/icon/iconfont.css";
-import { apiShop, apiQuxian } from "@/API/api";
+import { BackMoney_save } from "@/API/backmoney";
+import { GetList_Shop } from "@/API/getlistvalue.js";
 export default {
   data() {
     return {
@@ -195,7 +196,7 @@ export default {
           }
         }
         panms.data = data;
-        apiQuxian(panms).then((res) => {
+        BackMoney_save(panms).then((res) => {
           console.log(res.table[0]);
           if (res.errmsg == "OK") {
             Dialog.alert({
@@ -215,7 +216,7 @@ export default {
     },
     getshop() {
       var that = this;
-      apiShop({}).then((res) => {
+     GetList_Shop({}).then((res) => {
         var no = res.table.map(function (item) {
           return item.no;
         });

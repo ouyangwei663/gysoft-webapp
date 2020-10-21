@@ -17,7 +17,7 @@ import bankadd from '@/components/bank/bankadd/bankadd'
 import listcheck from '@/components/listcheck/listcheck'
 import vipbookdetail from '@/components/vipbook/vipbookdetail/vipbookdetail'
 import vipbookflow from '@/components/vipbook/vipbookflow/vipbookflow'
-import qindan from '@/components/qindan/qindan'
+import qindan from '@/components/bank/bankadd/contact'
 Vue.use(Router)
 
 

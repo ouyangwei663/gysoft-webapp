@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <van-nav-bar
-      title="访客登记"
+      title="来客登记"
       :fixed="true"
       :left-arrow="true"
       @click-left="onClickLeft"
@@ -12,7 +12,7 @@
     </van-nav-bar>
     <table class="banktoptable">
       <tr>
-        <td class="diyi">查找用户</td>
+        <td class="diyi">查找会员</td>
         <td class="dier">
           <a-select
             class="banksearch"
@@ -42,7 +42,7 @@
       </tr>
     </table>
 
-    <van-cell title="号主信息" left>
+    <van-cell title="会员信息" left>
       <template #label>
         <table class="bankadd">
           <tr>
@@ -84,35 +84,64 @@
         placeholder="请填写备注"
       />
       <van-field
-        readonly
-        clickable
         name="firstemp"
         :value="firstemp"
         label="员工"
         placeholder="点击选择员工"
-        @click="showPicker = true"
-      />
-      <van-popup v-model="showPicker" position="bottom">
-        <van-picker
-          show-toolbar
-          :columns="columns"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </van-popup>
+        ><template #input>
+          <a-select
+            show-search
+            placeholder="Select a person"
+            option-filter-prop="children"
+            style="width: 100%"
+            :filter-option="filterOption1"
+            @focus="handleFocus1"
+            @blur="handleBlur1"
+            @change="handleChange1"
+          >
+            <a-select-option
+              v-for="(item, index) in workerselect"
+              :key="index"
+              :value="item.no"
+            >
+              {{ item.name }}
+            </a-select-option>
+          </a-select>
+        </template>
+      </van-field>
+      <van-field name="billsex" label="会员性别">
+        <template #input>
+          <van-radio-group v-model="radio" direction="horizontal">
+            <van-radio name="Y">男</van-radio>
+            <van-radio name="N">女</van-radio>
+          </van-radio-group>
+        </template>
+      </van-field>
+      <van-field name="billtype" :value="billtype" label="单据类型"
+        ><template #input>
+          <a-select
+            show-search
+            placeholder="Select a type"
+            option-filter-prop="children"
+            style="width: 100%"
+            @change="handleChange2"
+          >
+            <a-select-option
+              v-for="(item, index) in product_type"
+              :key="index"
+              :value="item.no"
+            >
+              {{ item.name }}
+            </a-select-option>
+          </a-select>
+        </template>
+      </van-field>
       <div style="margin: 16px">
         <van-button round block type="info" native-type="submit">
           下一步
         </van-button>
       </div>
     </van-form>
-    <van-cell
-      class="bankaddcenter"
-      title="添加项目"
-      is-link
-      icon="shop-o"
-      @click="show = true"
-    />
     <van-popup v-model="show" position="bottom" :style="{ height: '100%' }">
       <van-card
         v-for="(item, index) in addList"
@@ -173,11 +202,31 @@
             readonly
           />
           <van-field
-            v-model="person"
-            name="person"
+            name="firstemp"
+            :value="firstemp"
             label="员工"
-            placeholder="请输入员工"
-          />
+            placeholder="点击选择员工"
+            ><template #input>
+              <a-select
+                show-search
+                placeholder="Select a person"
+                option-filter-prop="children"
+                style="width: 100%"
+                :filter-option="filterOption1"
+                @focus="handleFocus1"
+                @blur="handleBlur1"
+                @change="handleChange1"
+              >
+                <a-select-option
+                  v-for="(item, index) in workerselect"
+                  :key="index"
+                  :value="item.no"
+                >
+                  {{ item.name }}
+                </a-select-option>
+              </a-select>
+            </template>
+          </van-field>
           <div style="margin: 16px">
             <van-button round block type="info" native-type="submit2">
               提交
@@ -190,7 +239,7 @@
           <td>销售定价</td>
           <tr v-for="(item, index) in List" :key="index">
             <td>{{ item.name }}</td>
-            <td>{{ item.id }}</td>
+            <td>{{ item.no }}</td>
             <td>{{ item.money }}</td>
             <td>
               <van-button
@@ -211,9 +260,9 @@
           <td>品种编码</td>
           <td>销售定价</td>
           <tr v-for="(item, index) in Listhistory" :key="index">
-            <td>{{ item.name }}</td>
-            <td>{{ item.id }}</td>
-            <td>{{ item.money }}</td>
+            <td>{{ item.goo_name }}</td>
+            <td>{{ item.goods_code }}</td>
+            <td>{{ item.price }}</td>
             <td>
               <van-button
                 round
@@ -271,17 +320,20 @@ import {
   DropdownMenu,
   DropdownItem,
   Picker,
+  Toast,
 } from "vant";
 import contact from "./contact";
 import DropList from "vue-droplist";
-import { apiWorker } from "@/API/api";
+import { GetList_Erp } from "@/API/getlistvalue";
 import { OutOne_open, OutOne_save } from "@/API/outone.js";
 import { getshop } from "@/methods/getshop";
 import { Customer_find } from "@/API/customer";
+import { Product_history, Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
 export default {
   data() {
     return {
+      empty: "",
       active: 0,
       value: "",
       selfno: "",
@@ -325,6 +377,10 @@ export default {
       columns: ["张三", "李四", "温州", "嘉兴", "湖州"],
       showPicker: false,
       cusid: "",
+      selectworker: [], //员工表
+      product_type: [],
+      billtype: "",
+      radio: "",
     };
   },
   components: {
@@ -346,11 +402,34 @@ export default {
     [DropdownMenu.name]: DropdownMenu,
     [DropdownItem.name]: DropdownItem,
     [Picker.name]: Picker,
+    [Toast.name]: Toast,
   },
   created() {
-    // apiWorker({}).then((res)=>{
-    //   console.log(res)
-    // })
+    if (sessionStorage.getItem("product_type") == null) {
+      Product_type({}).then((res) => {
+        this.product_type = res.table;
+        sessionStorage.setItem(
+          "product_type",
+          JSON.stringify(this.product_type)
+        );
+        console.log(res.table);
+      });
+    } else {
+      this.product_type = JSON.parse(sessionStorage.getItem("product_type"));
+    }
+
+    if (sessionStorage.getItem("getlist_erp") == null) {
+      GetList_Erp({}).then((res) => {
+        this.workerselect = res.table;
+        sessionStorage.setItem(
+          "getlist_erp",
+          JSON.stringify(this.workerselect)
+        );
+        console.log(res.table);
+      });
+    } else {
+      this.workerselect = JSON.parse(sessionStorage.getItem("getlist_erp"));
+    }
   },
   methods: {
     onClickLeft() {
@@ -368,27 +447,40 @@ export default {
       ];
     },
     onSubmit(values) {
-      console.log("submit", values);
-      // values.cus_name = this.cus_name;
-      values.sex = this.sex;
-      values.subcom = this.subno;
-      // values.lastmoney = this.lastmoney;
-      values.givehavemoney = this.givehavemoney;
-      values.out_date = this.datetime;
-
-      var pams = clean(values);
-
-      var pam = {};
-      pam.cusid = this.cusid;
-      pam.data = pams;
-
-      OutOne_save(pam).then((res) => {
-        Dialog.alert({
-          message: res.table[0].hintstr,
-        }).then(() => {
-          // on close
-        });
+      this.$router.push({
+        name: "qindan",
       });
+
+      // var that = this;
+      // values.sex = this.sex;
+      // values.subcom = this.subno;
+      // values.givehavemoney = this.givehavemoney;
+      // values.out_date = this.datetime;
+      // if (values.out_date == "") {
+      //   Toast.fail("请选择用户");
+      // } else if (this.firstemp == "") {
+      //   Toast.fail("请选择员工");
+      // } else {
+      //   var pams = clean(values);
+
+      //   var pam = {};
+      //   pam.cusid = this.cusid;
+      //   pam.data = pams;
+
+      //   OutOne_save(pam).then((res) => {
+      //     if (res.errmsg == "OK") {
+      //       this.show = true;
+
+      //       Product_history({ cusid: "146DK::UB+L+&#!A" }).then((res) => {
+      //         console.log(res.table);
+      //         this.$router.push({
+      //           name: "qindan",
+
+      //         });
+      //       });
+      //     }
+      //   });
+      // }
     },
     onConfirm(value) {
       this.firstemp = value;
@@ -454,6 +546,25 @@ export default {
         this.selfno = res.table[0].selfno;
         this.datetime = res.table[0].out_date;
       });
+    },
+    handleChange1(value) {
+      this.firstemp = value;
+      console.log(`selected ${value}`);
+    },
+    handleChange2(value) {
+      console.log(`selected ${value}`);
+    },
+    handleBlur1() {},
+    handleFocus1() {},
+    filterOption1(input, option) {
+      return (
+        option.componentOptions.children[0].text
+          .toLowerCase()
+          .indexOf(input.toLowerCase()) >= 0
+      );
+    },
+    handleChange3(value) {
+      console.log(`selected ${value}`);
     },
   },
 };
@@ -537,5 +648,8 @@ export default {
 }
 .red {
   color: #f7416c;
+}
+/deep/.ant-select-search {
+  z-index: 10000000000;
 }
 </style>

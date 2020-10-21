@@ -166,7 +166,7 @@ import {
   Popup,
   Sticky,
 } from "vant";
-import { GetList_Shop,apiVip  } from "@/API/getlistvalue.js";
+import { GetList_Shop, GetList_Hy } from "@/API/getlistvalue.js";
 export default {
   data() {
     return {
@@ -295,7 +295,7 @@ export default {
       //获取下拉菜单的数据
 
       var that = this;
-     GetList_Shop({}).then((res) => {
+      GetList_Shop({}).then((res) => {
         that.columns2 = res.table.map(function (item) {
           return item.name;
         });
@@ -307,7 +307,7 @@ export default {
 
     getvip() {
       var that = this;
-      apiVip({}).then((res) => {
+      GetList_Hy({}).then((res) => {
         that.columns = res.table.map(function (item) {
           return item.name;
         });

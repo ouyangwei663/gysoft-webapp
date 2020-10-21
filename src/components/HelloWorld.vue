@@ -171,7 +171,7 @@ import {
   Dialog,
 } from "vant";
 
-import { GetList_Shop, apiVip } from "@/API/getlistvalue.js";
+import { GetList_Shop, GetList_Hy } from "@/API/getlistvalue.js";
 import { Customer_find, Customer_open, Customer_save } from "@/API/customer.js";
 import { time } from "@/methods/time";
 export default {
@@ -404,7 +404,7 @@ export default {
     },
     getvipname(a) {
       var that = this;
-      apiVip({}).then((res) => {
+      GetList_Hy({}).then((res) => {
         for (let i = 0; i < res.table.length; i++) {
           if (res.table[i].no == a) {
             that.vipsex = res.table[i].name;
@@ -414,7 +414,7 @@ export default {
     },
     getvip() {
       var that = this;
-      apiVip({}).then((res) => {
+      GetList_Hy({}).then((res) => {
         that.firstvip = res.table.map(function (item) {
           return item.name;
         });

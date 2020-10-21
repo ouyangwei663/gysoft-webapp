@@ -3,23 +3,27 @@ import {
   post
 } from './http/http'
 
+var subcom = window.localStorage.getItem("subcom")
+var action = "getlist"
+
 var second = localStorage.getItem("second") //获取的二级域名
 export const GetList_Shop = p => { //   这个店铺下拉菜单的接口
-  p.subcom = window.localStorage.getItem("subcom")
-  p.action = "getlist";
+  p.subcom = subcom
+  p.action = action;
   p.name = "分店"
   return post(second, p)
 };
 
-export const apiVip = p => { //   这个会员下拉菜单的接口
-  p.subcom = window.localStorage.getItem("subcom")
-  p.action = "getlist";
+export const GetList_Hy = p => { //   这个会员下拉菜单的接口
+  p.subcom = sbucom
+  p.action = action;
   p.name = "会员卡类型"
   return post(second, p)
 };
 
-export const apiWorker = p => { //   这个员工下拉菜单的接口
-  p.action = "getlist";
-  p.name = "emp"
+export const GetList_Erp = p => { //   这个员工下拉菜单的接口
+  p.subcom = subcom
+  p.action = action;
+  p.name = "员工"
   return post(second, p)
 };

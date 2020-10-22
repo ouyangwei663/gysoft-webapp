@@ -15,7 +15,7 @@ export const GetList_Shop = p => { //   这个店铺下拉菜单的接口
 };
 
 export const GetList_Hy = p => { //   这个会员下拉菜单的接口
-  p.subcom = sbucom
+  p.subcom = subcom
   p.action = action;
   p.name = "会员卡类型"
   return post(second, p)

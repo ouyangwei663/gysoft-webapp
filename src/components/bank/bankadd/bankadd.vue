@@ -4,7 +4,9 @@
       title="来客登记"
       :fixed="true"
       :left-arrow="true"
+      right-text="下一步"
       @click-left="onClickLeft"
+      @click-right="onSubmit"
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
@@ -482,6 +484,7 @@ export default {
       //   });
       // }
     },
+
     onConfirm(value) {
       this.firstemp = value;
       this.showPicker = false;
@@ -575,6 +578,9 @@ export default {
   background-color: #157aff;
 }
 /deep/ .van-nav-bar__title {
+  color: #ffffff;
+}
+/deep/ .van-nav-bar__text {
   color: #ffffff;
 }
 .bankadd {

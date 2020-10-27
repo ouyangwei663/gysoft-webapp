@@ -114,6 +114,15 @@
                     >获取详情</van-button
                   >
                 </td>
+                <td class="fright">
+                  <van-button
+                    @click.stop="clickon(item.out_no)"
+                    round
+                    type="info"
+                    size="mini"
+                    >访客登记</van-button
+                  >
+                </td>
               </tr>
             </table>
             <!-- <p>
@@ -272,6 +281,14 @@ export default {
     },
     click(index) {
       this.Listtrue[index].bottom = true;
+    },
+    clickon(out_no) {
+      var params={}
+      params.out_no=out_no
+       this.$router.push({
+        name: "qindan",
+        params
+      });
     },
 
     handleEndDateConfirm(value) {

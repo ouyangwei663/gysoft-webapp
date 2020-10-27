@@ -111,7 +111,7 @@
           </a-select>
         </template>
       </van-field>
-      <van-field name="billsex" label="会员性别">
+      <van-field name="sex" label="会员性别">
         <template #input>
           <van-radio-group v-model="radio" direction="horizontal">
             <van-radio name="Y">男</van-radio>
@@ -414,7 +414,6 @@ export default {
           "product_type",
           JSON.stringify(this.product_type)
         );
-        console.log(res.table);
       });
     } else {
       this.product_type = JSON.parse(sessionStorage.getItem("product_type"));
@@ -427,7 +426,6 @@ export default {
           "getlist_erp",
           JSON.stringify(this.workerselect)
         );
-        console.log(res.table);
       });
     } else {
       this.workerselect = JSON.parse(sessionStorage.getItem("getlist_erp"));
@@ -449,40 +447,38 @@ export default {
       ];
     },
     onSubmit(values) {
-      this.$router.push({
-        name: "qindan",
-      });
+      var that = this;
+      values.subcom = this.subno;
+      values.givehavemoney = this.givehavemoney;
+      values.out_date = this.datetime;
+      if (values.out_date == "") {
+        Toast.fail("请选择用户");
+      } else if (this.firstemp == "") {
+        Toast.fail("请选择员工");
+      } else {
+        var pams = clean(values);
+        pams.cusid = this.cusid;
 
-      // var that = this;
-      // values.sex = this.sex;
-      // values.subcom = this.subno;
-      // values.givehavemoney = this.givehavemoney;
-      // values.out_date = this.datetime;
-      // if (values.out_date == "") {
-      //   Toast.fail("请选择用户");
-      // } else if (this.firstemp == "") {
-      //   Toast.fail("请选择员工");
-      // } else {
-      //   var pams = clean(values);
+        var pam = {};
 
-      //   var pam = {};
-      //   pam.cusid = this.cusid;
-      //   pam.data = pams;
+        pam.data = pams;
 
-      //   OutOne_save(pam).then((res) => {
-      //     if (res.errmsg == "OK") {
-      //       this.show = true;
-
-      //       Product_history({ cusid: "146DK::UB+L+&#!A" }).then((res) => {
-      //         console.log(res.table);
-      //         this.$router.push({
-      //           name: "qindan",
-
-      //         });
-      //       });
-      //     }
-      //   });
-      // }
+        OutOne_save(pam).then((res) => {
+          if (res.errmsg == "OK") {
+            console.log("成功", res.table[0].hintstr);
+            var params = {};
+            params.cusid = that.cusid;
+            params.out_no = res.table[0].out_no;
+            
+            this.$router.push({
+              name: "qindan",
+              params,
+            });
+          } else {
+            alert(res.errmsg);
+          }
+        });
+      }
     },
 
     onConfirm(value) {
@@ -493,8 +489,6 @@ export default {
       if (values.project == "") {
         this.$toast.fail("项目不能为空");
       } else {
-        console.log(values);
-
         this.addList.push(values);
         this.List = [];
         this.secondshow = false;
@@ -523,13 +517,12 @@ export default {
     },
     handleSearch(value) {
       var that = this;
-      console.log(value);
+
       var pam = {};
       // pam.card = value;
       pam.card = value;
       if (value) {
         Customer_find(pam).then((res) => {
-          console.log(res);
           that.data = res.table;
         });
       }
@@ -543,7 +536,6 @@ export default {
       this.lastmoney = this.data[value].lastmoney;
       this.givehavemoney = this.data[value].givehavemoney;
       this.cusid = this.data[value].cusid;
-      console.log(this.cusid);
 
       OutOne_open({ subcom: that.subno }).then((res) => {
         this.selfno = res.table[0].selfno;
@@ -552,11 +544,8 @@ export default {
     },
     handleChange1(value) {
       this.firstemp = value;
-      console.log(`selected ${value}`);
     },
-    handleChange2(value) {
-      console.log(`selected ${value}`);
-    },
+    handleChange2(value) {},
     handleBlur1() {},
     handleFocus1() {},
     filterOption1(input, option) {
@@ -566,9 +555,7 @@ export default {
           .indexOf(input.toLowerCase()) >= 0
       );
     },
-    handleChange3(value) {
-      console.log(`selected ${value}`);
-    },
+    handleChange3(value) {},
   },
 };
 </script>

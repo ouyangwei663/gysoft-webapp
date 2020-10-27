@@ -16,7 +16,7 @@
       <van-field v-model="project" name="project" label="项目">
         <template #input>
           <a-select
-            class="banksearch"
+            style="width: 70%"
             show-search
             showArrow
             :value="value0"
@@ -29,12 +29,26 @@
             @change="handleChange0"
           >
             <a-select-option
+              style="width: 200%"
               v-for="(d, index) in data"
               :key="index"
               class="banktoselect"
-              >{{ d.goo_name }} 价格：{{ d.goo_price }}</a-select-option
+              >{{ d.goo_name }} ￥{{ d.goo_price }}</a-select-option
             >
           </a-select>
+          <!-- <a-input-number     style="width: 30%"  :min="0" :max="10" :step="0.1" @change="onChange11" /> -->
+        </template>
+      </van-field>
+      <van-field v-model="num" name="num" label="数量">
+        <template #input>
+          <a-input-number
+            style="width: 30%"
+            :default-value="1"
+            :min="0"
+            :max="10"
+            :step="1"
+            @change="onChange11"
+          />
         </template>
       </van-field>
       <div class="addhigh">
@@ -124,7 +138,42 @@
         </td>
       </tr>
     </table>
-    <table class="bankaddtable addbottom">
+
+    <table class="bankaddtable addbottom addthis">
+      <tr>
+        <td colspan="4">此次记录</td>
+      </tr>
+      <tr>
+        <td>品种名称</td>
+        <td>人员</td>
+        <td>价格</td>
+      </tr>
+      <tr
+        v-for="(item, index) in dataList"
+        :key="index"
+        :class="index % 2 == 0 ? 'addlist' : 'addlist2'"
+      >
+        <td>{{ item.project }}</td>
+        <td>{{ item.empname }}</td>
+        <td>{{ item.price }}</td>
+
+        <td>
+          <van-button
+            round
+            type="danger"
+            size="mini"
+            @click="deletproject(item)"
+            >删除</van-button
+          >
+        </td>
+        <td>
+          <van-button round type="primary" size="mini" @click="addproject(item)"
+            >修改</van-button
+          >
+        </td>
+      </tr>
+    </table>
+    <table v-if="historyshow" class="bankaddtable addbottom historyhigh">
       <tr>
         <td colspan="4">历史消费记录</td>
       </tr>
@@ -155,53 +204,24 @@
         </td>
       </tr>
     </table>
-    <table class="bankaddtable addbottom addthis">
-      <tr>
-        <td colspan="4">此次记录</td>
-      </tr>
-      <tr>
-        <td>品种名称</td>
-        <td>人员</td>
-      </tr>
-      <tr
-        v-for="(item, index) in dataList"
-        :key="index"
-        :class="index % 2 == 0 ? 'addlist' : 'addlist2'"
-      >
-        <td>{{ item.project }}</td>
-        <td>{{ item.work }}</td>
-
-        <td>
-          <van-button
-            round
-            type="danger"
-            size="mini"
-            @click="deletproject(index)"
-            >删除</van-button
-          >
-        </td>
-        <td>
-          <van-button
-            round
-            type="primary"
-            size="mini"
-            @click="addproject(index)"
-            >修改</van-button
-          >
-        </td>
-      </tr>
-    </table>
   </div>
 </template>
 <script>
 import { Form, Field, Button, Icon, Cell, Toast, Popup, NavBar } from "vant";
-import { Product_history, Goodsno_find } from "@/API/product";
+import {
+  Product_history,
+  Goodsno_find,
+  Product_discount,
+  Product_save,
+  Product_delet,
+} from "@/API/product";
 import { GetList_Erp } from "@/API/getlistvalue";
 export default {
   data() {
     return {
+      num: "1",
       newlist: [{}],
-
+      goo_code: "",
       List: [],
       show: false,
       Listhistory: [],
@@ -225,6 +245,7 @@ export default {
       goo_price: "",
       discount: "100",
       reallyprice: "",
+      historyshow: true,
     };
   },
   components: {
@@ -256,11 +277,45 @@ export default {
         if (this.project == "") {
           Toast.fail("请添加项目");
         } else {
-          console.log(this.newlist);
+          var data = {};
+          for (var i = 0; i < this.newlist.length; i++) {
+            if (this.newlist[i].emp) {
+              var name = "emp" + (i + 1);
+
+              var value = this.newlist[i].emp;
+              data[name] = value;
+            }
+          }
+          for (var i = 0; i < this.newlist.length; i++) {
+            if (this.newlist[i].isno) {
+              var name = "isorder" + (i + 1);
+
+              var value = this.newlist[i].Isorder;
+              data[name] = value;
+            }
+          }
+          data.goo_code = this.goo_code;
+          data.out_no = that.$route.params.out_no;
+          data.num = this.num;
+          data.price = this.reallyprice;
+          var pamn = {};
+          pamn.data = data;
+          console.log(data);
+
+          Product_save(pamn).then((res) => {
+            this.dataList = res.table;
+            console.log(this.dataList);
+
+            var shop = this.dataList.map(function (item) {
+              return item;
+            });
+          });
+
           var namearr = [];
           namearr = this.newlist.map(function (item) {
             return item.name;
           });
+
           console.log(namearr);
           pam.project = this.project;
           var a = namearr.join(",");
@@ -270,16 +325,61 @@ export default {
           this.value0 = "";
         }
       } else {
-        this.dataList[this.indexname].project = this.project;
+        var that = this;
+        var pam = {};
+        if (this.project == "") {
+          Toast.fail("请添加项目");
+        } else {
+          var data = {};
+          for (var i = 0; i < this.newlist.length; i++) {
+            if (this.newlist[i].emp) {
+              var name = "emp" + (i + 1);
 
-        var namearr = [];
-        namearr = this.newlist.map(function (item) {
-          return item.name;
-        });
-        var a = namearr.join(",");
+              var value = this.newlist[i].emp;
+              data[name] = value;
+            }
+          }
+          for (var i = 0; i < this.newlist.length; i++) {
+            if (this.newlist[i].isno) {
+              var name = "isorder" + (i + 1);
 
-        this.dataList[this.indexname].work = a;
-        this.ischange = false;
+              var value = this.newlist[i].Isorder;
+              data[name] = value;
+            }
+          }
+          data.goo_code = this.goo_code;
+          data.out_no = that.$route.params.out_no;
+          data.num = this.num;
+          data.price = this.reallyprice;
+          data.outmanyid = this.outmanyid;
+          var pamn = {};
+          pamn.data = data;
+          console.log(data);
+
+          Product_save(pamn).then((res) => {
+            console.log("删除结果", res);
+            this.dataList = res.table;
+            console.log(this.dataList);
+
+            var shop = this.dataList.map(function (item) {
+              return item;
+            });
+          });
+
+          var namearr = [];
+          namearr = this.newlist.map(function (item) {
+            return item.name;
+          });
+
+          console.log(namearr);
+          pam.project = this.project;
+          var a = namearr.join(",");
+          pam.work = a;
+          that.dataList.push(pam);
+          this.project = "";
+          this.value0 = "";
+          this.ischange = false;
+        }
       }
     },
     onClickRight() {
@@ -291,9 +391,9 @@ export default {
         } else {
           console.log(this.newlist);
           var namearr = [];
-          namearr = this.newlist.map(function (item) {
-            return item.name;
-          });
+          // namearr = this.newlist.map(function (item) {
+          //   return item.name;
+          // });
           console.log(namearr);
           pam.project = this.project;
           var a = namearr.join(",");
@@ -303,30 +403,32 @@ export default {
           this.value0 = "";
         }
       } else {
-        this.dataList[this.indexname].project = this.project;
-
         var namearr = [];
         namearr = this.newlist.map(function (item) {
           return item.name;
         });
         var a = namearr.join(",");
 
-        this.dataList[this.indexname].work = a;
         this.ischange = false;
       }
     },
     handleChange(value) {
-      console.log(arguments[0]);
+      console.log("第一行", arguments[0]);
       console.log(arguments[1].componentOptions.children[0].text);
       this.$forceUpdate();
       this.newlist[this.index].name =
         arguments[1].componentOptions.children[0].text;
+
+      this.newlist[this.index].emp = arguments[0];
+      console.log(this.newlist);
     },
     handleChange5() {
       console.log(arguments[0]);
       console.log(arguments[1].componentOptions.children[0].text);
       this.newlist[this.index].isno =
         arguments[1].componentOptions.children[0].text;
+      this.newlist[this.index].Isorder = arguments[0];
+      console.log(this.newlist);
     },
     handleSearch0(value) {
       var that = this;
@@ -334,6 +436,7 @@ export default {
       var pam = {};
       // pam.card = value;
       pam.card = value;
+      pam.out_no = that.$route.params.out_no;
       if (value) {
         Goodsno_find(pam).then((res) => {
           console.log(res.table);
@@ -375,17 +478,25 @@ export default {
       console.log(index);
       this.index = index;
     },
-    deletproject(index) {
-      this.dataList.splice(index, 1);
+    deletproject(item) {
+      var out_no = this.$route.params.out_no;
+      Product_delet({ outmanyid: item.outmanyid, out_no: out_no }).then(
+        (res) => {
+          console.log("删除后", res);
+          this.dataList = res.table;
+        }
+      );
     },
-    addproject(index) {
+    addproject(item) {
       // 修改
-      this.indexname = index;
+      this.outmanyid = item.outmanyid;
       this.ischange = true;
-      this.value0 = this.dataList[index].project;
-      // this.value0 = this.dataList[index].project;
-      // this.value = null;
-      // this.index = index;
+      this.num = item.num;
+      Product_discount({ goo_code: item.goods_code }).then((res) => {
+        this.goo_price = res.table[0].goo_price;
+        this.reallyprice = res.table[0].goo_price;
+        this.discount = res.table[0].discount;
+      });
     },
     filterOption1(input, option) {
       return (
@@ -396,10 +507,15 @@ export default {
     },
 
     handleChange0(value) {
+      this.goo_code = this.data[value].goo_code;
       this.project = this.data[value].goo_name;
       this.value0 = value;
-      this.goo_price = this.data[value].goo_price;
-      this.reallyprice = this.data[value].goo_price;
+
+      Product_discount({ goo_code: this.goo_code }).then((res) => {
+        this.goo_price = res.table[0].goo_price;
+        this.reallyprice = res.table[0].goo_price;
+        this.discount = res.table[0].discount;
+      });
     },
     handleChange1(value) {
       this.project = this.data[value].goo_name;
@@ -407,7 +523,6 @@ export default {
     },
     submit3() {
       this.ischange = false;
-      this.datalist[this.index].project = this.project2;
     },
     onChange6(value) {
       console.log("changed", value);
@@ -419,10 +534,14 @@ export default {
       this.reallyprice = value;
       this.discount = Math.ceil((value / this.goo_price) * 100);
     },
+    onChange11(value) {
+      console.log("changed", value);
+      this.num = value;
+    },
   },
   created() {
     setTimeout(() => {
-      console.log('1')
+      console.log("1");
     }, 1000);
     if (sessionStorage.getItem("getlist_erp") == null) {
       GetList_Erp({}).then((res) => {
@@ -437,14 +556,31 @@ export default {
       this.workerselect = JSON.parse(sessionStorage.getItem("getlist_erp"));
       // console.log(this.workerselect);
     }
+
+    Product_save({ out_no: this.$route.params.out_no }).then((res) => {
+      console.log("页面跳转进来", res);
+    });
+
+    var cusid = this.$route.params.cusid;
+
+    if (cusid === undefined) {
+      this.historyshow = false;
+    }
     var that = this;
-    Product_history({ cusid: "146DK::UB+L+&#!A" }).then((res) => {
+
+    Product_history({ cusid: cusid }).then((res) => {
       console.log(res.table);
       that.Listhistory = res.table;
     });
   },
 };
 </script>
+
+
+
+
+
+
 <style scoped>
 /deep/ .van-nav-bar {
   background-color: #157aff;
@@ -489,6 +625,7 @@ export default {
 .addlist2 td {
   color: white;
 }
-.addhigh {
+.historyhigh {
+  margin-top: 2vh;
 }
 </style>

@@ -26,7 +26,7 @@ export const Product_type = p => { //     消费类型
   return post(second, p)
 };
 
-export const Goodsno_find = p => { //     消费类型
+export const Goodsno_find = p => { //     产品查找
   p.subcom = subcom
   p.action = "billsave";
   p.classname = "n_goodsno_hy"
@@ -34,3 +34,39 @@ export const Goodsno_find = p => { //     消费类型
   p.classmemo = "产品查询"
   return post(second, p)
 };
+
+export const Product_discount = p => { //     产品折扣
+  p.subcom = subcom
+  p.action = "billsave";
+  p.classname = "n_goodsno_hy"
+  p.funcname = "getprice";
+  p.classmemo = "产品折扣查询"
+  return post(second, p)
+};
+
+export const Product_save = p => { //     产品保存
+  p.subcom = subcom
+  p.action = "billsave";
+  p.classname = "n_outone_hy"
+  p.funcname = "SaveGoodEmp";
+  p.classmemo = "保存产品"
+  return post(second, p)
+};
+export const Product_delet = p => { //     产品删除
+  p.subcom = subcom
+  p.action = "billsave";
+  p.classname = "n_outone_hy"
+  p.funcname = "delGood";
+  p.classmemo = "删除产品"
+  return post(second, p)
+};
+
+
+// export const Product_open = p => { //     产品账单查询
+//   p.subcom = subcom
+//   p.action = "billsave";
+//   p.classname = "n_outone_hy"
+//   p.funcname = "SaveGoodEmp";
+//   p.classmemo = "打开产品"
+//   return post(second, p)
+// };

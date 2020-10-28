@@ -4,7 +4,7 @@
       title="来客与保存"
       :fixed="true"
       :left-arrow="true"
-      :right-text="ischange ? '修改' : '保存'"
+      :right-text="ischange ? '修改' : '下一步'"
       @click-left="onClickLeft"
       @click-right="onClickRight"
     >
@@ -13,6 +13,7 @@
       </template>
     </van-nav-bar>
     <van-form @submit="onSubmit2">
+      <van-field label="单号" v-model="out_no" name="out_no" />
       <van-field v-model="project" name="project" label="项目">
         <template #input>
           <a-select
@@ -33,7 +34,7 @@
               v-for="(d, index) in data"
               :key="index"
               class="banktoselect"
-              >{{ d.goo_name }} ￥{{ d.goo_price }}</a-select-option
+              >{{ d.goo_name }} {{ d.goo_price }}</a-select-option
             >
           </a-select>
           <!-- <a-input-number     style="width: 30%"  :min="0" :max="10" :step="0.1" @change="onChange11" /> -->
@@ -52,8 +53,9 @@
         </template>
       </van-field>
       <div class="addhigh">
-        <label for>标价:￥{{ goo_price }}</label>
-        折扣：<a-input-number
+        <label for>标价:{{ goo_price }}</label>
+        &nbsp; &nbsp;折扣：<a-input-number
+          style="width: 18%"
           :default-value="100"
           :min="0"
           :max="100"
@@ -62,8 +64,10 @@
           :value="discount"
           @change="onChange6"
         />
-        <label for>实价:￥</label>
+        &nbsp; &nbsp;
+        <label for>实价:</label>
         <a-input-number
+          style="width: 22%"
           :default-value="1000"
           :value="reallyprice"
           @change="onChange7"
@@ -95,7 +99,11 @@
               >{{ d.name }}( {{ d.workname }})</a-select-option
             >
           </a-select>
-          <a-select style="width: 30%" @change="handleChange5">
+          <a-select
+            style="width: 30%"
+            @change="handleChange5"
+            :value="newlist[index].isorder"
+          >
             <a-select-option @click="numbername5(index)" value="Y"
               >指名</a-select-option
             >
@@ -138,7 +146,6 @@
         </td>
       </tr>
     </table>
-
     <table class="bankaddtable addbottom addthis">
       <tr>
         <td colspan="4">此次记录</td>
@@ -153,7 +160,7 @@
         :key="index"
         :class="index % 2 == 0 ? 'addlist' : 'addlist2'"
       >
-        <td>{{ item.project }}</td>
+        <td>{{ item.goo_name }}</td>
         <td>{{ item.empname }}</td>
         <td>{{ item.price }}</td>
 
@@ -214,6 +221,8 @@ import {
   Product_discount,
   Product_save,
   Product_delet,
+  Product_open,
+  Product_emp,
 } from "@/API/product";
 import { GetList_Erp } from "@/API/getlistvalue";
 export default {
@@ -246,6 +255,7 @@ export default {
       discount: "100",
       reallyprice: "",
       historyshow: true,
+      out_no: "",
     };
   },
   components: {
@@ -265,8 +275,8 @@ export default {
       this.newlist.push({});
     },
     delet(index) {
-      console.log(index);
-      console.log(this.newlist);
+    
+  
       this.newlist.splice(index, 1);
     },
     onSubmit3() {},
@@ -287,10 +297,10 @@ export default {
             }
           }
           for (var i = 0; i < this.newlist.length; i++) {
-            if (this.newlist[i].isno) {
+            if (this.newlist[i].name) {
               var name = "isorder" + (i + 1);
 
-              var value = this.newlist[i].Isorder;
+              var value = this.newlist[i].isorder;
               data[name] = value;
             }
           }
@@ -300,12 +310,12 @@ export default {
           data.price = this.reallyprice;
           var pamn = {};
           pamn.data = data;
-          console.log(data);
+     
 
           Product_save(pamn).then((res) => {
+               console.log('保存/修改项目',res)
             this.dataList = res.table;
-            console.log(this.dataList);
-
+   
             var shop = this.dataList.map(function (item) {
               return item;
             });
@@ -316,7 +326,7 @@ export default {
             return item.name;
           });
 
-          console.log(namearr);
+     
           pam.project = this.project;
           var a = namearr.join(",");
           pam.work = a;
@@ -340,10 +350,10 @@ export default {
             }
           }
           for (var i = 0; i < this.newlist.length; i++) {
-            if (this.newlist[i].isno) {
+            if (this.newlist[i].name) {
               var name = "isorder" + (i + 1);
 
-              var value = this.newlist[i].Isorder;
+              var value = this.newlist[i].isorder;
               data[name] = value;
             }
           }
@@ -354,12 +364,12 @@ export default {
           data.outmanyid = this.outmanyid;
           var pamn = {};
           pamn.data = data;
-          console.log(data);
+  
 
           Product_save(pamn).then((res) => {
-            console.log("删除结果", res);
+            console.log('保存/修改项目',res)
             this.dataList = res.table;
-            console.log(this.dataList);
+          
 
             var shop = this.dataList.map(function (item) {
               return item;
@@ -371,7 +381,7 @@ export default {
             return item.name;
           });
 
-          console.log(namearr);
+         
           pam.project = this.project;
           var a = namearr.join(",");
           pam.work = a;
@@ -389,12 +399,12 @@ export default {
         if (this.project == "") {
           Toast.fail("请添加项目");
         } else {
-          console.log(this.newlist);
+        
           var namearr = [];
           // namearr = this.newlist.map(function (item) {
           //   return item.name;
           // });
-          console.log(namearr);
+      
           pam.project = this.project;
           var a = namearr.join(",");
           pam.work = a;
@@ -413,46 +423,48 @@ export default {
       }
     },
     handleChange(value) {
-      console.log("第一行", arguments[0]);
-      console.log(arguments[1].componentOptions.children[0].text);
+      //标记
+    
       this.$forceUpdate();
       this.newlist[this.index].name =
         arguments[1].componentOptions.children[0].text;
 
       this.newlist[this.index].emp = arguments[0];
-      console.log(this.newlist);
+    
     },
     handleChange5() {
-      console.log(arguments[0]);
-      console.log(arguments[1].componentOptions.children[0].text);
+  
       this.newlist[this.index].isno =
         arguments[1].componentOptions.children[0].text;
       this.newlist[this.index].Isorder = arguments[0];
-      console.log(this.newlist);
+      this.newlist[this.index].isorder = arguments[0];
+
+   
+      this.$forceUpdate();
     },
     handleSearch0(value) {
       var that = this;
-      console.log(value);
+
       var pam = {};
       // pam.card = value;
       pam.card = value;
       pam.out_no = that.$route.params.out_no;
       if (value) {
         Goodsno_find(pam).then((res) => {
-          console.log(res.table);
+      
           that.data = res.table;
         });
       }
     },
     handleSearch1(value) {
       var that = this;
-      console.log(value);
+
       var pam = {};
       // pam.card = value;
       pam.card = value;
       if (value) {
         Goodsno_find(pam).then((res) => {
-          console.log(res.table);
+    
           that.data = res.table;
         });
       }
@@ -462,41 +474,61 @@ export default {
       this.value0 = item;
     },
     onChange(value) {
-      console.log(value);
+ 
       this.workerlist = value;
       this.value = value;
-      console.log(this.value);
+
       this.workerlistname = arguments[1];
     },
     onSearch() {},
     onSelect() {},
     numbername(index) {
-      console.log(index);
+
       this.index = index;
     },
     numbername5(index) {
-      console.log(index);
+ 
       this.index = index;
     },
     deletproject(item) {
       var out_no = this.$route.params.out_no;
       Product_delet({ outmanyid: item.outmanyid, out_no: out_no }).then(
         (res) => {
-          console.log("删除后", res);
+
           this.dataList = res.table;
         }
       );
     },
     addproject(item) {
       // 修改
+      this.goo_code = item.goods_code;
+      this.value0 = item.goo_name;
+      this.project = item.goo_name;
       this.outmanyid = item.outmanyid;
       this.ischange = true;
       this.num = item.num;
       Product_discount({ goo_code: item.goods_code }).then((res) => {
+        console.log('查询商品折扣',res)
         this.goo_price = res.table[0].goo_price;
         this.reallyprice = res.table[0].goo_price;
         this.discount = res.table[0].discount;
       });
+
+      Product_emp({ outmanyid: item.outmanyid, out_no: this.out_no }).then(
+        (res) => {
+            console.log('员工信息',res)
+
+          var bbb = JSON.parse(
+            JSON.stringify(res.table).replace(/empname/g, "name")
+          );
+          var ccc = JSON.parse(JSON.stringify(bbb).replace(/detailid/g, "emp"));
+          this.newlist = ccc;
+          this.newlist[this.index].name =
+            arguments[1].componentOptions.children[0].text;
+
+          this.newlist[this.index].emp = arguments[0];
+        }
+      );
     },
     filterOption1(input, option) {
       return (
@@ -525,24 +557,19 @@ export default {
       this.ischange = false;
     },
     onChange6(value) {
-      console.log("changed", value);
       this.discount = value;
       this.reallyprice = this.goo_price * value * 0.01;
     },
     onChange7(value) {
-      console.log("changed", value);
       this.reallyprice = value;
       this.discount = Math.ceil((value / this.goo_price) * 100);
     },
     onChange11(value) {
-      console.log("changed", value);
       this.num = value;
     },
   },
   created() {
-    setTimeout(() => {
-      console.log("1");
-    }, 1000);
+ 
     if (sessionStorage.getItem("getlist_erp") == null) {
       GetList_Erp({}).then((res) => {
         this.workerselect = res.table;
@@ -550,28 +577,33 @@ export default {
           "getlist_erp",
           JSON.stringify(this.workerselect)
         );
-        // console.log(res.table);
+  
       });
     } else {
       this.workerselect = JSON.parse(sessionStorage.getItem("getlist_erp"));
-      // console.log(this.workerselect);
+  
     }
 
-    Product_save({ out_no: this.$route.params.out_no }).then((res) => {
-      console.log("页面跳转进来", res);
-    });
-
-    var cusid = this.$route.params.cusid;
-
-    if (cusid === undefined) {
+    if (this.$route.params.out_no && this.$route.params.cusid === undefined) {
       this.historyshow = false;
+      this.out_no = this.$route.params.out_no;
+      var out_no = this.$route.params.out_no;
+      Product_open({ out_no: out_no }).then((res) => {
+        this.dataList = res.table;
+      });
     }
-    var that = this;
 
-    Product_history({ cusid: cusid }).then((res) => {
-      console.log(res.table);
-      that.Listhistory = res.table;
-    });
+    if (this.$route.params.out_no && this.$route.params.cusid) {
+      this.out_no = this.$route.params.out_no;
+
+      var that = this;
+      var cusid = this.$route.params.cusid;
+
+      Product_history({ cusid: cusid }).then((res) => {
+
+        that.Listhistory = res.table;
+      });
+    }
   },
 };
 </script>

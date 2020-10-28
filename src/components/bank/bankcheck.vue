@@ -112,12 +112,46 @@
         </template>
       </van-field>
 
-      <van-field v-model="carperson" name="firstemp" placeholder="">
-        <template #label>
-          <span>员工</span>
+      <van-field v-model="firstemp" name="firstemp" placeholder="" label="员工">
+        <template #input>
+          <a-select
+            label="员工"
+            show-search
+            placeholder="Select a person"
+            option-filter-prop="children"
+            style="width: 100%"
+            @change="handleChange"
+          >
+            <a-select-option
+              v-for="(d, index1) in workerselect"
+              :key="index1"
+              :value="d.no"
+              >{{ d.name }}( {{ d.workname }})</a-select-option
+            >
+          </a-select>
         </template>
       </van-field>
-
+      <van-field name="isorder" label="指名">
+        <template #input>
+          <van-radio-group v-model="isorder" direction="horizontal">
+            <van-radio name="N" :style="{ width: '27%' }">指名</van-radio>
+            <van-radio name="Y" :style="{ width: '27%' }">轮牌</van-radio>
+            <van-radio name="A" :style="{ width: '27%' }">全部</van-radio>
+          </van-radio-group>
+        </template>
+      </van-field>
+      <van-field
+        label="最小金额"
+        v-model="minmoney"
+        name="minmoney"
+        placeholder="输入最小金额"
+      />
+      <van-field
+        label="最大金额"
+        v-model="maxmoney"
+        name="maxmoney"
+        placeholder="输入最大金额"
+      />
       <div class="guding" ref="container">
         <van-sticky :container="container">
           <van-button round block type="info" native-type="submit"
@@ -125,6 +159,7 @@
           ></van-sticky
         >
       </div>
+      <div class="height"></div>
       <van-popup v-model="showPicker" position="bottom">
         <van-picker
           show-toolbar
@@ -165,7 +200,7 @@ import {
   Sticky,
   DatetimePicker,
 } from "vant";
-import{GetList_Shop,GetList_Hy} from "@/API/getlistvalue.js"
+import { GetList_Shop, GetList_Hy } from "@/API/getlistvalue.js";
 export default {
   data() {
     return {
@@ -208,6 +243,11 @@ export default {
       bir: "", //shengri
       begindate: "",
       enddate: "",
+      isorder: "",
+      minmoney: "",
+      maxmoney: "",
+      workerselect: [],
+      firstemp: "",
     };
   },
   components: {
@@ -232,9 +272,21 @@ export default {
   created() {
     this.getpulldata();
     this.getvip();
-    console.log(this.$route.params)
-    this.begindate=this.$route.params.begindate
-    this.enddate=this.$route.params.enddate
+    console.log(this.$route.params);
+    this.begindate = this.$route.params.begindate;
+    this.enddate = this.$route.params.enddate;
+
+    if (sessionStorage.getItem("getlist_erp") == null) {
+      GetList_Erp({}).then((res) => {
+        this.workerselect = res.table;
+        sessionStorage.setItem(
+          "getlist_erp",
+          JSON.stringify(this.workerselect)
+        );
+      });
+    } else {
+      this.workerselect = JSON.parse(sessionStorage.getItem("getlist_erp"));
+    }
   },
 
   methods: {
@@ -306,7 +358,10 @@ export default {
         });
       });
     },
-
+    handleChange(value) {
+      console.log(value);
+      this.firstemp = value;
+    },
     getvip() {
       var that = this;
       GetList_Hy({}).then((res) => {
@@ -406,5 +461,8 @@ export default {
 }
 .checkroll {
   height: 130vh;
+}
+.height {
+  height: 10vh;
 }
 </style>

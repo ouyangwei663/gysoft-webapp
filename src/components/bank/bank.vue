@@ -68,61 +68,29 @@
             <div></div>
           </template>
           <template #label>
-            <table>
+            <table class="banktable">
               <tr>
-                <td>手工单号：{{ item.selfno }}</td>
-                <td>系统单号：{{}}</td>
+                <td>单号：{{ item.out_no }}({{ item.selfno }})</td>
+                <td>VIP龙卡({{ item.cardno }})</td>
               </tr>
+
               <tr>
-                <td>会员卡类型：VIP龙腾卡</td>
-                <td>会员卡号：{{ item.cardno }}</td>
-              </tr>
-              <tr>
-                <td>客户名称：{{ item.salecusname }}</td>
-                <td>性别：{{ item.sex }}</td>
-              </tr>
-              <tr>
-                <td>服务：{{}}</td>
-                <td>是否指名：{{ item.oneisorder ? "是" : "否" }}</td>
-              </tr>
-              <tr>
-                <td>员工：{{ item.firstemp }}</td>
-                <td>发型师业绩：{{ item.firstmoney }}</td>
-              </tr>
-              <tr>
-                <td>收款金额：{{ item.cmp_money }}</td>
-                <td>抵扣金额：{{ item.ticketmoney }}</td>
-              </tr>
-              <tr v-show="item.show">
-                <td>手机号码：{{ item.mobile }}</td>
-                <td>备注:{{ item.memo }}</td>
-              </tr>
-              <tr v-show="item.show">
-                <td>是否付款：{{ item.havepay }}</td>
-                <td>付款方式：{{ item.accountway }}</td>
-              </tr>
-              <tr v-show="item.show">
-                <td>来店日期：{{ item.orderday }}</td>
-              </tr>
-              <tr class="power">
-                <td class="fright">
-                  <van-button
-                    @click.stop="click(index)"
-                    round
-                    type="info"
-                    size="mini"
-                    >获取详情</van-button
-                  >
+                <td>
+                  客户：{{ item.salecusname == "" ? "散客" : "散客" }}({{
+                    item.sex == "N" ? "女士" : "男士"
+                  }}) &nbsp;{{ item.oneisorder == "Y" ? "指名" : "轮牌" }}
                 </td>
-                <td class="fright">
-                  <van-button
+                <td>
+                  收款：{{ item.usegivemoney == 0 ? "0" : "item.usegivemoney"
+                  }}<van-icon
+                    name="cart"
+                    size="20"
                     @click.stop="clickon(item.out_no)"
-                    round
-                    type="info"
-                    size="mini"
-                    >访客登记</van-button
-                  >
+                  />
                 </td>
+              </tr>
+              <tr>
+                <td colspan="2">员工：{{ item.firstemp }}</td>
               </tr>
             </table>
             <!-- <p>
@@ -283,11 +251,11 @@ export default {
       this.Listtrue[index].bottom = true;
     },
     clickon(out_no) {
-      var params={}
-      params.out_no=out_no
-       this.$router.push({
+      var params = {};
+      params.out_no = out_no;
+      this.$router.push({
         name: "qindan",
-        params
+        params,
       });
     },
 
@@ -364,7 +332,7 @@ export default {
           this.empty = true;
         } else {
           this.empty = false;
-
+          console.log("查询结果", res.table);
           this.Listtrue = res.table.map(function (item) {
             item.show = false;
             item.bottom = false;
@@ -381,6 +349,7 @@ export default {
       pam.enddate = this.enddate;
       pam.subcom = window.localStorage.getItem("subcom");
       OutOne_find(pam).then((res) => {
+        console.log("查询结果", res.table);
         if (res.table[0].cusid === null) {
           this.empty = true;
         } else {
@@ -406,7 +375,6 @@ export default {
   color: #ffffff;
 }
 .van-cell-group {
-  width: 90%;
   margin-left: 5%;
 }
 .van-cell-group td {
@@ -450,5 +418,9 @@ export default {
   text-align: left;
   width: 90%;
   margin-left: 5%;
+}
+.banktable {
+  width: 100%;
+  background: #f8f8f8;
 }
 </style>

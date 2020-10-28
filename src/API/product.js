@@ -62,11 +62,19 @@ export const Product_delet = p => { //     产品删除
 };
 
 
-// export const Product_open = p => { //     产品账单查询
-//   p.subcom = subcom
-//   p.action = "billsave";
-//   p.classname = "n_outone_hy"
-//   p.funcname = "SaveGoodEmp";
-//   p.classmemo = "打开产品"
-//   return post(second, p)
-// };
+export const Product_open = p => { //     产品账单查询
+  p.subcom = subcom
+  p.action = "billsave";
+  p.classname = "n_outone_hy"
+  p.funcname = "GetOutmany";
+  p.classmemo = "单号查询产品"
+  return post(second, p)
+};
+export const Product_emp = p => { //     获取员工详情信息
+  p.subcom = subcom
+  p.action = "billsave";
+  p.classname = "n_outone_hy"
+  p.funcname = "GetEmp";
+  p.classmemo = "员工查询"
+  return post(second, p)
+};

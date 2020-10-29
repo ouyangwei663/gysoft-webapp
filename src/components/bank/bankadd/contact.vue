@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <van-nav-bar
-      title="来客与保存"
+      :title="'收银单号:' + out_no"
       :fixed="true"
       :left-arrow="true"
       :right-text="ischange ? '修改' : '下一步'"
@@ -13,7 +13,6 @@
       </template>
     </van-nav-bar>
     <van-form @submit="onSubmit2">
-      <van-field label="单号" v-model="out_no" name="out_no" />
       <van-field v-model="project" name="project" label="项目">
         <template #input>
           <a-select
@@ -54,26 +53,25 @@
       </van-field>
       <div class="addhigh">
         <label for>标价:{{ goo_price }}</label>
-        &nbsp; &nbsp;折扣：<a-input-number
+        &nbsp; &nbsp;折扣：<a-input
+          type="number"
           style="width: 18%"
           :default-value="100"
           :min="0"
           :max="100"
-          :formatter="(value) => `${value}%`"
-          :parser="(value) => value.replace('%', '')"
-          :value="discount"
-          @change="onChange6"
+          v-model="discount"
         />
         &nbsp; &nbsp;
         <label for>实价:</label>
-        <a-input-number
+        <a-input
           style="width: 22%"
-          :default-value="1000"
-          :value="reallyprice"
-          @change="onChange7"
+          v-model="reallyprice"
+          @change="onchange2"
+          type="number"
         />
       </div>
       <br />
+
       <label class="left" for>员工</label>
       <div>
         <div
@@ -146,7 +144,7 @@
         </td>
       </tr>
     </table>
-    <table class="bankaddtable addbottom addthis">
+    <!-- <table class="bankaddtable addbottom addthis">
       <tr>
         <td colspan="4">此次记录</td>
       </tr>
@@ -179,7 +177,38 @@
           >
         </td>
       </tr>
-    </table>
+    </table> -->
+    <van-cell
+      :title="item.goo_name"
+      :class="index % 2 == 0 ? 'groupcontact' : 'groupcontact2'"
+      v-for="(item, index) in dataList"
+      :key="index"
+    >
+      <template #label>
+        员工：{{ item.empname }}
+        <van-button
+          :type="index % 2 == 0 ? 'info' : 'primary'"
+          size="mini"
+          class="fr"
+          icon="edit"
+          @click="addproject(item)"
+          >修改</van-button
+        ><br /><br />
+        价格:{{ item.price }} &nbsp;&nbsp;&nbsp;&nbsp; 折扣：{{
+          item.discount == null ? "100" : "item.discount"
+        }}
+        &nbsp;&nbsp;&nbsp;&nbsp; 实价：{{ item.price }}
+        <van-button
+          type="danger"
+          size="mini"
+          @click="deletproject(item)"
+          icon="cross"
+          class="fr"
+          >删除</van-button
+        >
+      </template>
+    </van-cell>
+
     <table v-if="historyshow" class="bankaddtable addbottom historyhigh">
       <tr>
         <td colspan="4">历史消费记录</td>
@@ -211,10 +240,187 @@
         </td>
       </tr>
     </table>
+
+    <van-popup
+      v-model="show"
+      position="bottom"
+      close-icon="close"
+      close-icon-position="bottom-center"
+      :style="{ height: '100%', background: '#f8f8f8' }"
+    >
+      <van-nav-bar
+        title="客户结账"
+        :fixed="true"
+        :left-arrow="true"
+        @click-left="show = false"
+      >
+        <template #left>
+          <van-icon name="arrow-left" size="21" color="#FFFFFF" />
+        </template>
+      </van-nav-bar>
+
+      <van-cell title="会员信息" class="popupmoney">
+        <template #label>
+          <table class="moneytable">
+            <tr>
+              <td>项目名称</td>
+              <td>数量</td>
+              <td>单价</td>
+              <td>折扣</td>
+              <td>实价</td>
+            </tr>
+            <tr v-for="(item, index) in dataList" :key="index">
+              <td class="high">{{ item.goo_name }}</td>
+              <td>{{ item.num }}</td>
+              <td>{{ item.price }}</td>
+              <td>100</td>
+              <td style="color: #157aff" class="red">{{ item.price }}</td>
+            </tr>
+            <tr>
+              <td>合计</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="red" style="font-size: 0.9rem">{{ allprice }}</td>
+            </tr>
+          </table>
+        </template>
+      </van-cell>
+
+      <van-cell title="账单明细" class="popupmoney">
+        <template #label>
+          <table class="moneytable">
+            <tr>
+              <td>姓名：高利基(女士)</td>
+              <td>Vip会员卡8(889251)</td>
+            </tr>
+            <tr>
+              <td>卡内余额： <span class="red">815</span></td>
+              <td>赠送余额： <span class="red">0</span></td>
+            </tr>
+          </table>
+        </template>
+      </van-cell>
+
+      <!-- <van-radio-group v-model="pay" class="paycontact">
+        <van-cell-group title="支付方式">
+          <van-cell class="gray" clickable @click="radio = '1'">
+            <template #title>
+              <a-icon
+                type="account-book"
+                :style="{ fontSize: '16px', color: 'red' }"
+              />
+              会员支付
+            </template>
+
+            <template #right-icon>
+              <van-radio name="1" />
+            </template>
+          </van-cell>
+          <van-cell class="gray" clickable @click="radio = '2'">
+            <template #title>
+              <a-icon
+                type="wechat"
+                :style="{ fontSize: '16px', color: 'green' }"
+              />
+
+              微信支付
+            </template>
+            <template #right-icon>
+              <van-radio name="2" />
+            </template>
+          </van-cell>
+          <van-cell class="gray" clickable @click="radio = '3'">
+            <template #title>
+              <a-icon
+                type="alipay-circle"
+                :style="{ fontSize: '16px', color: '#08c' }"
+              />
+              支付宝支付
+            </template>
+
+            <template #right-icon>
+              <van-radio name="3" />
+            </template>
+          </van-cell>
+        </van-cell-group>
+      </van-radio-group> -->
+      <div class="paycontact">
+        <van-cell-group title="支付">
+          <van-field v-model="text" input-align="right" label-width="10em">
+            <template #label>
+              <a-icon
+                type="account-book"
+                :style="{ fontSize: '16px', color: 'green' }"
+              />
+
+              会员余额支付
+            </template>
+          </van-field>
+          <van-field v-model="text" input-align="right" label-width="10em">
+            <template #label>
+              <a-icon
+                type="dollar"
+                :style="{ fontSize: '16px', color: 'green' }"
+              />
+
+              会员赠送支付
+            </template>
+          </van-field>
+          <van-field v-model="text" input-align="right" label-width="10em">
+            <template #label>
+              <a-icon
+                type="wechat"
+                :style="{ fontSize: '16px', color: 'green' }"
+              />
+
+              微信支付
+            </template>
+          </van-field>
+          <van-field v-model="text" label-width="10em">
+            <template #label>
+              <a-icon
+                type="alipay-circle"
+                :style="{ fontSize: '16px', color: '#08c' }"
+              />
+
+              支付宝支付
+            </template>
+          </van-field>
+          <van-field v-model="text" label-width="10em">
+            <template #label>
+              <a-icon
+                type="wechat"
+                :style="{ fontSize: '16px', color: 'green' }"
+              />
+
+              其他支付
+            </template>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <van-submit-bar class="tijiao" :price="6100" button-text="提交订单">
+        <van-checkbox v-model="message">是否短信通知</van-checkbox>
+      </van-submit-bar>
+    </van-popup>
   </div>
 </template>
 <script>
-import { Form, Field, Button, Icon, Cell, Toast, Popup, NavBar } from "vant";
+import {
+  Form,
+  Field,
+  Button,
+  Icon,
+  Cell,
+  Toast,
+  Popup,
+  NavBar,
+  SubmitBar,
+  Checkbox,
+  Radio,
+  RadioGroup,
+  CellGroup,
+} from "vant";
 import {
   Product_history,
   Goodsno_find,
@@ -256,6 +462,12 @@ export default {
       reallyprice: "",
       historyshow: true,
       out_no: "",
+      show: false,
+      name: "大头玛歌香薰理疗护理单次",
+      message: false,
+      pay: "",
+      allprice: 0,
+      text: "",
     };
   },
   components: {
@@ -266,6 +478,11 @@ export default {
     [Cell.name]: Cell,
     [Popup.name]: Popup,
     [NavBar.name]: NavBar,
+    [SubmitBar.name]: SubmitBar,
+    [Checkbox.name]: Checkbox,
+    [RadioGroup.name]: RadioGroup,
+    [Radio.name]: Radio,
+    [CellGroup.name]: CellGroup,
   },
   methods: {
     onClickLeft() {
@@ -275,8 +492,6 @@ export default {
       this.newlist.push({});
     },
     delet(index) {
-    
-  
       this.newlist.splice(index, 1);
     },
     onSubmit3() {},
@@ -308,14 +523,15 @@ export default {
           data.out_no = that.$route.params.out_no;
           data.num = this.num;
           data.price = this.reallyprice;
+          data.goo_price = this.goo_price;
+          data.discount = this.discount;
           var pamn = {};
           pamn.data = data;
-     
 
           Product_save(pamn).then((res) => {
-               console.log('保存/修改项目',res)
+            console.log("保存/修改项目", res);
             this.dataList = res.table;
-   
+
             var shop = this.dataList.map(function (item) {
               return item;
             });
@@ -326,7 +542,6 @@ export default {
             return item.name;
           });
 
-     
           pam.project = this.project;
           var a = namearr.join(",");
           pam.work = a;
@@ -360,16 +575,16 @@ export default {
           data.goo_code = this.goo_code;
           data.out_no = that.$route.params.out_no;
           data.num = this.num;
+          data.goo_price = this.goo_price;
+          data.discount = this.discount;
           data.price = this.reallyprice;
           data.outmanyid = this.outmanyid;
           var pamn = {};
           pamn.data = data;
-  
 
           Product_save(pamn).then((res) => {
-            console.log('保存/修改项目',res)
+            console.log("保存/修改项目", res);
             this.dataList = res.table;
-          
 
             var shop = this.dataList.map(function (item) {
               return item;
@@ -381,7 +596,6 @@ export default {
             return item.name;
           });
 
-         
           pam.project = this.project;
           var a = namearr.join(",");
           pam.work = a;
@@ -393,53 +607,28 @@ export default {
       }
     },
     onClickRight() {
-      if (this.ischange == false) {
-        var that = this;
-        var pam = {};
-        if (this.project == "") {
-          Toast.fail("请添加项目");
-        } else {
-        
-          var namearr = [];
-          // namearr = this.newlist.map(function (item) {
-          //   return item.name;
-          // });
-      
-          pam.project = this.project;
-          var a = namearr.join(",");
-          pam.work = a;
-          that.dataList.push(pam);
-          this.project = "";
-          this.value0 = "";
-        }
-      } else {
-        var namearr = [];
-        namearr = this.newlist.map(function (item) {
-          return item.name;
-        });
-        var a = namearr.join(",");
+      this.show = true;
 
-        this.ischange = false;
+      for (var i = 0; i < this.dataList.length; i++) {
+        this.allprice = this.dataList[i].price + this.allprice;
+        console.log("zongjia", this.allprice);
       }
     },
     handleChange(value) {
       //标记
-    
+
       this.$forceUpdate();
       this.newlist[this.index].name =
         arguments[1].componentOptions.children[0].text;
 
       this.newlist[this.index].emp = arguments[0];
-    
     },
     handleChange5() {
-  
       this.newlist[this.index].isno =
         arguments[1].componentOptions.children[0].text;
       this.newlist[this.index].Isorder = arguments[0];
       this.newlist[this.index].isorder = arguments[0];
 
-   
       this.$forceUpdate();
     },
     handleSearch0(value) {
@@ -451,7 +640,6 @@ export default {
       pam.out_no = that.$route.params.out_no;
       if (value) {
         Goodsno_find(pam).then((res) => {
-      
           that.data = res.table;
         });
       }
@@ -464,7 +652,6 @@ export default {
       pam.card = value;
       if (value) {
         Goodsno_find(pam).then((res) => {
-    
           that.data = res.table;
         });
       }
@@ -474,7 +661,6 @@ export default {
       this.value0 = item;
     },
     onChange(value) {
- 
       this.workerlist = value;
       this.value = value;
 
@@ -483,18 +669,15 @@ export default {
     onSearch() {},
     onSelect() {},
     numbername(index) {
-
       this.index = index;
     },
     numbername5(index) {
- 
       this.index = index;
     },
     deletproject(item) {
       var out_no = this.$route.params.out_no;
       Product_delet({ outmanyid: item.outmanyid, out_no: out_no }).then(
         (res) => {
-
           this.dataList = res.table;
         }
       );
@@ -508,7 +691,7 @@ export default {
       this.ischange = true;
       this.num = item.num;
       Product_discount({ goo_code: item.goods_code }).then((res) => {
-        console.log('查询商品折扣',res)
+        console.log("查询商品折扣", res);
         this.goo_price = res.table[0].goo_price;
         this.reallyprice = res.table[0].goo_price;
         this.discount = res.table[0].discount;
@@ -516,7 +699,7 @@ export default {
 
       Product_emp({ outmanyid: item.outmanyid, out_no: this.out_no }).then(
         (res) => {
-            console.log('员工信息',res)
+          console.log("员工信息", res);
 
           var bbb = JSON.parse(
             JSON.stringify(res.table).replace(/empname/g, "name")
@@ -537,13 +720,14 @@ export default {
           .indexOf(input.toLowerCase()) >= 0
       );
     },
-
+    onchange2(e) {},
     handleChange0(value) {
       this.goo_code = this.data[value].goo_code;
       this.project = this.data[value].goo_name;
       this.value0 = value;
 
       Product_discount({ goo_code: this.goo_code }).then((res) => {
+        console.log("商品折扣", res);
         this.goo_price = res.table[0].goo_price;
         this.reallyprice = res.table[0].goo_price;
         this.discount = res.table[0].discount;
@@ -565,11 +749,12 @@ export default {
       this.discount = Math.ceil((value / this.goo_price) * 100);
     },
     onChange11(value) {
+      console.log(value);
       this.num = value;
     },
   },
   created() {
- 
+    this.out_no = this.$route.params.out_no;
     if (sessionStorage.getItem("getlist_erp") == null) {
       GetList_Erp({}).then((res) => {
         this.workerselect = res.table;
@@ -577,11 +762,9 @@ export default {
           "getlist_erp",
           JSON.stringify(this.workerselect)
         );
-  
       });
     } else {
       this.workerselect = JSON.parse(sessionStorage.getItem("getlist_erp"));
-  
     }
 
     if (this.$route.params.out_no && this.$route.params.cusid === undefined) {
@@ -600,10 +783,18 @@ export default {
       var cusid = this.$route.params.cusid;
 
       Product_history({ cusid: cusid }).then((res) => {
-
         that.Listhistory = res.table;
       });
     }
+  },
+  filters: {
+    ellipsis(value) {
+      if (!value) return "";
+      if (value.length > 6) {
+        return value.slice(0, 6) + "...";
+      }
+      return value;
+    },
   },
 };
 </script>
@@ -659,5 +850,62 @@ export default {
 }
 .historyhigh {
   margin-top: 2vh;
+}
+.groupcontact {
+  color: #ffffff;
+  text-align: left;
+  width: 90%;
+  margin-left: 5%;
+  background: #25d07a;
+  margin-bottom: 0.5vh;
+  border-radius: 0.5rem;
+}
+.groupcontact .van-cell__label {
+  color: white;
+}
+.groupcontact2 .van-cell__label {
+  color: white;
+}
+.groupcontact2 {
+  color: #ffffff;
+  text-align: left;
+  width: 90%;
+  margin-left: 5%;
+  background: #157aff;
+  margin-bottom: 0.5vh;
+  border-radius: 0.5rem;
+}
+.fr {
+  float: right;
+}
+.popupmoney {
+  margin-top: 48px;
+  text-align: left;
+}
+.moneytable {
+  width: 100%;
+}
+.red {
+  color: red;
+}
+.high {
+  width: 30%;
+}
+
+.paycontact {
+  margin-top: 2vh;
+  text-align: left;
+  width: 90%;
+  margin-left: 5%;
+
+  border-radius: 0.2rem;
+  text-align: left;
+}
+
+.gray {
+  background: #f8f8f8;
+}
+/deep/ .van-cell-group__title {
+  background-color: white;
 }
 </style>

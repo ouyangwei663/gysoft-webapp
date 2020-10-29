@@ -71,17 +71,22 @@
             <table class="banktable">
               <tr>
                 <td>单号：{{ item.out_no }}({{ item.selfno }})</td>
-                <td>VIP龙卡({{ item.cardno }})</td>
+                <td>
+                  {{ item.cus_type }}
+                  {{ item.cus_type == null ? "" : "(" + item.cardno + ")" }}
+                </td>
               </tr>
 
               <tr>
                 <td>
-                  客户：{{ item.salecusname == "" ? "散客" : "散客" }}({{
-                    item.sex == "N" ? "女士" : "男士"
-                  }}) &nbsp;{{ item.oneisorder == "Y" ? "指名" : "轮牌" }}
+                  客户：{{
+                    item.salecusname === null ? "散客" : item.salecusname
+                  }}({{ item.sex == "N" ? "女士" : "男士" }}) &nbsp;{{
+                    item.oneisorder == "Y" ? "指名" : "轮牌"
+                  }}
                 </td>
                 <td>
-                  收款：{{ item.usegivemoney == 0 ? "0" : "item.usegivemoney"
+                  收款：{{ 
                   }}<van-icon
                     name="cart"
                     size="20"

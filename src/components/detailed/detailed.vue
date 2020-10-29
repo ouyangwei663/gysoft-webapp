@@ -230,9 +230,9 @@ export default {
 }
 
 .van-action-sheet__name {
-  color: black;
+  /* color: black; */
 }
-.van-cell__title span {
+/* .van-cell__title span {
   color: black;
-}
+} */
 </style>

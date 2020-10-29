@@ -48,14 +48,11 @@
       <template #label>
         <table class="bankadd">
           <tr>
-            <td>顾客名称：{{ cus_name }}</td>
-            <td>性别：{{ sex }}</td>
-          </tr>
-          <tr>
+            <td>会员：{{ cus_name }}({{ sex == "N" ? "女士" : "男士" }})</td>
             <td>开卡店:{{ subcom }}</td>
-            <td>会员级别：VIP龙腾卡</td>
           </tr>
           <tr>
+            <td>综合六折卡({{ cardno }})</td>
             <td class="red">余额:{{ lastmoney }}</td>
             <td class="red">赠送余额：{{ givehavemoney }}</td>
           </tr>
@@ -119,7 +116,7 @@
           </van-radio-group>
         </template>
       </van-field>
-      <van-field name="billtype" :value="billtype" label="单据类型"
+      <van-field name="billnotype" :value="billnotype" label="单据类型"
         ><template #input>
           <a-select
             show-search
@@ -340,7 +337,7 @@ export default {
       value: "",
       selfno: "",
       password: "",
-      memo: "",
+      memo: "手机收银",
       oneisorder: "",
       show: false,
       secondshow: false,
@@ -381,8 +378,9 @@ export default {
       cusid: "",
       selectworker: [], //员工表
       product_type: [],
-      billtype: "",
+      billnotype: "",
       radio: "",
+      cardno: "",
     };
   },
   components: {
@@ -430,6 +428,10 @@ export default {
     } else {
       this.workerselect = JSON.parse(sessionStorage.getItem("getlist_erp"));
     }
+    OutOne_open({ subcom: localStorage.getItem("subcom") }).then((res) => {
+      this.selfno = res.table[0].selfno;
+      this.datetime = res.table[0].out_date;
+    });
   },
   methods: {
     onClickLeft() {
@@ -440,21 +442,20 @@ export default {
     },
     onSearch2(val) {
       this.isproject = true;
-      this.List = [
-        { name: "洗头发", id: 100, money: 1000 },
-        { name: "吹头发", id: 101, money: 1001 },
-        { name: "剪头发", id: 102, money: 1002 },
-      ];
+      this.List = [];
     },
     onSubmit(values) {
       var that = this;
       values.subcom = this.subno;
-      values.givehavemoney = this.givehavemoney;
       values.out_date = this.datetime;
-      if (values.out_date == "") {
-        Toast.fail("请选择用户");
-      } else if (this.firstemp == "") {
+      if (values.firstemp == "") {
+        Toast.fail("请选择是否指名");
+      } else if (values.firstemp == "") {
         Toast.fail("请选择员工");
+      } else if (values.sex == "") {
+        Toast.fail("请选择会员性别");
+      } else if (this.billtype == "") {
+        Toast.fail("请选择单据类别");
       } else {
         var pams = clean(values);
         pams.cusid = this.cusid;
@@ -465,11 +466,12 @@ export default {
 
         OutOne_save(pam).then((res) => {
           if (res.errmsg == "OK") {
+            console.log(res)
             console.log("成功", res.table[0].hintstr);
             var params = {};
             params.cusid = that.cusid;
             params.out_no = res.table[0].out_no;
-            
+
             this.$router.push({
               name: "qindan",
               params,
@@ -528,24 +530,23 @@ export default {
       }
     },
     handleChange(value) {
+      console.log("选中资料", this.data[value]);
       var that = this;
       this.cus_name = this.data[value].cus_name;
+      this.cardno = this.data[value].cardno;
       this.sex = this.data[value].sex;
       this.subno = this.data[value].subcom;
       this.subcom = getshop(this.data[value].subcom);
       this.lastmoney = this.data[value].lastmoney;
       this.givehavemoney = this.data[value].givehavemoney;
       this.cusid = this.data[value].cusid;
-
-      OutOne_open({ subcom: that.subno }).then((res) => {
-        this.selfno = res.table[0].selfno;
-        this.datetime = res.table[0].out_date;
-      });
     },
     handleChange1(value) {
       this.firstemp = value;
     },
-    handleChange2(value) {},
+    handleChange2(value) {
+      this.billtype = value;
+    },
     handleBlur1() {},
     handleFocus1() {},
     filterOption1(input, option) {

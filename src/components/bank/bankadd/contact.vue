@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <van-nav-bar
-      :title="'收银单号:' + out_no"
+      :title="'单号:' + out_no"
       :fixed="true"
       :left-arrow="true"
       :right-text="ischange ? '修改' : '下一步'"
@@ -42,9 +42,10 @@
       <van-field v-model="num" name="num" label="数量">
         <template #input>
           <a-input-number
+            v-model="num"
             style="width: 30%"
             :default-value="1"
-            :min="0"
+            :min="0.1"
             :max="10"
             :step="1"
             @change="onChange11"
@@ -54,20 +55,24 @@
       <div class="addhigh">
         <label for>标价:{{ goo_price }}</label>
         &nbsp; &nbsp;折扣：<a-input
-          type="number"
+          type="num"
           style="width: 18%"
           :default-value="100"
-          :min="0"
+          :min="1"
           :max="100"
           v-model="discount"
+          @change="onchangediscount"
+          :disabled="disable"
+          oninput="if(value<0||value>100)value=100"
         />
         &nbsp; &nbsp;
         <label for>实价:</label>
         <a-input
           style="width: 22%"
           v-model="reallyprice"
+          onkeyup="if(value>0)value=value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')"
           @change="onchange2"
-          type="number"
+          type="text"
         />
       </div>
       <br />
@@ -197,7 +202,9 @@
         价格:{{ item.price }} &nbsp;&nbsp;&nbsp;&nbsp; 折扣：{{
           item.discount == null ? "100" : "item.discount"
         }}
-        &nbsp;&nbsp;&nbsp;&nbsp; 实价：{{ item.price }}
+        &nbsp;&nbsp;&nbsp;&nbsp; 实价：{{ item.price }} &nbsp;&nbsp; 数量：{{
+          item.num
+        }}
         <van-button
           type="danger"
           size="mini"
@@ -234,7 +241,7 @@
             round
             type="primary"
             size="mini"
-            @click="addproject0(item.goo_name)"
+            @click="addproject0(item)"
             >添加</van-button
           >
         </td>
@@ -259,7 +266,7 @@
         </template>
       </van-nav-bar>
 
-      <van-cell title="会员信息" class="popupmoney">
+      <van-cell title="账单信息" class="popupmoney">
         <template #label>
           <table class="moneytable">
             <tr>
@@ -287,7 +294,7 @@
         </template>
       </van-cell>
 
-      <van-cell title="账单明细" class="popupmoney">
+      <van-cell title="会员信息" class="popupmoney">
         <template #label>
           <table class="moneytable">
             <tr>
@@ -347,27 +354,42 @@
       </van-radio-group> -->
       <div class="paycontact">
         <van-cell-group title="支付">
-          <van-field v-model="text" input-align="right" label-width="10em">
+          <van-field
+            v-model="money"
+            label-width="10em"
+            type="number"
+            :disabled="isloading"
+          >
             <template #label>
               <a-icon
                 type="account-book"
-                :style="{ fontSize: '16px', color: 'green' }"
+                :style="{ fontSize: '16px', color: 'red' }"
               />
 
               会员余额支付
             </template>
           </van-field>
-          <van-field v-model="text" input-align="right" label-width="10em">
+          <van-field
+            v-model="givemoney"
+            label-width="10em"
+            type="number"
+            :disabled="isloading"
+          >
             <template #label>
               <a-icon
                 type="dollar"
-                :style="{ fontSize: '16px', color: 'green' }"
+                :style="{ fontSize: '16px', color: '#FF6600' }"
               />
 
               会员赠送支付
             </template>
           </van-field>
-          <van-field v-model="text" input-align="right" label-width="10em">
+          <van-field
+            v-model="weixin"
+            label-width="10em"
+            type="number"
+            :disabled="isloading"
+          >
             <template #label>
               <a-icon
                 type="wechat"
@@ -377,7 +399,12 @@
               微信支付
             </template>
           </van-field>
-          <van-field v-model="text" label-width="10em">
+          <van-field
+            v-model="alipay"
+            label-width="10em"
+            type="number"
+            :disabled="isloading"
+          >
             <template #label>
               <a-icon
                 type="alipay-circle"
@@ -387,19 +414,30 @@
               支付宝支付
             </template>
           </van-field>
-          <van-field v-model="text" label-width="10em">
+          <van-field
+            v-model="otherpay"
+            label-width="10em"
+            type="number"
+            :disabled="isloading"
+          >
             <template #label>
               <a-icon
-                type="wechat"
-                :style="{ fontSize: '16px', color: 'green' }"
+                type="money-collect"
+                :style="{ fontSize: '16px' }"
+                theme="twoTone"
               />
-
               其他支付
             </template>
           </van-field>
         </van-cell-group>
       </div>
-      <van-submit-bar class="tijiao" :price="6100" button-text="提交订单">
+      <van-submit-bar
+        class="tijiao"
+        :price="paymoney"
+        button-text="提交订单"
+        @submit="paybill"
+        :loading="isloading"
+      >
         <van-checkbox v-model="message">是否短信通知</van-checkbox>
       </van-submit-bar>
     </van-popup>
@@ -420,6 +458,7 @@ import {
   Radio,
   RadioGroup,
   CellGroup,
+  Dialog,
 } from "vant";
 import {
   Product_history,
@@ -429,7 +468,9 @@ import {
   Product_delet,
   Product_open,
   Product_emp,
+  Product_pay,
 } from "@/API/product";
+import { clean } from "@/methods/clean";
 import { GetList_Erp } from "@/API/getlistvalue";
 export default {
   data() {
@@ -468,6 +509,14 @@ export default {
       pay: "",
       allprice: 0,
       text: "",
+      money: "",
+      givemoney: "",
+      weixin: "",
+      alipay: "",
+      otherpay: "",
+      needsendsms: true,
+      disable: false,
+      isloading: false,
     };
   },
   components: {
@@ -483,6 +532,8 @@ export default {
     [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
     [CellGroup.name]: CellGroup,
+    [Dialog.name]: Dialog,
+    [Toast.name]: Toast,
   },
   methods: {
     onClickLeft() {
@@ -549,6 +600,7 @@ export default {
           this.project = "";
           this.value0 = "";
         }
+        this.disable = false;
       } else {
         var that = this;
         var pam = {};
@@ -605,12 +657,14 @@ export default {
           this.ischange = false;
         }
       }
+      this.disable = false;
     },
     onClickRight() {
       this.show = true;
-
+      this.allprice = 0;
       for (var i = 0; i < this.dataList.length; i++) {
-        this.allprice = this.dataList[i].price + this.allprice;
+        this.allprice =
+          this.dataList[i].price * this.dataList[i].num + this.allprice;
         console.log("zongjia", this.allprice);
       }
     },
@@ -622,6 +676,7 @@ export default {
         arguments[1].componentOptions.children[0].text;
 
       this.newlist[this.index].emp = arguments[0];
+      this.disable = false;
     },
     handleChange5() {
       this.newlist[this.index].isno =
@@ -657,14 +712,24 @@ export default {
       }
     },
     addproject0(item) {
-      this.project = item;
-      this.value0 = item;
+      this.project = item.goo_name;
+      this.value0 = item.goo_name;
+      this.goo_code = item.goods_code;
+      Product_discount({ goo_code: item.goods_code }).then((res) => {
+        console.log("查询商品折扣", res);
+        this.goo_price = res.table[0].goo_price;
+        this.reallyprice = res.table[0].goo_price;
+        this.discount = res.table[0].discount;
+      });
     },
     onChange(value) {
       this.workerlist = value;
       this.value = value;
 
       this.workerlistname = arguments[1];
+    },
+    onchangediscount(value) {
+      this.reallyprice = Math.floor(this.goo_price * this.discount * 0.01);
     },
     onSearch() {},
     onSelect() {},
@@ -720,7 +785,10 @@ export default {
           .indexOf(input.toLowerCase()) >= 0
       );
     },
-    onchange2(e) {},
+    onchange2(e) {
+      this.discount = "";
+      this.disable = true;
+    },
     handleChange0(value) {
       this.goo_code = this.data[value].goo_code;
       this.project = this.data[value].goo_name;
@@ -751,6 +819,39 @@ export default {
     onChange11(value) {
       console.log(value);
       this.num = value;
+    },
+
+    //支付
+    paybill() {
+      var that = this;
+      if (this.paymoney / 100 < this.allprice) {
+        Toast.fail("支付金额不够");
+      } else if (this.paymoney / 100 > this.allprice) {
+        Toast.fail("支付金额超出所需金额");
+      } else {
+        var pams = {
+          out_no: that.out_no,
+          weixin: that.weixin,
+          money: that.money,
+          givemoney: that.givemoney,
+          alipay: that.alipay,
+          otherpay: that.otherpay,
+        };
+        var data = clean(pams);
+        that.isloading = true;
+        Product_pay(data).then((res) => {
+          console.log("支付返回", res);
+          if (res.table[0].havepay == "Y") {
+            Toast.success("支付成功");
+            this.$router.push({
+              name: "bank",
+            });
+          } else {
+            that.isloading = false;
+          }
+        });
+        console.log("支付成功");
+      }
     },
   },
   created() {
@@ -784,6 +885,7 @@ export default {
 
       Product_history({ cusid: cusid }).then((res) => {
         that.Listhistory = res.table;
+        console.log("历史记录", res.table);
       });
     }
   },
@@ -794,6 +896,18 @@ export default {
         return value.slice(0, 6) + "...";
       }
       return value;
+    },
+  },
+  computed: {
+    paymoney: function () {
+      var total;
+      total =
+        Number(this.money) +
+        Number(this.givemoney) +
+        Number(this.weixin) +
+        Number(this.alipay) +
+        Number(this.otherpay);
+      return total * 100;
     },
   },
 };
@@ -827,7 +941,7 @@ export default {
   margin-left: 5%;
 }
 .addbottom {
-  background-color: #25d07a;
+  background-color: Peru;
 }
 .addthis {
   margin-top: 3vh;
@@ -843,7 +957,7 @@ export default {
   float: right;
 }
 .addlist td {
-  color: red;
+  color: blue;
 }
 .addlist2 td {
   color: white;

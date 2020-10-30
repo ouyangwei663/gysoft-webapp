@@ -25,7 +25,7 @@ export const OutOne_save = p => { //   这个是收银保存
 };
 export const OutOne_find = p => { //   收银查询  这个是收银默认当天记录
 
-  p.action = "billsave";
+  p.action = "findby";
   p.classname = classname;
   p.funcname = "find";
   p.classmemo = "会员查询"

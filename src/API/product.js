@@ -78,3 +78,13 @@ export const Product_emp = p => { //     获取员工详情信息
   p.classmemo = "员工查询"
   return post(second, p)
 };
+
+
+export const Product_pay = p => { //     产品支付
+  p.subcom = subcom
+  p.action = "billsave";
+  p.classname = "n_outone_hy"
+  p.funcname = "GetMoney";
+  p.classmemo = "产品支付"
+  return post(second, p)
+};

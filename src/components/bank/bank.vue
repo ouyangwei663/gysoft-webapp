@@ -70,7 +70,7 @@
           <template #label>
             <table class="banktable">
               <tr>
-                <td>单号：{{ item.out_no }}({{ item.selfno }})</td>
+                <td>{{ item.out_no }}({{ item.selfno }})</td>
                 <td>
                   {{ item.cus_type }}
                   {{ item.cus_type == null ? "" : "(" + item.cardno + ")" }}
@@ -86,11 +86,11 @@
                   }}
                 </td>
                 <td>
-                  收款：{{ 
+                  收款：{{
                   }}<van-icon
                     name="cart"
                     size="20"
-                    @click.stop="clickon(item.out_no)"
+                    @click.stop="clickon(item)"
                   />
                 </td>
               </tr>
@@ -255,9 +255,9 @@ export default {
     click(index) {
       this.Listtrue[index].bottom = true;
     },
-    clickon(out_no) {
+    clickon(item) {
       var params = {};
-      params.out_no = out_no;
+      params.out_no = item.out_no;
       this.$router.push({
         name: "qindan",
         params,

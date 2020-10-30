@@ -44,22 +44,25 @@
       </tr>
     </table>
 
-    <van-cell title="会员信息" left>
+    <van-cell title="" left class="titletop">
       <template #label>
         <table class="bankadd">
           <tr>
-            <td>会员：{{ cus_name }}({{ sex == "N" ? "女士" : "男士" }})</td>
-            <td>开卡店:{{ subcom }}</td>
+            <td class="bigtd">
+              会员：{{ cus_name }}({{ sex == "N" ? "女士" : "男士" }})
+            </td>
+            <td class="bigtd">开卡:{{ subcom }}</td>
           </tr>
           <tr>
             <td>综合六折卡({{ cardno }})</td>
-            <td class="red">余额:{{ lastmoney }}</td>
-            <td class="red">赠送余额：{{ givehavemoney }}</td>
+            <td class="red">
+              余额:{{ lastmoney }} &nbsp; &nbsp; &nbsp; 赠送{{ givehavemoney }}
+            </td>
           </tr>
         </table>
       </template>
     </van-cell>
-    <van-divider>请填写资料</van-divider>
+
     <van-form @submit="onSubmit" class="bankaddform">
       <van-field
         v-model="selfno"
@@ -68,7 +71,7 @@
         placeholder="请输入手工单号"
         disabled
       />
-      <van-field name="oneisorder" label="是否指名">
+      <van-field name="oneisorder" label="是否指名" class="colordanger">
         <template #input>
           <van-radio-group v-model="oneisorder" direction="horizontal">
             <van-radio name="Y">是</van-radio>
@@ -87,6 +90,7 @@
         :value="firstemp"
         label="员工"
         placeholder="点击选择员工"
+        class="colordanger"
         ><template #input>
           <a-select
             show-search
@@ -108,7 +112,7 @@
           </a-select>
         </template>
       </van-field>
-      <van-field name="sex" label="会员性别">
+      <van-field name="sex" label="会员性别" class="colordanger">
         <template #input>
           <van-radio-group v-model="radio" direction="horizontal">
             <van-radio name="Y">男</van-radio>
@@ -116,7 +120,11 @@
           </van-radio-group>
         </template>
       </van-field>
-      <van-field name="billnotype" :value="billnotype" label="单据类型"
+      <van-field
+        name="billnotype"
+        :value="billnotype"
+        label="单据类型"
+        class="colordanger"
         ><template #input>
           <a-select
             show-search
@@ -466,7 +474,7 @@ export default {
 
         OutOne_save(pam).then((res) => {
           if (res.errmsg == "OK") {
-            console.log(res)
+            console.log(res);
             console.log("成功", res.table[0].hintstr);
             var params = {};
             params.cusid = that.cusid;
@@ -574,6 +582,7 @@ export default {
 .bankadd {
   width: 90%;
   margin-left: 5%;
+  color: black;
 }
 .bankadd td {
   text-align: left;
@@ -643,7 +652,25 @@ export default {
 .red {
   color: #f7416c;
 }
+.titletop {
+  width: 90%;
+  margin-top: 2vh;
+  margin-left: 5%;
+  border-radius: 1rem;
+  background-color: #f8f8f8;
+  margin-bottom: 2vh;
+}
+.bankadd .smalltd {
+  width: 33.3%;
+}
+.bankadd .bigtd {
+  width: 50%;
+}
 /deep/.ant-select-search {
   z-index: 10000000000;
+}
+
+/deep/ .colordanger .van-field__label span {
+  color: #ff1493;
 }
 </style>

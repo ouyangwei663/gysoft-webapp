@@ -6,7 +6,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     sata: false,
-    keepAlive: []
+    keepAlive: [],
+    bankperson:{}
   },
   getters: {
     keepAlive: state => state.keepAlive
@@ -19,6 +20,9 @@ const store = new Vuex.Store({
       console.log("改变成功")
       state.keepAlive = keepAlive;
 
+    },
+    changebankperson(state){
+      console.log(1)
     }
 
   }

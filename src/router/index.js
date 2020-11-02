@@ -17,6 +17,7 @@ import bankadd from '@/components/bank/bankadd/bankadd'
 import listcheck from '@/components/listcheck/listcheck'
 import vipbookdetail from '@/components/vipbook/vipbookdetail/vipbookdetail'
 import vipbookflow from '@/components/vipbook/vipbookflow/vipbookflow'
+import contscard from '@/components/contscard/contscard'
 import qindan from '@/components/bank/bankadd/contact'
 Vue.use(Router)
 
@@ -103,6 +104,11 @@ export default new Router({
       path: '/bankadd',
       name: 'bankadd',
       component: bankadd
+    },
+    {
+      path: '/contscard',
+      name: 'contscard',
+      component: contscard
     }
   ]
 })

@@ -309,49 +309,6 @@
         </template>
       </van-cell>
 
-      <!-- <van-radio-group v-model="pay" class="paycontact">
-        <van-cell-group title="支付方式">
-          <van-cell class="gray" clickable @click="radio = '1'">
-            <template #title>
-              <a-icon
-                type="account-book"
-                :style="{ fontSize: '16px', color: 'red' }"
-              />
-              会员支付
-            </template>
-
-            <template #right-icon>
-              <van-radio name="1" />
-            </template>
-          </van-cell>
-          <van-cell class="gray" clickable @click="radio = '2'">
-            <template #title>
-              <a-icon
-                type="wechat"
-                :style="{ fontSize: '16px', color: 'green' }"
-              />
-
-              微信支付
-            </template>
-            <template #right-icon>
-              <van-radio name="2" />
-            </template>
-          </van-cell>
-          <van-cell class="gray" clickable @click="radio = '3'">
-            <template #title>
-              <a-icon
-                type="alipay-circle"
-                :style="{ fontSize: '16px', color: '#08c' }"
-              />
-              支付宝支付
-            </template>
-
-            <template #right-icon>
-              <van-radio name="3" />
-            </template>
-          </van-cell>
-        </van-cell-group>
-      </van-radio-group> -->
       <div class="paycontact">
         <van-cell-group title="支付">
           <van-field
@@ -441,6 +398,7 @@
         <van-checkbox v-model="message">是否短信通知</van-checkbox>
       </van-submit-bar>
     </van-popup>
+
   </div>
 </template>
 <script>

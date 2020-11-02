@@ -26,6 +26,11 @@
         </tr>
       </table>
     </div>-->
+
+    <van-cell-group>
+      <van-cell class="fl" title="合计" label="描述信息"> </van-cell>
+    </van-cell-group>
+
     <div class="bb" v-for="(item, index) in List" :key="index">
       <van-card class="detailedcard" @click="showoperate(item)">
         <template #title>
@@ -40,17 +45,17 @@
           <table class="vipinfo">
             <tr>
               <td>
-                充值余额：￥{{ item.lastmoney === null ? 0 : item.lastmoney }}
+                充值余额：{{ item.lastmoney === null ? 0 : item.lastmoney }}
               </td>
               <td>卡号：{{ item.cardno }}</td>
             </tr>
             <tr>
               <td>
-                赠送余额：￥{{
+                赠送余额：{{
                   item.givehavemoney === null ? 0 : item.givehavemoney
                 }}
               </td>
-              <td>手机号码：{{ item.mobile }}</td>
+              <td>手机：{{ item.mobile }}</td>
             </tr>
             <tr>
               <td>性别：{{ item.sex == "女士" ? "女士" : "男士" }}</td>
@@ -235,4 +240,9 @@ export default {
 /* .van-cell__title span {
   color: black;
 } */
+.fl {
+  text-align: left;
+  width: 90%;
+  margin-left: 5%;
+}
 </style>

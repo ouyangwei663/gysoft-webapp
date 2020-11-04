@@ -23,7 +23,12 @@
       <van-grid-item id="third" icon="star" text="会员积分" />
 
       <van-grid-item id="fourth" icon="calendar-o" text="预约管理" />
-      <van-grid-item id="fifth" icon="credit-pay" text="护理卡" />
+      <van-grid-item
+        id="fifth"
+        icon="credit-pay"
+        text="次卡"
+        @click="toContscard_check()"
+      />
       <van-grid-item id="sixth" icon="bell" text="失客提醒" />
       <van-grid-item id="seventh" icon="aim" text="回访跟踪" />
       <van-grid-item id="eigth" icon="fire" text="今日生日" />
@@ -53,6 +58,11 @@ export default {
     toBank() {
       this.$router.push({
         name: "bank",
+      });
+    },
+    toContscard_check() {
+      this.$router.push({
+        name: "contscard_check",
       });
     },
   },

@@ -2,7 +2,7 @@
   <div class="hello">
     <van-nav-bar
       class="check"
-      title="次卡销售"
+      title="次卡查询"
       :fixed="true"
       right-text="新增会员"
       :left-arrow="true"
@@ -16,12 +16,12 @@
 
     <van-form @submit="onSubmit" class="bankaddform">
       <van-field
-        v-model="selfno"
-        name="selfno"
-        label="手工单号"
-        placeholder="请输入手工单号"
-        disabled
+        clickable
+        name="cus_name"
+        v-model="cus_name"
+        label="会员姓名"
       />
+      <van-field clickable name="mobile" v-model="mobile" label="手机" />
       <van-field
         readonly
         clickable
@@ -31,7 +31,7 @@
         placeholder="点击选择店铺"
         @click="showviplevel = true"
       />
-      <van-field v-model="project" name="goo_code" label="项目">
+      <van-field v-model="goo_code" name="goo_code" label="项目">
         <template #input>
           <a-select
             style="width: 100%"
@@ -57,7 +57,25 @@
           <!-- <a-input-number     style="width: 30%"  :min="0" :max="10" :step="0.1" @change="onChange11" /> -->
         </template>
       </van-field>
-      <van-field v-model="count" name="counts" type="digit" label="次数" />
+
+      <van-field name="count" v-model="count" label="次数">
+        <template #input>
+          <a-select style="width: 100%" @change="handleChange" v-model="count">
+            <a-select-option value="A"> 全部 </a-select-option>
+            <a-select-option value="Y"> 已用完 </a-select-option>
+            <a-select-option value="N"> 未用完 </a-select-option>
+          </a-select>
+        </template>
+      </van-field>
+      <van-field name="ispay" v-model="ispay" label="付款">
+        <template #input>
+          <a-select style="width: 100%" @change="handleChang1" v-model="ispay">
+            <a-select-option value="A"> 全部 </a-select-option>
+            <a-select-option value="Y"> 已付清 </a-select-option>
+            <a-select-option value="N"> 未付清 </a-select-option>
+          </a-select>
+        </template>
+      </van-field>
       <van-field
         readonly
         clickable
@@ -98,7 +116,7 @@
           @cancel="showendtime = false"
         />
       </van-popup>
-      <van-field
+      <!-- <van-field
         name="billnotype"
         :value="billnotype"
         label="单据类型"
@@ -120,7 +138,7 @@
             </a-select-option>
           </a-select>
         </template>
-      </van-field>
+      </van-field> -->
 
       <van-popup v-model="showviplevel" position="bottom">
         <van-picker
@@ -136,15 +154,6 @@
         </van-button>
       </div>
     </van-form>
-    <van-popup
-      v-model="show"
-      position="bottom"
-      close-icon="close"
-      close-icon-position="bottom-center"
-      :style="{ height: '100%', background: '#f8f8f8' }"
-    >
-      <second :show="show" @changeshow="changeshow"></second>
-    </van-popup>
   </div>
 </template>
 
@@ -162,15 +171,17 @@ import {
   Picker,
   DatetimePicker,
 } from "vant";
-import { Product_type } from "@/API/product";
+import { Product_type, Goodsno_find } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Shop } from "@/API/getlistvalue.js";
 import { timeday, timetwoyearday } from "@/methods/time";
-import { Goodsno_find } from "@/API/product";
-import Second from "@/components/contscard/contscard_second";
+
 export default {
   data() {
     return {
+      cus_name: "",
+      ispay: "",
+      mobile: "",
       selfno: "",
       billnotype: "",
       product_type: [],
@@ -188,40 +199,38 @@ export default {
       gegindate: "",
       minDate: new Date(2016, 0, 1),
       maxDate: new Date(2020, 9, 28),
+      goo_code: "",
       data: [],
-      project: "",
       value0: "",
-      count: "",
-      show: false,
     };
   },
   methods: {
     onClickLeft() {
       this.$router.go(-1);
     },
-    onClickRight() {
-      this.show = true;
-    },
+    onClickRight() {},
     handleChange2(value) {
       this.billnotype = value;
     },
+    handleChange(value) {
+      console.log(value);
+      this.count = value;
+    },
+    handleChang1(value) {
+      console.log(value);
+      this.isplay = value;
+    },
     onSubmit(values) {
       values.subcom = this.reallsubcom;
-      if (this.count == 0 || this.count == "") {
-        Toast.fail("请输入正确的次数");
-      } else if (this.project == "") {
-        Toast.fail("请输入项目");
-      } else if (this.billnotype == "") {
-        Toast.fail("请输入单据类型");
-      }
-      // else if (this.selfno == "") {
-      //   Toast.fail("单号还未开好");
-      // }
-      values.goo_code = this.goo_code;
-      console.log(values);
+      values.count = this.count;
+      values.ispay = this.ispay;
+      var pams = clean(values);
+      console.log(pams);
 
-      var data = clean(values);
-      console.log("发送数据", data);
+      this.$router.push({
+        name: "contscard_info",
+        pams,
+      });
     },
     onConfirm4(value, index) {
       console.log(value, index);
@@ -274,12 +283,9 @@ export default {
     },
     handleChange0(value) {
       this.value0 = value;
-      this.project = this.data[value].goo_name;
+      // this.project = this.data[value].goo_name;
       this.goo_code = this.data[value].goo_code;
       console.log("打印", value);
-    },
-    changeshow(Boolen) {
-      this.show = Boolen;
     },
   },
   components: {
@@ -294,7 +300,6 @@ export default {
     [Popup.name]: Popup,
     [Picker.name]: Picker,
     [DatetimePicker.name]: DatetimePicker,
-    Second,
   },
   created() {
     if (sessionStorage.getItem("product_type") == null) {
@@ -341,8 +346,6 @@ export default {
     }
     this.subcom = localStorage.getItem("subname");
     this.reallsubcom = localStorage.getItem("subcom");
-    this.begindate = timeday();
-    this.enddate = timetwoyearday();
   },
   mounted() {},
 };

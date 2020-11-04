@@ -18,6 +18,10 @@ import listcheck from '@/components/listcheck/listcheck'
 import vipbookdetail from '@/components/vipbook/vipbookdetail/vipbookdetail'
 import vipbookflow from '@/components/vipbook/vipbookflow/vipbookflow'
 import contscard from '@/components/contscard/contscard'
+import contscard_check from '@/components/contscard/contscard_check'
+import contscard_info from '@/components/contscard/contscard_info'
+import contscard_pay from '@/components/contscard/contscard_pay'
+import chart from '@/components/chart/chart'
 import qindan from '@/components/bank/bankadd/contact'
 Vue.use(Router)
 
@@ -104,11 +108,28 @@ export default new Router({
       path: '/bankadd',
       name: 'bankadd',
       component: bankadd
+    }, {
+      path: '/chart',
+      name: 'chart',
+      component: chart
     },
     {
       path: '/contscard',
       name: 'contscard',
       component: contscard
+    },
+    {
+      path: '/contscard_check',
+      name: 'contscard_check',
+      component: contscard_check
+    }, {
+      path: '/contscard_info',
+      name: 'contscard_info',
+      component: contscard_info
+    }, {
+      path: '/contscard_pay',
+      name: 'contscard_pay',
+      component: contscard_pay
     }
   ]
 })

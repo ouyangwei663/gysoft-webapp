@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-nav-bar
-      title="会员资料"
+      title="次卡详情"
       :fixed="true"
       left-text="返回"
       right-text="按钮"
@@ -12,21 +12,6 @@
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
-    <!-- <div class="box">
-
-      <table>
-        <tr>
-          <td>会员名称</td>
-          <td>性别</td>
-          <td>会员级别</td>
-          <td>充值余额</td>
-          <td>赠送余额</td>
-          <td>手机号</td>
-          <td>卡号</td>
-        </tr>
-      </table>
-    </div>-->
-
     <div class="bb" v-for="(item, index) in List" :key="index">
       <van-card
         :class="index % 2 == 0 ? 'detailedcard' : 'detailedcard2'"
@@ -35,68 +20,37 @@
         <template #title>
           <div class="name">
             {{ item.cus_name }}
-            <!-- <van-tag type="primary" round color="#FFD90B" size="medium"
-              >超级会员</van-tag
-            > -->
           </div>
         </template>
         <template #desc>
           <table class="vipinfo">
             <tr>
-              <td>
-                充值余额：{{ item.lastmoney === null ? 0 : item.lastmoney }}
-              </td>
-              <td>卡号：{{ item.cardno }}</td>
+              <td>护理项目：{{ item.project }}</td>
+              <td>总次数：{{ item.allcount }}</td>
             </tr>
             <tr>
-              <td>
-                赠送余额：{{
-                  item.givehavemoney === null ? 0 : item.givehavemoney
-                }}
-              </td>
-              <td>手机：{{ item.mobile }}</td>
+              <td>已付次数：{{ item.paycount }}</td>
+              <td>已用次数：{{ item.usecount }}</td>
             </tr>
             <tr>
-              <td>性别：{{ item.sex == "女士" ? "女士" : "男士" }}</td>
-              <td>备注：{{ item.memo === null ? "无" : item.memo }}</td>
+              <td>总金额：{{ item.allprice }}</td>
+              <td>已支付金额：{{ item.havepay }}</td>
             </tr>
             <tr>
-              <td>
-                地址：{{ item.address === null ? "暂无记录" : item.address }}
-              </td>
+              <td>未付金额：{{ item.nopay }}</td>
               <td>
                 <van-button
+                  v-if="item.nopay == 0 ? false : true"
                   type="primary"
                   size="mini"
                   @click.stop="clickperson(item)"
-                  >修改资料</van-button
+                  >续费</van-button
                 >
               </td>
             </tr>
           </table>
         </template>
       </van-card>
-      <van-action-sheet v-model="show" title="会员操作">
-        <div>
-          <van-cell
-            title="充值"
-            icon="gold-coin-o"
-            is-link
-            @click="tocrash()"
-          />
-          <van-cell title="取现" icon="idcard" is-link @click="tomoney()" />
-          <van-cell title="恢复会员" icon="share-o" is-link />
-          <van-cell title="注销会员" icon="close" is-link />
-          <van-cell
-            title="新增次卡"
-            icon="add-o"
-            is-link
-            @click="tocontscard()"
-          />
-          <van-cell title="赠送充值" icon="gift-o" is-link />
-          <van-cell title="赠送次卡" icon="gift-card-o" is-link />
-        </div>
-      </van-action-sheet>
     </div>
   </div>
 </template>
@@ -119,7 +73,38 @@ export default {
       money: "100",
       phone: 13653035648,
       show: false,
-      List: [],
+      List: [
+        {
+          cus_name: "张三",
+          project: "剪发",
+          allcount: "10",
+          paycount: "2",
+          usecount: "1",
+          allprice: "2000",
+          havepay: "488",
+          nopay: "512",
+        },
+        {
+          cus_name: "李四",
+          project: "洗头",
+          allcount: "10",
+          paycount: "10",
+          usecount: "1",
+          allprice: "2000",
+          havepay: "2000",
+          nopay: "0",
+        },
+        {
+          cus_name: "王五",
+          project: "剪发",
+          allcount: "10",
+          paycount: "2",
+          usecount: "1",
+          allprice: "2000",
+          havepay: "488",
+          nopay: "512",
+        },
+      ],
       params: {},
     };
   },
@@ -150,53 +135,24 @@ export default {
     },
 
     getdate() {
-      var that = this;
-      Customer_find(this.$route.params).then((res) => {
-        console.log(res);
-        that.List = res.table;
-      });
+      // var that = this;
+      // Customer_find(this.$route.params).then((res) => {
+      //   console.log(res);
+      //   that.List = res.table;
+      // });
     },
     showoperate(item) {
       this.show = true;
       this.params = item;
     },
-    tocrash() {
-      var params = this.params;
-      this.$router.push({
-        name: "crash",
-        params,
-      });
-    },
-    tomoney() {
-      var params = this.params;
-      this.$router.push({
-        name: "money",
-        params,
-      });
-    },
-    tocontscard() {
-      this.$router.push({
-        name: "contscard",
-      });
-    },
     clickperson(item) {
       var params = item;
       console.log(params);
       this.$router.push({
-        name: "HelloWorld",
+        name: "contscard_pay",
         params,
       });
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (to.path === "/info") {
-      // 这是路由path
-
-      this.$store.commit("setKeepAlive", ["HellWorld"]); //这是此页面的name属性名字
-    } else {
-      this.$store.commit("setKeepAlive", []);
-    }
-    next();
   },
 };
 </script>
@@ -235,7 +191,7 @@ export default {
   border-radius: 0.4rem;
 }
 .detailedcard2 {
-  background-color: #445E89;
+  background-color: #445e89;
   color: white;
   border-radius: 0.4rem;
 }
@@ -247,6 +203,9 @@ export default {
 }
 .name {
   font-size: 1rem;
+}
+.vipinfo {
+  width: 100%;
 }
 .vipinfo td {
   width: 50%;

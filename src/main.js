@@ -7,6 +7,10 @@ import store from './store/store'
 import axios from 'axios'
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
+import VueTouch from 'vue-touch'
+Vue.use(VueTouch, {
+  name: 'v-touch'
+})
 import {
   WindowsBalloon
 } from 'node-notifier'

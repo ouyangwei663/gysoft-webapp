@@ -36,13 +36,8 @@
         type="digit"
         label="单次金额"
       />
-  
-      <van-field
-        name="pay"
-        v-model="pay"
-        type="digit"
-        label="付款金额"
-      />
+
+      <van-field name="pay" v-model="pay" type="digit" label="付款金额" />
     </van-form>
     <div class="paycontact">
       <van-cell-group>
@@ -173,12 +168,12 @@ export default {
       isloading: false,
       performance: "",
       showsecond: false,
-      pay:''
+      pay: "",
     };
   },
   methods: {
     onClickLeft() {
-      this.$emit("changeshow", false);
+      this.$router.go(-1);
     },
     onClickRight() {
       this.showsecond = true;

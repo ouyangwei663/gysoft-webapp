@@ -22,6 +22,8 @@ import contscard_check from '@/components/contscard/contscard_check'
 import contscard_info from '@/components/contscard/contscard_info'
 import contscard_pay from '@/components/contscard/contscard_pay'
 import chart from '@/components/chart/chart'
+import chart_shop from '@/components/chart/chart_shop'
+import chart_route from '@/components/chart/chart_route'
 import qindan from '@/components/bank/bankadd/contact'
 Vue.use(Router)
 
@@ -112,6 +114,14 @@ export default new Router({
       path: '/chart',
       name: 'chart',
       component: chart
+    }, {
+      path: '/chart_shop',
+      name: 'chart_shop',
+      component: chart_shop
+    }, {
+      path: '/chart_route',
+      name: 'chart_route',
+      component: chart_route
     },
     {
       path: '/contscard',

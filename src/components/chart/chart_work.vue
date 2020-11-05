@@ -4,7 +4,9 @@
       title="日营业情况"
       :fixed="true"
       :left-arrow="true"
+      right-text="来客登记"
       @click-left="onClickLeft"
+      @click-right="onClickRight"
       class="bank"
     >
       <template #left>
@@ -107,19 +109,7 @@
             <td v-show="index == 8">客户挂账金额</td>
           </tr>
 
-          <tr
-            class="second"
-            v-for="(item, index1) in data1"
-            :key="index1"
-            :class="
-              index1 % 2 == 0
-                ? 'bgwhite'
-                : '' + '' + changeindex == index1
-                ? 'yellow'
-                : ''
-            "
-            @click="changcolor(index1)"
-          >
+          <tr class="second" v-for="(item, index1) in data1" :key="index1">
             <td class="secondtitle">
               {{ item.subcom }}
             </td>
@@ -990,7 +980,6 @@ export default {
       outno: "",
       empty: false,
       index: 1,
-      changeindex: "1",
     };
   },
   components: {
@@ -1070,9 +1059,6 @@ export default {
       var timer = date.getFullYear() + "-" + m + "-" + d;
       this.enddate = timer;
       this.showendtime = false;
-    },
-    changcolor(index1) {
-      this.changeindex = index1;
     },
   },
   created() {
@@ -1195,11 +1181,5 @@ export default {
 }
 .blue {
   color: #2855fa;
-}
-.bgwhite {
-  background: #f8f1f1;
-}
-.yellow {
-  background: lightgreen ;
 }
 </style>

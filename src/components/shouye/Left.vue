@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <van-cell is-link class="lefttop">当前所在 <span><van-icon name="arrow" /></span> 会员管理</van-cell>
+    <van-cell is-link class="lefttop">当前所在 <span><van-icon name="arrow" /></span> 首页</van-cell>
     <van-popup
       v-model="show"
       position="left"

@@ -1,5 +1,17 @@
 <template>
-  <div class="hello">
+  <div>
+    <van-nav-bar
+      title="报表"
+      :fixed="true"
+      :left-arrow="true"
+      @click-left="onClickLeft"
+      @click-right="onClickRight"
+      class="bank"
+    >
+      <template #left>
+        <van-icon name="arrow-left" size="21" color="#FFFFFF" />
+      </template>
+    </van-nav-bar>
     <van-grid
       :column-num="3"
       icon-size="30"
@@ -7,32 +19,23 @@
       :border="false"
       :square="true"
     >
-      <van-grid-item
+      <!-- <van-grid-item
         id="first"
         icon="friends"
         text="会员资料"
         to="/vipcheck"
-      ></van-grid-item>
-      <van-grid-item
-        id="second"
-        icon="gold-coin"
-        text="收银"
-        @click="toBank()"
-      />
-      <van-grid-item id="seventh" icon="aim" text="回访跟踪" />
+      ></van-grid-item> -->
+      <van-grid-item id="second" icon="comment" text="日营业情况" to="/chart" />
+      <van-grid-item id="seventh" icon="manager" text="员工业绩汇总" />
 
-      <van-grid-item id="third" icon="star" text="会员积分" />
+      <van-grid-item id="third" icon="chart-trending-o" text="店面统计报表" to="/chart_shop"  />
 
-      <van-grid-item id="fourth" icon="calendar-o" text="预约管理" />
-      <van-grid-item
-        id="fifth"
-        icon="credit-pay"
-        text="次卡"
-        @click="toContscard_check()"
-      />
+      <!-- <van-grid-item id="fourth" icon="calendar-o" text="预约管理" />
+      <van-grid-item id="fifth" icon="credit-pay" text="次卡" />
       <van-grid-item id="sixth" icon="bell" text="失客提醒" />
 
-      <van-grid-item id="second" icon="todo-list" text="报表"  @click="toChart()"/>
+      <template slot="content"> </template>
+      <van-grid-item id="second" icon="todo-list" text="报表" />
 
       <van-grid-item id="eigth" icon="fire" text="今日生日" />
       <van-grid-item id="ninth" icon="bill-o" text="充值" />
@@ -42,51 +45,37 @@
         icon="records"
         text="积分录入"
         to="/bankadd"
-      />
+      />-->
     </van-grid>
   </div>
 </template>
-
 <script>
-import { Grid, GridItem } from "vant";
-
+import { Grid, GridItem, Icon, NavBar } from "vant";
 export default {
-  name: "shouye",
   data() {
-    return {
-      visible: false,
-    };
-  },
-  methods: {
-    toBank() {
-      this.$router.push({
-        name: "bank",
-      });
-    },
-    toContscard_check() {
-      this.$router.push({
-        name: "contscard_check",
-      });
-    },
-    hide() {
-      console.log(111);
-      this.visible = false;
-    },
-    toChart() {
-      this.$router.push({
-        name: "chart_route",
-      });
-    },
+    return {};
   },
   components: {
     [Grid.name]: Grid,
     [GridItem.name]: GridItem,
+    [Icon.name]: Icon,
+    [NavBar.name]: NavBar,
+  },
+  methods: {
+    onClickLeft() {
+      this.$router.go(-1);
+    },
+    onClickRight() {},
   },
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+/deep/ .van-nav-bar {
+  background-color: #157aff;
+}
+/deep/ .van-nav-bar__title {
+  color: #ffffff;
+}
 /deep/ #first .van-grid-item__content {
   background-color: #fefaf4;
 }
@@ -124,13 +113,13 @@ export default {
 /deep/ .van-icon-friends {
   color: #299cff;
 }
-/deep/ .van-icon-gold-coin {
+/deep/ .van-icon-chart-trending-o {
   color: #f7416c;
 }
 /deep/ .van-icon-star {
   color: #0cd59e;
 }
-/deep/ .van-icon-calendar-o {
+/deep/ .van-icon-manager {
   color: #4368ff;
 }
 /deep/ .van-icon-credit-pay {
@@ -139,10 +128,10 @@ export default {
 /deep/ .van-icon-bell {
   color: #ff3440;
 }
-/deep/ .van-icon-aim {
+/deep/ .van-icon- {
   color: #ffa31a;
 }
-/deep/ .van-icon-fire {
+/deep/ .van-icon-commemt {
   color: #f66b00;
 }
 /deep/ .van-icon-bill-o {
@@ -152,5 +141,3 @@ export default {
   color: #299cff;
 }
 </style>
-
-

@@ -35,9 +35,9 @@
         <template #title>
           <div class="name">
             {{ item.cus_name }}
-            <!-- <van-tag type="primary" round color="#FFD90B" size="medium"
-              >超级会员</van-tag
-            > -->
+            <van-tag type="primary" round color="#703DD8" size="medium">{{
+              item.vipname
+            }}</van-tag>
           </div>
         </template>
         <template #desc>
@@ -121,6 +121,7 @@ export default {
       show: false,
       List: [],
       params: {},
+      vipname: [],
     };
   },
   components: {
@@ -135,6 +136,11 @@ export default {
   },
   created() {
     this.getdate();
+    this.vipname = JSON.parse(sessionStorage.getItem("vip_list")).map(function (
+      item
+    ) {
+      return item.name;
+    });
   },
 
   methods: {
@@ -154,7 +160,12 @@ export default {
       Customer_find(this.$route.params).then((res) => {
         console.log(res);
         that.List = res.table;
+
+        that.List.map((item, index) => {
+          item.vipname = that.vipname[index];
+        });
       });
+  
     },
     showoperate(item) {
       this.show = true;
@@ -235,7 +246,7 @@ export default {
   border-radius: 0.4rem;
 }
 .detailedcard2 {
-  background-color: #445E89;
+  background-color: #445e89;
   color: white;
   border-radius: 0.4rem;
 }

@@ -307,14 +307,30 @@ export default {
 
     getvip() {
       var that = this;
-      GetList_Hy({}).then((res) => {
-        that.columns = res.table.map(function (item) {
-          return item.name;
+
+      if (sessionStorage.getItem("vip_list") == null) {
+        //获取列表
+        GetList_Hy({}).then((res) => {
+          that.columns = res.table.map(function (item) {
+            return item.name;
+          });
+          that.columns1 = res.table.map(function (item) {
+            return item.no;
+          });
+          sessionStorage.setItem("vip_list", JSON.stringify(res.table));
         });
-        that.columns1 = res.table.map(function (item) {
-          return item.no;
-        });
-      });
+      } else {
+        that.columns = JSON.parse(sessionStorage.getItem("vip_list")).map(
+          function (item) {
+            return item.name;
+          }
+        );
+        that.columns1 = JSON.parse(sessionStorage.getItem("vip_list")).map(
+          function (item) {
+            return item.no;
+          }
+        );
+      }
     },
   },
   mounted() {

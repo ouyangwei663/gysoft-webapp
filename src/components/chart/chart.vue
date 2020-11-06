@@ -4,7 +4,9 @@
       title="日营业情况"
       :fixed="true"
       :left-arrow="true"
+      right-text="点击"
       @click-left="onClickLeft"
+      @click-right="onClickRight"
       class="bank"
     >
       <template #left>
@@ -25,6 +27,12 @@
           is-link
           :value="enddate"
           @click="showendtime = true"
+        />
+        <van-cell
+          title="店铺"
+          is-link
+          :value="subcom"
+          @click="showshop = true"
         />
         <van-popup v-model="showtime" position="bottom">
           <van-datetime-picker
@@ -91,46 +99,72 @@
                 </tr>
               </table>
             </td>
-            <td v-show="index == 5">前台损失</td>
-            <td v-show="index == 5">店面费用</td>
-            <td v-show="index == 5">应缴金额</td>
-            <td v-show="index == 5">实缴金额</td>
-            <td v-show="index == 6">男客数</td>
-            <td v-show="index == 6">女客数</td>
-            <td v-show="index == 6">指名数</td>
-            <td v-show="index == 6">散客数</td>
-            <td v-show="index == 7">男客金额</td>
-            <td v-show="index == 7">女客金额</td>
-            <td v-show="index == 7">日结操作</td>
-            <td v-show="index == 7">日结日期</td>
-            <td v-show="index == 8">赠送金额</td>
-            <td v-show="index == 8">客户挂账金额</td>
+            <td v-show="index == 5" colspan="4">
+              <table class="secondchart">
+                <tr>
+                  <td colspan="4">销售次卡</td>
+                </tr>
+                <tr>
+                  <td>笔数</td>
+                  <td>现金</td>
+                  <td>银行</td>
+                  <td>会员</td>
+                </tr>
+              </table>
+            </td>
+            <td v-show="index == 6" colspan="4">
+              <table class="secondchart">
+                <tr>
+                  <td colspan="4">消费</td>
+                </tr>
+                <tr>
+                  <td>现金</td>
+                  <td>银行</td>
+                  <td>会员</td>
+                  <td>挂账</td>
+                </tr>
+              </table>
+            </td>
+            <td v-show="index == 7">消费券</td>
+            <td v-show="index == 7">赠送金额</td>
+            <td v-show="index == 7">次卡消费</td>
+            <td v-show="index == 7">合计</td>
+
+            <td v-show="index == 8">会员取款</td>
+            <td v-show="index == 8">店面费用</td>
+            <td v-show="index == 8">支付宝</td>
+            <td v-show="index == 8">微信</td>
+            <td v-show="index == 9">总手工费</td>
+            <td v-show="index == 9">应缴现金</td>
+            <td v-show="index == 9">男客数</td>
+            <td v-show="index == 9">女客数</td>
+            <td v-show="index == 10">指名数</td>
+            <td v-show="index == 10">散客数</td>
+            <td v-show="index == 10">男客金额</td>
+            <td v-show="index == 10">女客金额</td>
+            <td v-show="index == 11">日结操作</td>
+            <td v-show="index == 11">日结日期</td>
           </tr>
 
           <tr
             class="second"
-            v-for="(item, index1) in data1"
+            v-for="(item, index1) in data"
             :key="index1"
-            :class="
-              index1 % 2 == 0
-                ? 'bgwhite'
-                : '' + '' + changeindex == index1
-                ? 'yellow'
-                : ''
-            "
+            :class="index1 % 2 == 0 ? 'bgwhite' : ''"
             @click="changcolor(index1)"
+            :style="{ background: index1 == changeindex ? '#F5E699' : '' }"
           >
             <td class="secondtitle">
-              {{ item.subcom }}
+              {{ "伊美东平店" }}
             </td>
             <td v-show="index == 1">
-              {{ item.date }}
+              {{ item.outdate }}
             </td>
             <td v-show="index == 1" class="red">
-              {{ item.ispay }}
+              {{ item.ishavedayclose == null ? "未日结" : "已日结" }}
             </td>
             <td v-show="index == 1">
-              {{ item.allprice }}
+              {{ item.totalmoney }}
             </td>
             <td v-show="index == 2">
               {{ item.productpay }}
@@ -145,13 +179,13 @@
               <table style="width: 100%">
                 <tr>
                   <td style="width: 25%" v-show="index == 3">
-                    {{ item.count1 }}
+                    {{ item.storecount }}
                   </td>
                   <td style="width: 25%" v-show="index == 3">
-                    {{ item.count1money }}
+                    {{ item.storemoney_crash }}
                   </td>
                   <td style="width: 25%" v-show="index == 3">
-                    {{ item.count1bank }}
+                    {{ item.storemoney_bank }}
                   </td>
                   <td style="width: 25%" v-show="index == 3">
                     {{ item.count1guazhang }}
@@ -178,46 +212,96 @@
                 </tr>
               </table>
             </td>
-            <td v-show="index == 5">
-              {{ item.banan }}
+            <td v-show="index == 5" colspan="4">
+              <table style="width: 100%">
+                <tr>
+                  <td style="width: 25%" v-show="index == 5">
+                    {{ item.nursecardcount }}
+                  </td>
+                  <td style="width: 25%" v-show="index == 5">
+                    {{ item.nursecard_crashcard }}
+                  </td>
+                  <td style="width: 25%" v-show="index == 5">
+                    {{ item.nursecard_bankcard }}
+                  </td>
+                  <td style="width: 25%" v-show="index == 5">
+                    {{ item.nursecard_membercard }}
+                  </td>
+                </tr>
+              </table>
             </td>
-            <td v-show="index == 5">
-              {{ item.shopmoney }}
-            </td>
-            <td v-show="index == 5" class="blue">
-              {{ item.shouldpay }}
-            </td>
-            <td v-show="index == 5" class="red">
-              {{ item.hadpay }}
-            </td>
-            <td v-show="index == 6">
-              {{ item.man }}
-            </td>
-            <td v-show="index == 6">
-              {{ item.woman }}
-            </td>
-            <td v-show="index == 6">
-              {{ item.point }}
-            </td>
-            <td v-show="index == 6">
-              {{ item.nopoint }}
+            <td v-show="index == 6" colspan="4">
+              <table style="width: 100%">
+                <tr>
+                  <td style="width: 25%">
+                    {{ item.crash }}
+                  </td>
+                  <td style="width: 25%">
+                    {{ item.memcard }}
+                  </td>
+                  <td style="width: 25%">
+                    {{ item.bankcard }}
+                  </td>
+                  <td style="width: 25%">
+                    {{ item.debt }}
+                  </td>
+                </tr>
+              </table>
             </td>
             <td v-show="index == 7">
-              {{ item.manpay }}
+              {{ item.ticketmoney }}
             </td>
             <td v-show="index == 7">
-              {{ item.womanpay }}
+              {{ item.usegivemoney }}
             </td>
             <td v-show="index == 7">
-              {{ item.person }}
+              {{ item.nursecard }}
             </td>
             <td v-show="index == 7">
-              {{ item.enddata }}
+              {{ item.usetotal }}
             </td>
             <td v-show="index == 8">
-              {{ item.givemoney }}
+              {{ item.membergetmoney }}
             </td>
-            <td v-show="index == 8">{{ item.guazhangmoney }}</td>
+            <td v-show="index == 8">
+              {{ item.feemoney }}
+            </td>
+            <td v-show="index == 8" class="blue">
+              {{ item.zfbmoney }}
+            </td>
+            <td v-show="index == 8" class="red">
+              {{ item.wxmoney }}
+            </td>
+            <td v-show="index == 9">
+              {{ item.handmoney }}
+            </td>
+            <td v-show="index == 9">
+              {{ item.shouldpay }}
+            </td>
+            <td v-show="index == 9">
+              {{ item.mancount }}
+            </td>
+            <td v-show="index == 9">
+              {{ item.womancount }}
+            </td>
+            <td v-show="index == 10">
+              {{ item.ordercount }}
+            </td>
+            <td v-show="index == 10">
+              {{ item.notordercount }}
+            </td>
+            <td v-show="index == 10">
+              {{ item.mancountmoney }}
+            </td>
+            <td v-show="index == 10">
+              {{ item.womancountmoney }}
+            </td>
+            <td v-show="index == 11">
+              {{ item.person }}
+            </td>
+            <td v-show="index == 11">
+              {{ item.enddata }}
+            </td>
           </tr>
         </table>
       </v-touch>
@@ -249,7 +333,7 @@ import {
   Sticky,
   Pagination,
 } from "vant";
-
+import { chart_day } from "@/API/retrieve.js";
 import { timeday } from "@/methods/time";
 import { OutOne_find } from "@/API/outone.js";
 export default {
@@ -262,721 +346,7 @@ export default {
         { show: false, bottom: false },
       ],
       container: null,
-      data: [
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-        {
-          subcom: "伊美东平店",
-          date: "20201104",
-          ispay: "已结",
-          allprice: "13000",
-          productpay: "450",
-          cardpay: "0",
-          usepay: "10100",
-          count1: "1",
-          count1money: "1000",
-          count1bank: "1000",
-          count1guazhang: "1000",
-          count2: "1",
-          count2money: "1000",
-          count2bank: "1000",
-          count2guazhang: "1000",
-          banan: "0",
-          shopmoney: "500",
-          shouldpay: "11000",
-          hadpay: "110000",
-          man: "36",
-          woman: "56",
-          point: "0",
-          nopoint: "110",
-          manpay: "3300",
-          womanpay: "5890",
-          person: "伊美东平店",
-          enddata: "2017-01-01 18:20",
-          givemoney: "500",
-          guazhangmoney: "0",
-        },
-      ],
+      data: [],
       Listtrue: [],
       data1: [],
       activeNames: [],
@@ -990,7 +360,10 @@ export default {
       outno: "",
       empty: false,
       index: 1,
-      changeindex: "1",
+      changeindex: "10000",
+      subcom: "",
+      showshop: false,
+      shop: [],
     };
   },
   components: {
@@ -1016,16 +389,25 @@ export default {
       //   this.$sotre.commit('changesata')
       this.$router.go(-1);
     },
-    onClickRight() {},
+    onClickRight() {
+      var data = {
+        begindate: this.begindate,
+        enddate: this.enddate,
+      };
+      chart_day(data).then((res) => {
+        console.log("数据", res.table);
+        this.data = res.table;
+      });
+    },
     swipeLeft() {
-      if (this.index < 8) {
+      if (this.index < 11) {
         this.index++;
       }
-      console.log(this.currentPage);
     },
     swipeRight() {
       if (this.index != 1) {
         this.index--;
+        
       }
     },
     pagechage() {
@@ -1035,11 +417,9 @@ export default {
           index >= (that.currentPage - 1) * 8 &&
           index < that.currentPage * 8
         ) {
-          console.log(index); //找出所有大于229的元素
           return item;
         }
       });
-      console.log(this.data1);
     },
     handleEndDateConfirm(value) {
       this.timeShow = false;
@@ -1077,15 +457,15 @@ export default {
   },
   created() {
     this.page = Math.ceil(this.data.length / 8);
-    console.log(this.page);
+
     var that = this;
     this.data1 = this.data.filter(function (item, index) {
       if (index >= (that.currentPage - 1) * 8 && index < that.currentPage * 8) {
-        console.log(item); //找出所有大于229的元素
         return item;
       }
     });
-    console.log(this.data1);
+
+    this.shop = JSON.parse(localStorage.getItem("shop"));
   },
   mounted() {},
 };
@@ -1200,6 +580,6 @@ export default {
   background: #f8f1f1;
 }
 .yellow {
-  background: lightgreen ;
+  background: lightgreen;
 }
 </style>

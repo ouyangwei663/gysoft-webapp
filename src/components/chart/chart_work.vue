@@ -4,7 +4,9 @@
       title="员工业绩汇总"
       :fixed="true"
       :left-arrow="true"
+      right-text="三天前时间"
       @click-left="onClickLeft"
+      @click-right="onClickRight"
       class="bank"
     >
       <template #left>
@@ -125,7 +127,12 @@ import {
   Pagination,
 } from "vant";
 
-import { timeday } from "@/methods/time";
+import {
+  timeday,
+  timesevenday,
+  timethreeday,
+  timemonthday,
+} from "@/methods/time";
 import { OutOne_find } from "@/API/outone.js";
 export default {
   data() {
@@ -141,8 +148,8 @@ export default {
       Listtrue: [],
       data1: [],
       activeNames: [],
-      subcom:"",
-      showshop:"false",
+      subcom: "",
+      showshop: "false",
       begindate: "",
       enddate: "",
       showtime: false,
@@ -179,7 +186,10 @@ export default {
       //   this.$sotre.commit('changesata')
       this.$router.go(-1);
     },
-    onClickRight() {},
+    onClickRight() {
+      var data = timethreeday();
+      console.log(data);
+    },
     swipeLeft() {
       if (this.index < 8) {
         this.index++;

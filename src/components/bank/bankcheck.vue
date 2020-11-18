@@ -21,6 +21,7 @@
         label="开始时间"
         placeholder="点击选择开始日期"
         @click="showtime = true"
+        class="checktwo"
       />
       <van-field
         readonly
@@ -30,6 +31,7 @@
         label="结束时间"
         placeholder="点击选择结束日期"
         @click="showendtime = true"
+          class="checktwo"
       />
       <van-popup v-model="showtime" position="bottom">
         <van-datetime-picker
@@ -54,7 +56,7 @@
         />
       </van-popup>
 
-      <van-field name="havepay" label="付款状态" input-align="right">
+      <van-field name="havepay" label="付款状态" input-align="right"   class="checktwo">
         <template #input>
           <van-radio-group v-model="sex" direction="horizontal">
             <van-radio name="Y">已付款</van-radio>
@@ -64,12 +66,12 @@
       </van-field>
       <van-field v-model="mobile" name="selfno" placeholder="请输入单号">
         <template #label>
-          <span>单号</span>
+          <span class="check">单号</span>
         </template>
       </van-field>
       <van-field v-model="card" name="cardno" placeholder="请输入卡号">
         <template #label>
-          <span>卡号</span>
+          <span class="check">卡号</span>
         </template>
       </van-field>
       <van-field
@@ -80,10 +82,11 @@
         label="卡类型"
         placeholder="点击选择卡类型"
         @click="showPicker = true"
+          class="checktwo"
       />
       <van-field v-model="crashid" name="cus_name" placeholder="请输入会员名称">
         <template #label>
-          <span>会员名称</span>
+          <span class="check">会员名称</span>
         </template>
       </van-field>
 
@@ -93,7 +96,7 @@
         placeholder="请输入手工单号"
       >
         <template #label>
-          <span>手工单号</span>
+          <span class="check">手工单号</span>
         </template>
       </van-field>
 
@@ -105,19 +108,20 @@
         label="店铺名"
         placeholder="点击选择店铺"
         @click="showviplevel = true"
+          class="checktwo"
       />
       <van-field v-model="memo" name="memo" placeholder="备注">
         <template #label>
-          <span>备注</span>
+          <span class="check">备注</span>
         </template>
       </van-field>
 
-      <van-field v-model="firstemp" name="firstemp" placeholder="" label="员工">
+      <van-field v-model="firstemp" name="firstemp" placeholder="" label="员工"   class="checktwo">
         <template #input>
           <a-select
             label="员工"
             show-search
-            placeholder="Select a person"
+        
             option-filter-prop="children"
             style="width: 100%"
             @change="handleChange"
@@ -131,7 +135,7 @@
           </a-select>
         </template>
       </van-field>
-      <van-field name="isorder" label="指名">
+      <van-field name="isorder" label="指名"   class="checktwo">
         <template #input>
           <van-radio-group v-model="isorder" direction="horizontal">
             <van-radio name="N" :style="{ width: '27%' }">指名</van-radio>
@@ -145,12 +149,14 @@
         v-model="minmoney"
         name="minmoney"
         placeholder="输入最小金额"
+          class="checktwo"
       />
       <van-field
         label="最大金额"
         v-model="maxmoney"
         name="maxmoney"
         placeholder="输入最大金额"
+          class="checktwo"
       />
       <div class="guding" ref="container">
         <van-sticky :container="container">
@@ -464,5 +470,11 @@ export default {
 }
 .height {
   height: 10vh;
+}
+.check {
+  color: #0f09af;
+}
+/deep/ .checktwo .van-field__label span {
+  color: #0f09af;
 }
 </style>

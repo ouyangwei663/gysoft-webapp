@@ -12,6 +12,7 @@
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
+
     <div class="bb" v-for="(item, index) in List" :key="index">
       <van-card
         :class="index % 2 == 0 ? 'detailedcard' : 'detailedcard2'"
@@ -25,22 +26,22 @@
         <template #desc>
           <table class="vipinfo">
             <tr>
-              <td>护理项目：{{ item.project }}</td>
-              <td>总次数：{{ item.allcount }}</td>
+              <td>护理项目：{{ item.goo_name }}</td>
+              <td>总次数：{{ item.totalnum }}</td>
             </tr>
             <tr>
-              <td>已付次数：{{ item.paycount }}</td>
-              <td>已用次数：{{ item.usecount }}</td>
+              <td>购买次数：{{ item.num }}</td>
+              <td>已用次数：{{ item.usenum }}</td>
             </tr>
             <tr>
-              <td>总金额：{{ item.allprice }}</td>
-              <td>已支付金额：{{ item.havepay }}</td>
+              <td>赠送次数：{{ item.givenum }}</td>
+              <td>已支付金额：{{ item.factmoney }}</td>
             </tr>
             <tr>
-              <td>未付金额：{{ item.nopay }}</td>
+              <td>剩余次数：{{ item.cp_last }}</td>
               <td>
                 <van-button
-                  v-if="item.nopay == 0 ? false : true"
+                  v-if="item.num + item.givenum == item.totalnum ? false : true"
                   type="primary"
                   size="mini"
                   @click.stop="clickperson(item)"
@@ -67,44 +68,15 @@ import {
 } from "vant";
 import "@/assets/icon/iconfont.css";
 import { Customer_find } from "@/API/customer";
+import { secondcard_find } from "@/API/secondcard";
 export default {
+  name: "HellWorld",
   data() {
     return {
       money: "100",
       phone: 13653035648,
       show: false,
-      List: [
-        {
-          cus_name: "张三",
-          project: "剪发",
-          allcount: "10",
-          paycount: "2",
-          usecount: "1",
-          allprice: "2000",
-          havepay: "488",
-          nopay: "512",
-        },
-        {
-          cus_name: "李四",
-          project: "洗头",
-          allcount: "10",
-          paycount: "10",
-          usecount: "1",
-          allprice: "2000",
-          havepay: "2000",
-          nopay: "0",
-        },
-        {
-          cus_name: "王五",
-          project: "剪发",
-          allcount: "10",
-          paycount: "2",
-          usecount: "1",
-          allprice: "2000",
-          havepay: "488",
-          nopay: "512",
-        },
-      ],
+      List: [],
       params: {},
     };
   },
@@ -119,9 +91,11 @@ export default {
     [CellGroup.name]: CellGroup,
   },
   created() {
-    this.getdate();
+    console.log(this.$route.params.enddate);
+    if (this.$route.params.enddate !==undefined) {
+      this.getdate();
+    }
   },
-
   methods: {
     onClickLeft() {
       //   this.$sotre.commit('changesata')
@@ -135,11 +109,10 @@ export default {
     },
 
     getdate() {
-      // var that = this;
-      // Customer_find(this.$route.params).then((res) => {
-      //   console.log(res);
-      //   that.List = res.table;
-      // });
+      secondcard_find(this.$route.params).then((res) => {
+        console.log(res);
+        this.List = res.table;
+      });
     },
     showoperate(item) {
       this.show = true;
@@ -153,6 +126,16 @@ export default {
         params,
       });
     },
+  },
+  beforeRouteLeave(to, from, next) {
+    if (to.path === "/contscard_pay") {
+      // 这是路由path
+
+      this.$store.commit("setKeepAlive", ["HellWorld"]); //这是此页面的name属性名字
+    } else {
+      this.$store.commit("setKeepAlive", []);
+    }
+    next();
   },
 };
 </script>

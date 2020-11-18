@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <van-nav-bar
-      title="店面营业报表"
+      title="员工提成报表"
       :fixed="true"
       :left-arrow="true"
       @click-left="onClickLeft"
@@ -35,6 +35,19 @@
           @click="showshop = true"
           :value="subname"
         />
+        <!-- <van-cell is-link clickable style="text-align: center">
+          <template #title>
+            <div>
+              <a-range-picker
+                :ranges="{
+                  Today: [moment(), moment()],
+                  'This Month': [moment(), moment().endOf('month')],
+                }"
+                @change="onChange"
+              />
+            </div>
+          </template>
+        </van-cell> -->
         <van-cell
           is-link
           clickable
@@ -88,103 +101,121 @@
         <van-cell title="全年" is-link @click="yearday" />
       </van-collapse-item>
     </van-collapse>
-    <div>
-      <h3>店面统计报表</h3>
-      <table class="chart_shop">
-        <tr>
-          <td colspan="3">
-            日期： {{ dataobj.date }}
-            <span style="margin-left: 2rem">
-              分店:<span class="secondname">{{ dataobj.subcom }}</span></span
-            >
-          </td>
-        </tr>
-        <tr>
-          <td>
-            现金消费:<span class="secondname">{{
-              Math.ceil(dataobj.crash) | num
-            }}</span>
-          </td>
-          <td>
-            支出:<span class="secondname">{{
-              Math.ceil(dataobj.out) | num
-            }}</span>
-          </td>
-          <td>
-            单号张数:<span class="secondname">{{
-              Math.ceil(dataobj.count) | num
-            }}</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            会员卡消费:<span class="secondname">{{
-              Math.ceil(dataobj.member) | num
-            }}</span>
-          </td>
-          <td>
-            现金充值:<span class="secondname">{{
-              Math.ceil(dataobj.storecrash) | num
-            }}</span>
-          </td>
-          <td>
-            应缴现金:<span class="secondname">{{
-              Math.ceil(dataobj.shouldmoney) | num
-            }}</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            银行卡消费:<span class="secondname">{{
-              Math.ceil(dataobj.bank) | num
-            }}</span>
-          </td>
-          <td>
-            银行卡充值:<span class="secondname">{{
-              Math.ceil(dataobj.storebank) | num
-            }}</span>
-          </td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            赠送额消费:<span class="secondname">{{
-              Math.ceil(dataobj.give) | num
-            }}</span>
-          </td>
-          <td>
-            赠送充值:<span class="secondname">{{
-              Math.ceil(dataobj.storegive) | num
-            }}</span>
-          </td>
-          <td></td>
-        </tr>
-      </table>
-      <table class="chart_shop_second">
-        <tr
-          style="text-align: center; color: #333333; background-color: #f4f6ff"
-        >
-          <td>项目分类</td>
-          <td>客数</td>
-          <td>男客</td>
-          <td>女客</td>
-          <td>客单价</td>
-          <td>总价</td>
-        </tr>
-        <tr
-          v-for="(item, index) in data"
-          :key="index"
-          :style="{ background: index % 2 == 0 ? '#f8f1f1' : '' }"
-        >
-          <td>{{ item.itemname }}</td>
-          <td>{{ item.count | num }}</td>
-          <td>{{ item.man | num }}</td>
-          <td>{{ item.woman | num }}</td>
-          <td>{{ Math.ceil(item.price) | num }}</td>
-          <td>{{ Math.ceil(item.money) | num }}</td>
-        </tr>
-      </table>
+    <div id="guazai" style="width: 100%"></div>
+    <div class="main">
+      <v-touch
+        @swipeleft="swipeLeft"
+        :swipe-options="{ direction: 'horizontal' }"
+        @swiperight="swipeRight"
+      >
+        <table class="chart">
+          <tr class="charttitle">
+            <td class="firstchart">分店</td>
+            <td v-show="index == 1">员工姓名</td>
+            <td v-show="index == 1">业绩金额</td>
+            <td v-show="index == 1">提成</td>
+            <td v-show="index == 2">客数</td>
+            <td v-show="index == 2">充值金额</td>
+            <td v-show="index == 2">充值提成</td>
+            <td v-show="index == 2">操作</td>
+          </tr>
+
+          <tr
+            class="second"
+            v-for="(item, index1) in data1"
+            :key="index1"
+            :class="index1 % 2 == 0 ? 'bgwhite' : ''"
+            @click="changcolor(index1)"
+            :style="{ background: index1 == changeindex ? '#F5E699' : '' }"
+          >
+            <td class="secondtitle">
+              {{ "伊美东平店" }}
+            </td>
+            <td v-show="index == 1">
+              {{ item.empName }}
+            </td>
+            <td v-show="index == 1" class="red">
+              {{ item.money }}
+            </td>
+            <td v-show="index == 1" class="blue">
+              {{ item.deductmoney | num }}
+            </td>
+            <td v-show="index == 2">
+              {{ item.count | num }}
+            </td>
+            <!-- <td v-show="index == 2">
+              {{ item.cardpay }}
+            </td> -->
+            <td v-show="index == 2">
+              {{ item.cusmoney | num }}
+            </td>
+            <td v-show="index == 2">
+              {{ item.cusdeductmoney | num }}
+            </td>
+            <td v-show="index == 2">
+              <van-button
+                icon="plus"
+                type="primary"
+                size="mini"
+                @click="detail(item)"
+                >详情</van-button
+              >
+            </td>
+          </tr>
+        </table>
+      </v-touch>
     </div>
+    <van-pagination
+      class="bottompage"
+      v-model="currentPage"
+      :page-count="page"
+      @change="pagechage"
+    />
+    <van-popup class="tanchu" v-model="show" get-container="#guazai">
+      <van-nav-bar
+        title="提成明细"
+        :fixed="true"
+        :left-arrow="true"
+        @click-left="show = false"
+        class="bank"
+      >
+        <template #left>
+          <van-icon name="arrow-left" size="21" color="#FFFFFF" />
+        </template>
+      </van-nav-bar>
+      <table class="lizi">
+        <tr>
+          <td colspan="5">员工服务提成明细</td>
+        </tr>
+        <tr>
+          <td colspan="3">时间:{{ "2020-11-12至2020-11-12" }}</td>
+          <td colspan="2">姓名:{{empName }}</td>
+        </tr>
+        <tr class="charttitle">
+          <td>手工单号</td>
+          <td>会员姓名</td>
+          <td>服务项目</td>
+          <td>业绩金额</td>
+          <td>业绩提成</td>
+        </tr>
+        <tr
+          v-for="(item, index) in data2"
+          :key="index"
+          :style="{ background: index % 2 == 0 ? '#F5E699' : '' }"
+        >
+          <td>{{ item.selfno }}</td>
+          <td>
+            {{ item.salecusname }}
+            <span style="color：red">{{
+              item.cus_type == null ? "" : "(" + item.vipname + ")"
+            }}</span>
+          </td>
+          <td>{{ item.goo_name }}</td>
+          <td class="blue">{{ item.outstand | num }}</td>
+          <td class="red">{{ item.deductmoney | num }}</td>
+        </tr>
+      </table>
+    </van-popup>
   </div>
 </template>
 
@@ -208,9 +239,7 @@ import {
   Toast,
   Picker,
 } from "vant";
-
-import { OutOne_find } from "@/API/outone.js";
-import { chart_shop } from "@/API/retrieve.js";
+import { chart_day, chart_work, chart_work_detail } from "@/API/retrieve.js";
 import {
   timeday,
   timeyesterday,
@@ -219,17 +248,26 @@ import {
   timemonthday,
   timeyearday,
 } from "@/methods/time";
+import { OutOne_find } from "@/API/outone.js";
+import moment from "moment";
+import { GetList_Hy } from "@/API/getlistvalue.js";
 export default {
   data() {
     return {
+      dateFormat: "YYYY/MM/DD",
+      monthFormat: "YYYY/MM",
+      page: "",
+      currentPage: 1,
       List: [
         { show: false, bottom: false },
         { show: false, bottom: false },
       ],
       container: null,
+      data: [],
       Listtrue: [],
       data1: [],
       activeNames: [],
+      activeNames2: [],
       begindate: "",
       enddate: "",
       showtime: false,
@@ -239,13 +277,47 @@ export default {
       currentDate: new Date(),
       outno: "",
       empty: false,
-      data: [],
-      dataobj: {},
-      activeNames2: [],
-      secondshop: [],
+      index: 1,
+      changeindex: "10000",
       subcom: "",
-      subname: "",
       showshop: false,
+      shop: [],
+      showshop: false,
+      secondshop: [],
+      subname: "",
+      show: false,
+      data2: [
+        {
+          no: "123456",
+          name: "总监剪发",
+          project: "李四",
+          money: "10000",
+          money1: "10000",
+        },
+        {
+          no: "123456",
+          name: "总监剪发",
+          project: "李四",
+          money: "10000",
+          money1: "10000",
+        },
+        {
+          no: "123456",
+          name: "总监剪发",
+          project: "李四",
+          money: "10000",
+          money1: "10000",
+        },
+        {
+          no: "123456",
+          name: "总监剪发",
+          project: "李四",
+          money: "10000",
+          money1: "10000",
+        },
+      ],
+      vipname: [],
+      empName: "",
     };
   },
   components: {
@@ -273,7 +345,6 @@ export default {
       this.subname = value;
       for (let i = 0; i < this.shop.length; i++) {
         if (this.shop[i].name == value) {
-          console.log("店铺编号", this.shop[i].no);
           this.subcom = this.shop[i].no;
         }
       }
@@ -294,27 +365,40 @@ export default {
           message: "加载中...",
           forbidClick: false,
         });
-        var that = this;
-
         var data = {
           begindate: this.begindate,
           enddate: this.enddate,
           subcom: this.subcom,
         };
-        chart_shop(data).then((res) => {
-          console.log(res);
-          that.dataobj = res.extended;
-          that.data = res.table;
+        // chart_work({
+        //   begindate: "2016-12-01",
+        //   enddate: "2017-01-30",
+        //   empid: "14N.WN+UJ:6PW3WE",
+        // }).then((res) => {
+        //   console.log(res);
+        // });
+        chart_work(data).then((res) => {
           Toast.clear();
+          this.data = res.table;
+          this.page = Math.ceil(this.data.length / 8);
+          var that = this;
+          this.data1 = this.data.filter(function (item, index) {
+            if (
+              index >= (that.currentPage - 1) * 8 &&
+              index < that.currentPage * 8
+            ) {
+              return item;
+            }
+          });
+          this.currentPage = 1;
         });
         this.activeNames = [];
       }
     },
     swipeLeft() {
-      if (this.index < 8) {
+      if (this.index < 2) {
         this.index++;
       }
-      console.log(this.currentPage);
     },
     swipeRight() {
       if (this.index != 1) {
@@ -328,11 +412,9 @@ export default {
           index >= (that.currentPage - 1) * 8 &&
           index < that.currentPage * 8
         ) {
-          console.log(index); //找出所有大于229的元素
           return item;
         }
       });
-      console.log(this.data1);
     },
     handleEndDateConfirm(value) {
       this.timeShow = false;
@@ -362,8 +444,10 @@ export default {
       }
       var timer = date.getFullYear() + "-" + m + "-" + d;
       this.enddate = timer;
-      console.log(timer);
       this.showendtime = false;
+    },
+    changcolor(index1) {
+      this.changeindex = index1;
     },
     today() {
       this.begindate = timeday();
@@ -401,15 +485,55 @@ export default {
       this.onClickRight();
       this.activeNames2 = [];
     },
+    detail(item) {
+      Toast.loading({
+        duration: 0, // 持续展示 toast
+        message: "加载中...",
+        forbidClick: false,
+      });
+      this.empName = item.empName;
+      var data = {
+        empid: item.empid,
+        begindate: this.begindate,
+        enddate: this.enddate,
+        subcom: this.subcom,
+      };
+      chart_work_detail(data).then((res) => {
+        Toast.clear();
+        this.show = true;
+        console.log(res);
+        this.data2 = res.table;
+
+        this.data2.map((item, index) => {
+          item.vipname = this.vipname[item.cus_type - 1];
+        });
+      });
+    },
   },
   created() {
     this.shop = JSON.parse(localStorage.getItem("shop"));
-    console.log(this.shop);
     this.secondshop = this.shop.map((item) => {
       return item.name;
     });
+    if (sessionStorage.getItem("vip_list") == null) {
+      GetList_Hy({}).then((res) => {
+        sessionStorage.setItem("vip_list", JSON.stringify(res.table));
+      });
+      this.vipname = JSON.parse(sessionStorage.getItem("vip_list")).map(
+        function (item) {
+          return item.name;
+        }
+      );
+    } else {
+      this.vipname = JSON.parse(sessionStorage.getItem("vip_list")).map(
+        function (item) {
+          return item.name;
+        }
+      );
+    }
   },
   mounted() {},
+
   filters: {
     num: (value) => {
       if (!value) return "0";
@@ -498,39 +622,70 @@ export default {
   width: 100%;
   background: #f8f8f8;
 }
-
+.chart {
+  width: 98%;
+  margin-left: 1%;
+  height: 100px;
+}
+.chart td {
+  height: 48px;
+}
+.firstchart {
+  width: 20%;
+}
+.secondchart {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.secondchart td {
+  height: 23px;
+}
+.charttitle {
+  color: #333333;
+  background-color: #f4f6ff;
+  font-weight: bold;
+}
+.chart .secondtitle {
+  color: #333333;
+  font-weight: bold;
+}
+.chart .second {
+  font-size: 0.5rem;
+  border-bottom: 1px solid #eff3f3;
+}
+.main {
+  margin-left: 5%;
+  width: 90%;
+}
+.bottompage {
+  margin-top: 3vh;
+  margin-left: 10%;
+  width: 80%;
+}
 .red {
   color: red;
 }
 .blue {
   color: #2855fa;
 }
-.chart_shop {
+.bgwhite {
+  background: #f8f1f1;
+}
+.yellow {
+  background: lightgreen;
+}
+.tanchu {
+  width: 100%;
+  height: 100%;
+}
+.tanchu td {
   border: 1px solid black;
+}
+.lizi {
+  margin-top: 65px;
   width: 90%;
   margin-left: 5%;
-  text-align: left;
-  color: #333333;
-  font-weight: bold;
   font-size: 0.5rem;
-}
-.chart_shop td {
-  height: 1.5rem;
-}
-.chart_shop .secondname {
-  color: #828283;
-  font-weight: normal;
-  font-size: 0.4rem;
-  margin-left: 0.4rem;
-}
-.chart_shop_second {
-  text-align: left;
-  margin-top: 2vh;
-  width: 90%;
-  margin-left: 5%;
-}
-.chart_shop_second td {
-  height: 1.5rem;
-  border: 1px solid #d7d4cf;
 }
 </style>

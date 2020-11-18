@@ -27,11 +27,32 @@
           @click="showendtime = true"
         />
         <van-cell
-          title="店铺"
           is-link
-          :value="subcom"
+          clickable
+          name="subcom"
+          title="店铺"
+          placeholder="点击选择会员店铺"
           @click="showshop = true"
+          :value="subname"
         />
+        <van-cell
+          is-link
+          clickable
+          style="text-align: center"
+          @click="onClickRight"
+        >
+          <template #title
+            ><a-icon type="search" :style="{ color: 'hotpink' }" /> 查询
+          </template>
+        </van-cell>
+        <van-popup v-model="showshop" position="bottom">
+          <van-picker
+            show-toolbar
+            :columns="secondshop"
+            @confirm="onConfirm"
+            @cancel="showshop = false"
+          />
+        </van-popup>
         <van-popup v-model="showtime" position="bottom">
           <van-datetime-picker
             v-model="currentDate"
@@ -56,6 +77,17 @@
         </van-popup>
       </van-collapse-item>
     </van-collapse>
+    <van-collapse v-model="activeNames2" class="banktimecenter">
+      <van-collapse-item name="1" left>
+        <template #title> 快速查询 </template>
+        <van-cell title="昨天" is-link @click="yesterday" />
+        <van-cell title="今天" is-link @click="today" />
+        <van-cell title="近三天" is-link @click="threeday" />
+        <van-cell title="近一周" is-link @click="sevenday" />
+        <van-cell title="本月" is-link @click="monthday" />
+        <van-cell title="全年" is-link @click="yearday" />
+      </van-collapse-item>
+    </van-collapse>
     <div class="main">
       <v-touch
         @swipeleft="swipeLeft"
@@ -74,7 +106,7 @@
             <td v-show="index == 3" colspan="4">
               <table class="secondchart">
                 <tr>
-                  <td colspan="4">会员首次充值</td>
+                  <td colspan="4">会员充值</td>
                 </tr>
                 <tr>
                   <td>笔数</td>
@@ -83,19 +115,8 @@
                 </tr>
               </table>
             </td>
+
             <td v-show="index == 4" colspan="4">
-              <table class="secondchart">
-                <tr>
-                  <td colspan="4">会员续费充值</td>
-                </tr>
-                <tr>
-                  <td>笔数</td>
-                  <td>现金</td>
-                  <td>银行</td>
-                </tr>
-              </table>
-            </td>
-            <td v-show="index == 5" colspan="4">
               <table class="secondchart">
                 <tr>
                   <td colspan="4">销售次卡</td>
@@ -108,7 +129,7 @@
                 </tr>
               </table>
             </td>
-            <td v-show="index == 6" colspan="4">
+            <td v-show="index == 5" colspan="4">
               <table class="secondchart">
                 <tr>
                   <td colspan="4">消费</td>
@@ -121,23 +142,23 @@
                 </tr>
               </table>
             </td>
-            <td v-show="index == 7">消费券</td>
-            <td v-show="index == 7">赠送金额</td>
-            <td v-show="index == 7">次卡消费</td>
-            <td v-show="index == 7">合计</td>
+            <td v-show="index == 6">消费券</td>
+            <td v-show="index == 6">赠送金额</td>
+            <td v-show="index == 6">次卡消费</td>
+            <td v-show="index == 6">合计</td>
 
-            <td v-show="index == 8">会员取款</td>
-            <td v-show="index == 8">店面费用</td>
-            <td v-show="index == 8">支付宝</td>
-            <td v-show="index == 8">微信</td>
-            <td v-show="index == 9">总手工费</td>
-            <td v-show="index == 9">应缴现金</td>
-            <td v-show="index == 9">男客数</td>
-            <td v-show="index == 9">女客数</td>
-            <td v-show="index == 10">指名数</td>
-            <td v-show="index == 10">散客数</td>
-            <td v-show="index == 10">男客金额</td>
-            <td v-show="index == 10">女客金额</td>
+            <td v-show="index == 7">会员取款</td>
+            <td v-show="index == 7">店面费用</td>
+            <td v-show="index == 7">支付宝</td>
+            <td v-show="index == 7">微信</td>
+            <td v-show="index == 8">总手工费</td>
+            <td v-show="index == 8">应缴现金</td>
+            <td v-show="index == 8">男客数</td>
+            <td v-show="index == 8">女客数</td>
+            <td v-show="index == 9">指名数</td>
+            <td v-show="index == 9">散客数</td>
+            <td v-show="index == 9">男客金额</td>
+            <td v-show="index == 9">女客金额</td>
             <td v-show="index == 11">日结操作</td>
             <td v-show="index == 11">日结日期</td>
           </tr>
@@ -202,25 +223,8 @@
                 </tr>
               </table>
             </td>
+
             <td v-show="index == 5" colspan="4">
-              <table style="width: 100%">
-                <tr>
-                  <td style="width: 25%" v-show="index == 5">
-                    {{ item.nursecardcount | num }}
-                  </td>
-                  <td style="width: 25%" v-show="index == 5">
-                    {{ item.nursecard_crashcard | num }}
-                  </td>
-                  <td style="width: 25%" v-show="index == 5">
-                    {{ item.nursecard_bankcard | num }}
-                  </td>
-                  <td style="width: 25%" v-show="index == 5">
-                    {{ item.nursecard_membercard | num }}
-                  </td>
-                </tr>
-              </table>
-            </td>
-            <td v-show="index == 6" colspan="4">
               <table style="width: 100%">
                 <tr>
                   <td style="width: 25%">
@@ -238,58 +242,58 @@
                 </tr>
               </table>
             </td>
-            <td v-show="index == 7">
+            <td v-show="index == 6">
               {{ item.ticketmoney | num }}
             </td>
-            <td v-show="index == 7">
+            <td v-show="index == 6">
               {{ item.usegivemoney | num }}
             </td>
-            <td v-show="index == 7">
+            <td v-show="index == 6">
               {{ item.nursecard | num }}
             </td>
-            <td class="red" v-show="index == 7">
+            <td class="red" v-show="index == 6">
               {{ item.usetotal | num }}
             </td>
-            <td v-show="index == 8">
+            <td v-show="index == 7">
               {{ item.membergetmoney }}
             </td>
-            <td v-show="index == 8" class="blue">
+            <td v-show="index == 7" class="blue">
               {{ item.feemoney | num }}
             </td>
-            <td v-show="index == 8">
+            <td v-show="index == 7">
               {{ item.zfbmoney | num }}
             </td>
-            <td v-show="index == 8">
+            <td v-show="index == 7">
               {{ item.wxmoney | num }}
             </td>
-            <td v-show="index == 9">
+            <td v-show="index == 8">
               {{ item.handmoney | num }}
             </td>
-            <td v-show="index == 9">
+            <td v-show="index == 8">
               {{ item.shouldpay | num }}
             </td>
-            <td v-show="index == 9">
+            <td v-show="index == 8">
               {{ item.mancount | num }}
             </td>
-            <td v-show="index == 9">
+            <td v-show="index == 8">
               {{ item.womancount | num }}
             </td>
-            <td v-show="index == 10">
+            <td v-show="index == 9">
               {{ item.ordercount | num }}
             </td>
-            <td v-show="index == 10">
+            <td v-show="index == 9">
               {{ item.notordercount }}
             </td>
-            <td v-show="index == 10" style="color: #7963eb">
+            <td v-show="index == 9" style="color: #7963eb">
               {{ item.mancountmoney | num }}
             </td>
-            <td v-show="index == 10" style="color: #63a2eb">
+            <td v-show="index == 9" style="color: #63a2eb">
               {{ item.womancountmoney | num }}
             </td>
-            <td v-show="index == 11">
+            <td v-show="index == 10">
               {{ item.person }}
             </td>
-            <td v-show="index == 11">
+            <td v-show="index == 10">
               {{ item.enddata }}
             </td>
           </tr>
@@ -323,9 +327,17 @@ import {
   Sticky,
   Pagination,
   Toast,
+  Picker,
 } from "vant";
 import { chart_day } from "@/API/retrieve.js";
-import { timeday } from "@/methods/time";
+import {
+  timeday,
+  timeyesterday,
+  timethreeday,
+  timesevenday,
+  timemonthday,
+  timeyearday,
+} from "@/methods/time";
 import { OutOne_find } from "@/API/outone.js";
 export default {
   data() {
@@ -341,6 +353,7 @@ export default {
       Listtrue: [],
       data1: [],
       activeNames: [],
+      activeNames2: [],
       begindate: "",
       enddate: "",
       showtime: false,
@@ -355,6 +368,9 @@ export default {
       subcom: "",
       showshop: false,
       shop: [],
+      showshop: false,
+      secondshop: [],
+      subname: "",
     };
   },
   components: {
@@ -374,44 +390,63 @@ export default {
     [Sticky.name]: Sticky,
     [Pagination.name]: Pagination,
     [Toast.name]: Toast,
+    [Picker.name]: Picker,
   },
 
   methods: {
+    onConfirm(value) {
+      this.subname = value;
+      for (let i = 0; i < this.shop.length; i++) {
+        if (this.shop[i].name == value) {
+          console.log("店铺编号", this.shop[i].no);
+          this.subcom = this.shop[i].no;
+        }
+      }
+      this.showshop = false;
+    },
     onClickLeft() {
       //   this.$sotre.commit('changesata')
       this.$router.go(-1);
     },
     onClickRight() {
-      Toast.loading({
-        duration: 0, // 持续展示 toast
-        message: "加载中...",
-        forbidClick: false,
-      });
-      var data = {
-        begindate: this.begindate,
-        enddate: this.enddate,
-      };
-      chart_day(data).then((res) => {
-        Toast.clear();
-        console.log("数据", res);
-        this.data = res.table;
-
-        this.page = Math.ceil(this.data.length / 8);
-
-        var that = this;
-        this.data1 = this.data.filter(function (item, index) {
-          if (
-            index >= (that.currentPage - 1) * 8 &&
-            index < that.currentPage * 8
-          ) {
-            return item;
-          }
+      if (this.begindate == "") {
+        Toast.fail("请输入开始时间");
+      } else if (this.enddate == "") {
+        Toast.fail("请输入结束时间");
+      } else {
+        Toast.loading({
+          duration: 0, // 持续展示 toast
+          message: "加载中...",
+          forbidClick: false,
         });
-        this.currentPage = 1;
-      });
+        var data = {
+          begindate: this.begindate,
+          enddate: this.enddate,
+          subcom: this.subcom,
+        };
+        chart_day(data).then((res) => {
+          Toast.clear();
+          console.log("数据", res);
+          this.data = res.table;
+
+          this.page = Math.ceil(this.data.length / 8);
+
+          var that = this;
+          this.data1 = this.data.filter(function (item, index) {
+            if (
+              index >= (that.currentPage - 1) * 8 &&
+              index < that.currentPage * 8
+            ) {
+              return item;
+            }
+          });
+          this.currentPage = 1;
+        });
+        this.activeNames = [];
+      }
     },
     swipeLeft() {
-      if (this.index < 10) {
+      if (this.index < 9) {
         this.index++;
       }
     },
@@ -445,9 +480,6 @@ export default {
       var timer = date.getFullYear() + "-" + m + "-" + d;
       this.begindate = timer;
       this.showtime = false;
-      if (this.enddate != "") {
-        this.onClickRight();
-      }
     },
     endhandleEndDateConfirm(value) {
       this.timeShow = false;
@@ -463,17 +495,53 @@ export default {
       var timer = date.getFullYear() + "-" + m + "-" + d;
       this.enddate = timer;
       this.showendtime = false;
-
-      if (this.begindate != "") {
-        this.onClickRight();
-      }
     },
     changcolor(index1) {
       this.changeindex = index1;
     },
+    today() {
+      this.begindate = timeday();
+      this.enddate = timeday();
+      this.onClickRight();
+      this.activeNames2 = [];
+    },
+    yesterday() {
+      this.begindate = timeyesterday();
+      this.enddate = timeyesterday();
+      this.onClickRight();
+      this.activeNames2 = [];
+    },
+    threeday() {
+      this.begindate = timethreeday().needday;
+      this.enddate = timethreeday().day;
+      this.onClickRight();
+      this.activeNames2 = [];
+    },
+    sevenday() {
+      this.begindate = timesevenday().needday;
+      this.enddate = timesevenday().day;
+      this.onClickRight();
+      this.activeNames2 = [];
+    },
+    monthday() {
+      this.begindate = timemonthday().needday;
+      this.enddate = timemonthday().day;
+      this.onClickRight();
+      this.activeNames2 = [];
+    },
+    yearday() {
+      this.begindate = timeyearday().needday;
+      this.enddate = timeyearday().day;
+      this.onClickRight();
+      this.activeNames2 = [];
+    },
   },
   created() {
     this.shop = JSON.parse(localStorage.getItem("shop"));
+    console.log(this.shop);
+    this.secondshop = this.shop.map((item) => {
+      return item.name;
+    });
   },
   mounted() {},
 

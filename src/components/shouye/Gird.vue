@@ -10,7 +10,7 @@
       <van-grid-item
         id="first"
         icon="friends"
-        text="会员资料"
+        text="会员管理"
         to="/vipcheck"
       ></van-grid-item>
       <van-grid-item
@@ -19,24 +19,30 @@
         text="收银"
         @click="toBank()"
       />
-      <van-grid-item id="seventh" icon="aim" text="回访跟踪" />
+      <van-grid-item v-if="false" id="seventh" icon="aim" text="回访跟踪" />
+      <van-grid-item id="seventh" icon="manager" text="员工"    to="/worker_check" />
 
-      <van-grid-item id="third" icon="star" text="会员积分" />
+      <van-grid-item v-if="false" id="third" icon="star" text="会员积分" />
 
-      <van-grid-item id="fourth" icon="calendar-o" text="预约管理" />
+      <van-grid-item v-if="false" id="fourth" icon="calendar-o" text="预约管理" />
       <van-grid-item
         id="fifth"
         icon="credit-pay"
         text="次卡"
         @click="toContscard_check()"
       />
-      <van-grid-item id="sixth" icon="bell" text="失客提醒" />
+      <van-grid-item v-if="false" id="sixth" icon="bell" text="失客提醒" />
 
-      <van-grid-item id="second" icon="todo-list" text="报表"  @click="toChart()"/>
+      <van-grid-item
+        id="second"
+        icon="todo-list"
+        text="报表"
+        @click="toChart()"
+      />
 
-      <van-grid-item id="eigth" icon="fire" text="今日生日" />
-      <van-grid-item id="ninth" icon="bill-o" text="充值" />
-      <van-grid-item id="tenth" icon="paid" text="取现" />
+      <van-grid-item v-if="false" id="eigth" icon="fire" text="今日生日" />
+      <van-grid-item v-if="false" id="ninth" icon="bill-o" text="充值" />
+      <van-grid-item v-if="false" id="tenth" icon="paid" text="取现" />
       <van-grid-item
         id="eleventh"
         icon="records"

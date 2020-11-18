@@ -4,9 +4,8 @@
       title="来客登记"
       :fixed="true"
       :left-arrow="true"
-      right-text="下一步"
       @click-left="onClickLeft"
-      @click-right="onSubmit"
+ 
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
@@ -94,7 +93,6 @@
         ><template #input>
           <a-select
             show-search
-            placeholder="Select a person"
             option-filter-prop="children"
             style="width: 100%"
             :filter-option="filterOption1"
@@ -128,7 +126,6 @@
         ><template #input>
           <a-select
             show-search
-            placeholder="Select a type"
             option-filter-prop="children"
             style="width: 100%"
             @change="handleChange2"

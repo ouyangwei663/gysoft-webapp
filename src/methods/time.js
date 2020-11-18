@@ -43,7 +43,7 @@ export function timetwoyearday() { //获取l两年后日期
   return currentdate;
 
 }
-export function timemonthday() { //获取l两年后日期
+export function timemonthday() { //获取本月
 
   var date = new Date();
   var seperator1 = "-";
@@ -67,8 +67,32 @@ export function timemonthday() { //获取l两年后日期
   };
 
 }
+export function timeyearday() { //获取本年
 
-export function timethreeday() {
+  var date = new Date();
+  var seperator1 = "-";
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  var strDate = date.getDate();
+  if (month >= 1 && month <= 9) {
+    month = "0" + month;
+  }
+  if (strDate >= 0 && strDate <= 9) {
+    strDate = "0" + strDate;
+  }
+  var currentdate = year + seperator1 + month + seperator1 + strDate;
+
+
+  var monthdate = year + seperator1 + '01' + seperator1 + '01';
+  return {
+
+    day: currentdate,
+    needday: monthdate
+  };
+
+}
+
+export function timethreeday() { //近三天
   function getDay(day) {
     var today = new Date();
     var targetday_milliseconds = today.getTime() + 1000 * 60 * 60 * 24 * day;
@@ -97,7 +121,31 @@ export function timethreeday() {
   };
 }
 
-export function timesevenday() {
+export function timeyesterday() { //昨天
+  function getDay(day) {
+    var today = new Date();
+    var targetday_milliseconds = today.getTime() + 1000 * 60 * 60 * 24 * day;
+    today.setTime(targetday_milliseconds); //注意，这行是关键代码
+    var tYear = today.getFullYear();
+    var tMonth = today.getMonth();
+    var tDate = today.getDate();
+    tMonth = doHandleMonth(tMonth + 1);
+    tDate = doHandleMonth(tDate);
+    return tYear + "-" + tMonth + "-" + tDate;
+  }
+
+  function doHandleMonth(month) {
+    var m = month;
+    if (month.toString().length == 1) {
+      m = "0" + month;
+    }
+    return m;
+  }
+
+
+  return getDay(-1)
+}
+export function timesevenday() { //近一周
   function getDay(day) {
     var today = new Date();
     var targetday_milliseconds = today.getTime() + 1000 * 60 * 60 * 24 * day;

@@ -176,8 +176,8 @@ export default {
 
       if (values.money == "") {
         this.$toast("请填写取款余额");
-      } else if (values.money < 100) {
-        this.$toast("取款余额应该大于一百");
+      } else if (values.money < 0) {
+        this.$toast("取款余额应该大于0");
       } else if (values.money > this.$route.params.lastmoney) {
         this.$toast("取款金额超出已有余额");
       } else if (values.crashid == "") {

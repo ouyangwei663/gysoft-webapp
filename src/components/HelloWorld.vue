@@ -4,7 +4,7 @@
       title="会员操作"
       :fixed="true"
       :left-arrow="true"
-      right-text="高级"
+      right-text="详细资料"
       @click-left="onClickLeft"
       @click-right="onClickRight"
     >
@@ -14,14 +14,9 @@
     </van-nav-bar>
 
     <van-form @submit="onSubmit" class="infoform">
-      <van-field
-        v-model="crashid"
-        name="cus_name"
-        placeholder="请输入姓名"
-        :required="true"
-      >
+      <van-field v-model="crashid" name="cus_name" placeholder="请输入姓名">
         <template #label>
-          <span>名称</span>
+          <span class="check">名称</span>
         </template>
       </van-field>
 
@@ -29,15 +24,14 @@
         v-model="phone"
         name="mobile"
         placeholder="请输入手机号码"
-        :required="true"
         :rules="[{ validator, message: '请输入正确手机格式' }]"
       >
         <template #label>
-          <span>手机号码</span>
+          <span class="check">手机号码</span>
         </template>
       </van-field>
 
-      <van-field name="sex" label="性别" input-align="right" :required="true">
+      <van-field name="sex" label="性别" input-align="right" class="checktwo">
         <template #input>
           <van-radio-group v-model="sex" direction="horizontal">
             <van-radio name="Y">男</van-radio>
@@ -63,9 +57,9 @@
         label="店铺"
         placeholder="点击选择会员店铺"
         @click="showPicker = true"
-        :required="true"
+        class="checktwo"
       />
-      <van-popup v-model="showPicker" position="bottom" :required="true">
+      <van-popup v-model="showPicker" position="bottom">
         <van-picker
           show-toolbar
           :columns="secondshop"
@@ -82,7 +76,7 @@
         label="会员等级"
         placeholder="点击选择会员等级"
         @click="showvipPicker = true"
-        :required="true"
+        class="checktwo"
       />
       <van-popup v-model="showvipPicker" position="bottom" :required="true">
         <van-picker
@@ -177,6 +171,7 @@ import { time } from "@/methods/time";
 export default {
   name: "HellWorld",
   created() {
+    console.log('传递',this.$route.params)
     this.getvip(),
       GetList_Shop({}).then((res) => {
         this.firstshop = res.table;
@@ -235,6 +230,9 @@ export default {
     // this.reallshop = window.localStorage.getItem("subcom");
     // this.value = window.localStorage.getItem("subname");
     // this.getshop();
+  },
+  activated(){
+    console.log('动态',this.$route.params)
   },
   data() {
     return {
@@ -506,5 +504,15 @@ export default {
 .air {
   width: 100%;
   height: 10vh;
+}
+
+.check {
+   color: #ff1493;
+}
+/deep/ .checktwo .van-field__label span {
+   color: #ff1493;
+}
+/deep/ .van-nav-bar__right .van-nav-bar__text{
+  color: white;
 }
 </style>

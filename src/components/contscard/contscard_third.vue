@@ -120,7 +120,7 @@
       </a-button>
 
       <div style="margin: 16px">
-        <van-button round block type="info" @click="post"> 下一步 </van-button>
+        <van-button round block type="info" @click="post"> 保存 </van-button>
       </div>
     </div>
   </div>
@@ -134,7 +134,7 @@ export default {
   props: { show: Boolean },
   data() {
     return {
-      newlist: [{}],
+      newlist: [{num:"1"}],
       index: "",
       index2: "",
       data: [],
@@ -244,6 +244,7 @@ export default {
           this.flag2 = false;
         } else {
           console.log(this.worklist);
+          console.log()
           Toast.success("提交");
         }
       }

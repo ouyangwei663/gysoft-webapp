@@ -61,128 +61,45 @@
 
     <van-empty v-if="empty" image="error" description="Data is empty" />
 
-    <div v-for="(item, index) in Listtrue" :key="index">
-      <van-cell-group @click="item.show = !item.show">
-        <van-cell title="" center>
-          <template #tltle>
-            <div></div>
-          </template>
-          <template #label>
-            <table class="banktable">
-              <tr>
-                <td>{{ item.out_no }}({{ item.selfno }})</td>
-                <td>
-                  {{ item.cus_type }}
-                  {{ item.cus_type == null ? "" : "(" + item.cardno + ")" }}
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  客户：{{
-                    item.salecusname === null ? "散客" : item.salecusname
-                  }}({{ item.sex == "N" ? "女士" : "男士" }}) &nbsp;{{
-                    item.oneisorder == "Y" ? "指名" : "轮牌"
-                  }}
-                </td>
-                <td>
-                  收款：{{
-                  }}<van-icon
-                    name="cart"
-                    size="20"
-                    @click.stop="clickon(item)"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2">员工：{{ item.firstemp }}</td>
-              </tr>
-            </table>
-            <!-- <p>
-            <span>手工单号：0050197</span>
-            <span class="one">系统单号：14G17040003</span>
-          </p>
-          <p>
-            <span>会员卡类型：VIP龙腾卡5折</span>
-            <span class="one">会员卡号：dp111111746</span>
-          </p>
-            <p></p>-->
-          </template>
-        </van-cell>
-      </van-cell-group>
-      <van-popup
-        class="bankpopup"
-        v-model="item.bottom"
-        position="bottom"
-        round
-        :style="{}"
-      >
-        <table class="bankone">
-          <tr class="one">
-            <td></td>
-            <td>名称</td>
-            <td>数量</td>
-            <td>销售价</td>
-            <td>折扣</td>
-            <td>实际售价</td>
-            <td>金额</td>
-            <td>护理卡号</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>资深剪发师</td>
-            <td>1</td>
-            <td>60</td>
-            <td>45</td>
-            <td>27</td>
-            <td>27</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>一次性消毒毛巾</td>
-            <td>1</td>
-            <td>1</td>
-            <td>100</td>
-            <td>1</td>
-            <td>1</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>28</td>
-            <td></td>
-          </tr>
-        </table>
-        <table class="banktwo">
-          <tr class="one">
-            <td>工种</td>
-            <td>员工</td>
-            <td>指名</td>
-            <td>提成</td>
-            <td>员工姓名</td>
-          </tr>
-          <tr>
-            <td>首席发型师</td>
-            <td>Suking</td>
-            <td>轮牌</td>
-            <td>6.80</td>
-            <td>Suking</td>
-          </tr>
-          <tr>
-            <td>助理</td>
-            <td>507</td>
-            <td>轮牌</td>
-            <td>4.05</td>
-            <td>507</td>
-          </tr>
-        </table>
-      </van-popup>
+    <div class="bb" v-for="(item, index) in Listtrue" :key="index">
+      <van-card :class="index % 2 == 0 ? 'detailedcard' : 'detailedcard2'">
+        <template #title>
+          <div class="name">{{ item.out_no }}({{ item.selfno }})</div>
+        </template>
+        <template #desc>
+          <table class="vipinfo">
+            <tr>
+              <td colspan="2">
+                卡号： {{ item.cus_type }}
+                {{ item.cus_type == null ? "" : "(" + item.cardno + ")" }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                客户：{{
+                  item.salecusname === null ? "散客" : item.salecusname
+                }}({{ item.sex == "N" ? "女士" : "男士" }}) &nbsp;{{
+                  item.oneisorder == "Y" ? "指名" : "轮牌"
+                }}
+              </td>
+              <td>
+                员工：{{ item.firstemp === null ? "暂无记录" : item.firstemp }}
+              </td>
+            </tr>
+            <tr>
+              <td>付款金额：</td>
+              <td>
+                <van-button
+                  type="primary"
+                  size="mini"
+                  @click.stop="clickon(item)"
+                  >修改</van-button
+                >
+              </td>
+            </tr>
+          </table>
+        </template>
+      </van-card>
     </div>
   </div>
 </template>
@@ -202,6 +119,7 @@ import {
   DatetimePicker,
   Image,
   Empty,
+  Tag,
 } from "vant";
 import { timeday } from "@/methods/time";
 import { OutOne_find } from "@/API/outone.js";
@@ -209,10 +127,7 @@ export default {
   data() {
     return {
       phone: "131351356485",
-      List: [
-        { show: false, bottom: false },
-        { show: false, bottom: false },
-      ],
+      List: [],
       Listtrue: [],
       activeNames: [],
       begindate: "",
@@ -240,6 +155,7 @@ export default {
     [DatetimePicker.name]: DatetimePicker,
     [Image.name]: Image,
     [Empty.name]: Empty,
+    [Tag.name]: Tag,
   },
 
   methods: {
@@ -426,6 +342,50 @@ export default {
 }
 .banktable {
   width: 100%;
-  background: #f8f8f8;
+  background: #423eb1;
+}
+.bb {
+  margin-left: 2.5vw;
+  margin-bottom: 3vh;
+  width: 95vw;
+}
+.box {
+  margin-left: 5vw;
+  width: 90vw;
+  font-size: 1rem;
+  overflow-x: auto;
+}
+.detailedcard {
+  margin-left: 5%;
+  width: 90%;
+}
+.detailedcard2 {
+  margin-left: 5%;
+  width: 90%;
+}
+.detailedcard {
+  background-color: #3c5276;
+  color: white;
+  border-radius: 0.4rem;
+}
+.detailedcard2 {
+  background-color: #445e89;
+  color: white;
+  border-radius: 0.4rem;
+}
+.van-card__content {
+  text-align: left;
+}
+.van-card__title {
+  font-size: 1rem;
+}
+.name {
+  font-size: 1rem;
+}
+.bb table{
+  width: 100%;
+}
+.bb table td {
+  width: 50%;
 }
 </style>

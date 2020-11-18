@@ -15,13 +15,8 @@
     </van-nav-bar>
 
     <van-form @submit="onSubmit" class="bankaddform">
-      <van-field
-        clickable
-        name="cus_name"
-        v-model="cus_name"
-        label="会员姓名"
-      />
-      <van-field clickable name="mobile" v-model="mobile" label="手机" />
+      <van-field clickable name="cardno" v-model="cardno" label="会员卡号" class="checktwo"/>
+      <van-field clickable name="mobileno" v-model="mobile" label="手机" class="checktwo" />
       <van-field
         readonly
         clickable
@@ -30,8 +25,9 @@
         label="店铺名"
         placeholder="点击选择店铺"
         @click="showviplevel = true"
+        class="checktwo"
       />
-      <van-field v-model="goo_code" name="goo_code" label="项目">
+      <van-field v-model="goo_code" name="goo_code" label="项目" class="checktwo">
         <template #input>
           <a-select
             style="width: 100%"
@@ -58,7 +54,7 @@
         </template>
       </van-field>
 
-      <van-field name="count" v-model="count" label="次数">
+      <!-- <van-field name="count" v-model="count" label="次数">
         <template #input>
           <a-select style="width: 100%" @change="handleChange" v-model="count">
             <a-select-option value="A"> 全部 </a-select-option>
@@ -66,8 +62,8 @@
             <a-select-option value="N"> 未用完 </a-select-option>
           </a-select>
         </template>
-      </van-field>
-      <van-field name="ispay" v-model="ispay" label="付款">
+      </van-field> -->
+      <van-field name="ispay" v-model="ispay" label="付款" class="checktwo">
         <template #input>
           <a-select style="width: 100%" @change="handleChang1" v-model="ispay">
             <a-select-option value="A"> 全部 </a-select-option>
@@ -77,6 +73,7 @@
         </template>
       </van-field>
       <van-field
+        class="checktwo"
         readonly
         clickable
         name="begindate"
@@ -84,8 +81,10 @@
         label="开始时间"
         placeholder="点击选择开始日期"
         @click="showtime = true"
+        
       />
       <van-field
+      class="checktwo"
         readonly
         clickable
         name="enddate"
@@ -124,7 +123,6 @@
         ><template #input>
           <a-select
             show-search
-            placeholder="Select a type"
             option-filter-prop="children"
             style="width: 100%"
             @change="handleChange2"
@@ -150,7 +148,7 @@
       </van-popup>
       <div style="margin: 16px">
         <van-button round block type="info" native-type="submit">
-          下一步
+          查询
         </van-button>
       </div>
     </van-form>
@@ -175,10 +173,12 @@ import { Product_type, Goodsno_find } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Shop } from "@/API/getlistvalue.js";
 import { timeday, timetwoyearday } from "@/methods/time";
+import { secondcard_find } from "@/API/secondcard";
 
 export default {
   data() {
     return {
+      cardno: "",
       cus_name: "",
       ispay: "",
       mobile: "",
@@ -224,13 +224,26 @@ export default {
       values.subcom = this.reallsubcom;
       values.count = this.count;
       values.ispay = this.ispay;
-      var pams = clean(values);
-      console.log(pams);
+      console.log(values.begindate);
 
-      this.$router.push({
-        name: "contscard_info",
-        pams,
-      });
+      if (values.begindate == "") {
+        Toast.fail("请输入开始时间");
+      } else if (values.enddate == "") {
+        Toast.fail("请输入结束时间");
+      } else {
+        var pams = clean(values);
+        console.log(pams);
+        // secondcard_find({ begindate: "2016-01-01", enddate: "2017-11-13" }).then(
+        //   (res) => {
+        //     console.log("次卡查询", res);
+        //   }
+        // );
+        var params = pams;
+        this.$router.push({
+          name: "contscard_info",
+          params,
+        });
+      }
     },
     onConfirm4(value, index) {
       console.log(value, index);
@@ -250,7 +263,9 @@ export default {
         d = "0" + d;
       }
       var timer = date.getFullYear() + "-" + m + "-" + d;
+      var time2 = date.getFullYear() + 2 + "-" + m + "-" + d;
       this.begindate = timer;
+      this.enddate = time2;
       this.showtime = false;
     },
     endhandleEndDateConfirm(value) {
@@ -378,5 +393,14 @@ export default {
 }
 /deep/ .van-field__control--custom {
   margin-left: 6%;
+}
+/deep/ .colordanger .van-field__label span {
+  color: #ff1493;
+}
+.check {
+  color: #0f09af;
+}
+/deep/ .checktwo .van-field__label span {
+  color: #0f09af;
 }
 </style>

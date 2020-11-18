@@ -58,6 +58,7 @@
         placeholder="请输入充值金额"
         :required="true"
         :disabled="first"
+        @blur="lose"
       >
       </van-field>
 
@@ -66,7 +67,7 @@
         name="addmoney"
         label="赠送金额"
         placeholder="赠送金额（选填）"
-        :disabled="first"
+        :disabled="iscan"
       />
       <van-field
         readonly
@@ -201,13 +202,14 @@ import {
 
 import { StoreMoney_open, StoreMoney_save } from "@/API/storemoney";
 import { GetList_Shop } from "@/API/getlistvalue.js";
+import { private_money } from "@/API/private.js";
 export default {
   data() {
     return {
       crashid: this.$route.params.cardno,
       password: "",
       money: "",
-      exertmoney: "0",
+      exertmoney: "",
       moneyshop: "",
       time: "", //存钱时间
       person: this.$route.params.cus_name,
@@ -227,6 +229,7 @@ export default {
       buttonsata: false,
       isable: false,
       first: false,
+      iscan:true,
     };
   },
   components: {
@@ -269,17 +272,33 @@ export default {
       //   this.$sotre.commit('changesata')
       this.$router.go(-1);
     },
+    lose() {
+      if (this.money !== "") {
+        private_money({
+          money: this.money,
+          cusid: this.$route.params.cusid,
+        }).then((res) => {
+          this.exertmoney = res.table[0].givemoney;
+
+          console.log("有没有修改赠送余额的权限", res.table[0].cangive);
+          if(res.table[0].cangive=="Y"){
+            console.log('变更权限')
+          this.iscan=false
+         
+          }
+        });
+      }
+      console.log("失去焦点");
+    },
     onConfirm4(value, index) {
       this.viplevel = this.columns2[index];
       this.reallyshop = this.columns22[index];
-
       this.showviplevel = false;
     },
-
     onSubmit(values) {
       var that = this;
       var data = {
-        cusid: params.cusid,
+        cusid: this.$route.params.cusid,
       };
       for (let i in values) {
         if (values[i]) {
@@ -303,13 +322,9 @@ export default {
               <tr><td>赠送金额：</td><td>` +
             that.exertmoney +
             `</td></tr>
-         
             <tr><td>手工单号：</td><td>` +
             that.selfno +
             `</td></tr>
-           
-      
-          
           </table>`,
         })
           .then(() => {

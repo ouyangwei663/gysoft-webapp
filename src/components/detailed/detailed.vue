@@ -91,7 +91,7 @@
             title="新增次卡"
             icon="add-o"
             is-link
-            @click="tocontscard()"
+            @click="tocontscard(item)"
           />
           <van-cell title="赠送充值" icon="gift-o" is-link />
           <van-cell title="赠送次卡" icon="gift-card-o" is-link />
@@ -133,6 +133,8 @@ export default {
     [ActionSheet.name]: ActionSheet,
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,
+   
+
   },
   created() {
     this.getdate();
@@ -162,10 +164,9 @@ export default {
         that.List = res.table;
 
         that.List.map((item, index) => {
-          item.vipname = that.vipname[index];
+          item.vipname = that.vipname[item.cus_type - 1];
         });
       });
-  
     },
     showoperate(item) {
       this.show = true;
@@ -185,13 +186,16 @@ export default {
         params,
       });
     },
-    tocontscard() {
+    tocontscard(item) {
+      var params = this.params;
+      console.log(params);
       this.$router.push({
         name: "contscard",
+        params,
       });
     },
     clickperson(item) {
-      var params = item;
+      var params = {cusid:item.cusid};
       console.log(params);
       this.$router.push({
         name: "HelloWorld",

@@ -1,12 +1,10 @@
 <template>
   <div id="app">
     <van-nav-bar
-      :title="'单号:' + out_no"
+      title="赠送项目"
       :fixed="true"
       :left-arrow="true"
-      :right-text="ischange ? '修改' : '下一步'"
       @click-left="onClickLeft"
-      @click-right="onClickRight"
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
@@ -52,30 +50,7 @@
           />
         </template>
       </van-field>
-      <div class="addhigh">
-        <label for>标价:{{ goo_price }}</label>
-        &nbsp; &nbsp;折扣：<a-input
-          type="num"
-          style="width: 18%"
-          :default-value="100"
-          :min="1"
-          :max="100"
-          v-model="discount"
-          @change="onchangediscount"
-          :disabled="disable"
-          oninput="if(value<0||value>100)value=100"
-        />
-        &nbsp; &nbsp;
-        <label for>实价:</label>
-        <a-input
-          style="width: 22%"
-          v-model="reallyprice"
-          onkeyup="if(value>0)value=value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')"
-          @change="onchange2"
-          type="text"
-        />
-      </div>
-      <br />
+
 
       <label class="left" for>员工</label>
       <div>
@@ -89,7 +64,7 @@
             label="员工"
             show-search
             :value="newlist[index].name"
- 
+       
             option-filter-prop="children"
             style="width: 50%"
             @change="handleChange"
@@ -215,190 +190,6 @@
         >
       </template>
     </van-cell>
-
-    <table v-if="historyshow" class="bankaddtable addbottom historyhigh">
-      <tr>
-        <td colspan="4">历史消费记录</td>
-      </tr>
-      <tr>
-        <td>品种编码</td>
-        <td>品种名称</td>
-        <td>上次服务员工</td>
-        <td>价格</td>
-        <td>操作</td>
-      </tr>
-      <tr
-        v-for="(item, index) in Listhistory"
-        :key="index"
-        :class="index % 2 == 0 ? 'addlist' : 'addlist2'"
-      >
-        <td>{{ item.goo_no }}</td>
-        <td>{{ item.goo_name }}</td>
-        <td>{{ item.empname }}</td>
-        <td>{{ item.price }}</td>
-        <td>
-          <van-button
-            round
-            type="primary"
-            size="mini"
-            @click="addproject0(item)"
-            >添加</van-button
-          >
-        </td>
-      </tr>
-    </table>
-
-    <van-popup
-      v-model="show"
-      position="bottom"
-      close-icon="close"
-      close-icon-position="bottom-center"
-      :style="{ height: '100%', background: '#f8f8f8' }"
-    >
-      <van-nav-bar
-        title="客户结账"
-        :fixed="true"
-        :left-arrow="true"
-        @click-left="show = false"
-      >
-        <template #left>
-          <van-icon name="arrow-left" size="21" color="#FFFFFF" />
-        </template>
-      </van-nav-bar>
-
-      <van-cell title="账单信息" class="popupmoney">
-        <template #label>
-          <table class="moneytable">
-            <tr>
-              <td>项目名称</td>
-              <td>数量</td>
-              <td>单价</td>
-              <td>折扣</td>
-              <td>实价</td>
-            </tr>
-            <tr v-for="(item, index) in dataList" :key="index">
-              <td class="high">{{ item.goo_name }}</td>
-              <td>{{ item.num }}</td>
-              <td>{{ item.price }}</td>
-              <td>100</td>
-              <td style="color: #157aff" class="red">{{ item.price }}</td>
-            </tr>
-            <tr>
-              <td>合计</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="red" style="font-size: 0.9rem">{{ allprice }}</td>
-            </tr>
-          </table>
-        </template>
-      </van-cell>
-
-      <van-cell title="会员信息" class="popupmoney">
-        <template #label>
-          <table class="moneytable">
-            <tr>
-              <td>姓名：高利基(女士)</td>
-              <td>Vip会员卡8(889251)</td>
-            </tr>
-            <tr>
-              <td>卡内余额： <span class="red">815</span></td>
-              <td>赠送余额： <span class="red">0</span></td>
-            </tr>
-          </table>
-        </template>
-      </van-cell>
-
-      <div class="paycontact">
-        <van-cell-group title="支付">
-          <van-field
-            v-model="money"
-            label-width="10em"
-            type="number"
-            :disabled="isloading"
-          >
-            <template #label>
-              <a-icon
-                type="account-book"
-                :style="{ fontSize: '16px', color: 'red' }"
-              />
-
-              会员余额支付
-            </template>
-          </van-field>
-          <van-field
-            v-model="givemoney"
-            label-width="10em"
-            type="number"
-            :disabled="isloading"
-          >
-            <template #label>
-              <a-icon
-                type="dollar"
-                :style="{ fontSize: '16px', color: '#FF6600' }"
-              />
-
-              会员赠送支付
-            </template>
-          </van-field>
-          <van-field
-            v-model="weixin"
-            label-width="10em"
-            type="number"
-            :disabled="isloading"
-          >
-            <template #label>
-              <a-icon
-                type="wechat"
-                :style="{ fontSize: '16px', color: 'green' }"
-              />
-
-              微信支付
-            </template>
-          </van-field>
-          <van-field
-            v-model="alipay"
-            label-width="10em"
-            type="number"
-            :disabled="isloading"
-          >
-            <template #label>
-              <a-icon
-                type="alipay-circle"
-                :style="{ fontSize: '16px', color: '#08c' }"
-              />
-
-              支付宝支付
-            </template>
-          </van-field>
-          <van-field
-            v-model="otherpay"
-            label-width="10em"
-            type="number"
-            :disabled="isloading"
-          >
-            <template #label>
-              <a-icon
-                type="money-collect"
-                :style="{ fontSize: '16px' }"
-                theme="twoTone"
-              />
-              其他支付
-            </template>
-          </van-field>
-        </van-cell-group>
-      </div>
-      <van-submit-bar
-        class="tijiao"
-        :price="paymoney"
-        button-text="提交订单"
-        @submit="paybill"
-        :loading="isloading"
-      >
-        <van-checkbox v-model="message">是否短信通知</van-checkbox>
-      </van-submit-bar>
-    </van-popup>
-
   </div>
 </template>
 <script>
@@ -537,14 +328,16 @@ export default {
           var pamn = {};
           pamn.data = data;
 
-          Product_save(pamn).then((res) => {
-            console.log("保存/修改项目", res);
-            this.dataList = res.table;
+        //   Product_save(pamn).then((res) => {
+        //     console.log("保存/修改项目", res);
+        //     this.dataList = res.table;
 
-            var shop = this.dataList.map(function (item) {
-              return item;
-            });
-          });
+        //     var shop = this.dataList.map(function (item) {
+        //       return item;
+        //     });
+        //   });
+
+        console.log(pamn)
 
           var namearr = [];
           namearr = this.newlist.map(function (item) {
@@ -592,14 +385,14 @@ export default {
           var pamn = {};
           pamn.data = data;
 
-          Product_save(pamn).then((res) => {
-            console.log("保存/修改项目", res);
-            this.dataList = res.table;
+        //   Product_save(pamn).then((res) => {
+        //     console.log("保存/修改项目", res);
+        //     this.dataList = res.table;
 
-            var shop = this.dataList.map(function (item) {
-              return item;
-            });
-          });
+        //     var shop = this.dataList.map(function (item) {
+        //       return item;
+        //     });
+        //   });
 
           var namearr = [];
           namearr = this.newlist.map(function (item) {
@@ -813,7 +606,6 @@ export default {
     },
   },
   created() {
-    this.out_no = this.$route.params.out_no;
     if (sessionStorage.getItem("getlist_erp") == null) {
       GetList_Erp({}).then((res) => {
         this.workerselect = res.table;

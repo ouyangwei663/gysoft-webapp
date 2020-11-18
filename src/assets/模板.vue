@@ -81,7 +81,6 @@
         ><template #input>
           <a-select
             show-search
-            placeholder="Select a type"
             option-filter-prop="children"
             style="width: 100%"
             @change="handleChange2"

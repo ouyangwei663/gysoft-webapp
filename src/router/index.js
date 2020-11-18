@@ -24,9 +24,15 @@ import contscard_pay from '@/components/contscard/contscard_pay'
 import chart from '@/components/chart/chart'
 import chart_shop from '@/components/chart/chart_shop'
 import chart_work from '@/components/chart/chart_work'
+import chart_workmoney from '@/components/chart/chart_workmoney'
 import chart_route from '@/components/chart/chart_route'
+import worker_check from '@/components/worker/worker_check'
+import worker_push from '@/components/worker/worker_push'
+import worker_complete from '@/components/worker/worker_complete'
+import contscard_give from '@/components/contscard/contscard_give'
 import qindan from '@/components/bank/bankadd/contact'
 Vue.use(Router)
+
 
 
 
@@ -127,6 +133,10 @@ export default new Router({
       path: '/chart_route',
       name: 'chart_route',
       component: chart_route
+    }, {
+      path: '/chart_workmoney',
+      name: 'chart_workmoney',
+      component: chart_workmoney
     },
     {
       path: '/contscard',
@@ -145,6 +155,22 @@ export default new Router({
       path: '/contscard_pay',
       name: 'contscard_pay',
       component: contscard_pay
+    }, {
+      path: '/contscard_give',
+      name: 'contscard_give',
+      component: contscard_give
+    }, {
+      path: '/worker_check',
+      name: 'worker_check',
+      component: worker_check
+    }, {
+      path: '/worker_push',
+      name: 'worker_push',
+      component: worker_push
+    }, {
+      path: '/worker_complete',
+      name: 'worker_complete',
+      component: worker_complete
     }
   ]
 })

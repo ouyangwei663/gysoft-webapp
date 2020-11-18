@@ -17,7 +17,7 @@
     <van-form @submit="onSubmit" class="checkroll">
       <van-field v-model="crashid" name="cus_name" placeholder="请输入姓名">
         <template #label>
-          <span>姓名</span>
+          <span class="check">姓名</span>
         </template>
       </van-field>
       <van-field
@@ -27,11 +27,11 @@
         :rules="[{ validator, message: '请输入正确手机格式' }]"
       >
         <template #label>
-          <span>手机号码</span>
+          <span class="check">手机号码</span>
         </template>
       </van-field>
 
-      <van-field name="sex" label="性别" input-align="right" :required="true">
+      <van-field name="sex" label="性别" input-align="right" class="checktwo">
         <template #input>
           <van-radio-group v-model="sex" direction="horizontal">
             <van-radio name="Y">男</van-radio>
@@ -41,7 +41,7 @@
       </van-field>
       <van-field v-model="card" name="Cardno" placeholder="请输入卡号">
         <template #label>
-          <span>卡号</span>
+          <span class="check">卡号</span>
         </template>
       </van-field>
       <van-field
@@ -52,10 +52,11 @@
         label="店铺名"
         placeholder="点击选择店铺"
         @click="showviplevel = true"
+        class="checktwo"
       />
       <van-field v-model="memo" name="memo" placeholder="备注">
         <template #label>
-          <span>备注</span>
+          <span class="check">备注</span>
         </template>
       </van-field>
 
@@ -67,6 +68,7 @@
         label="录入时间"
         placeholder="点击选择日期"
         @click="showCalendar = true"
+        class="checktwo"
       />
 
       <van-calendar
@@ -86,6 +88,7 @@
         label="有效期时间"
         placeholder="点击选择日期"
         @click="show = true"
+        class="checktwo"
       />
 
       <van-calendar
@@ -103,20 +106,21 @@
         label="会员卡等级"
         placeholder="点击选择会员卡等级"
         @click="showPicker = true"
+        class="checktwo"
       />
       <van-field v-model="carperson" name="carperson" placeholder="">
         <template #label>
-          <span>开卡人</span>
+          <span class="check">开卡人</span>
         </template>
       </van-field>
       <van-field v-model="workcom" name="workcom" placeholder="">
         <template #label>
-          <span>工作公司</span>
+          <span class="check">工作公司</span>
         </template>
       </van-field>
       <van-field v-model="bir" name="bir" placeholder="">
         <template #label>
-          <span>生日</span>
+          <span class="check">生日</span>
         </template>
       </van-field>
 
@@ -389,5 +393,11 @@ export default {
 }
 .checkroll {
   height: 130vh;
+}
+.check {
+  color: #0f09af;
+}
+/deep/ .checktwo .van-field__label span {
+  color: #0f09af;
 }
 </style>

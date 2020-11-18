@@ -27,17 +27,16 @@
       ></van-grid-item> -->
       <van-grid-item id="second" icon="comment" text="日营业情况" to="/chart" />
       <van-grid-item
-        id="seventh"
-        icon="manager"
-        text="员工业绩汇总"
-        to="/chart_work"
-      />
-
-      <van-grid-item
         id="third"
         icon="chart-trending-o"
         text="店面统计报表"
         to="/chart_shop"
+      />
+      <van-grid-item
+        id="third"
+        icon="balance-list"
+        text="员工提成报表"
+        to="/chart_workmoney"
       />
 
       <!-- <van-grid-item id="fourth" icon="calendar-o" text="预约管理" />

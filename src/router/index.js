@@ -14,6 +14,7 @@ import detailed from '@/components/detailed/detailed'
 import bank from '@/components/bank/bank'
 import bankcheck from '@/components/bank/bankcheck'
 import bankadd from '@/components/bank/bankadd/bankadd'
+import bankaddco from '@/components/bank/bankadd/bankaddco'
 import listcheck from '@/components/listcheck/listcheck'
 import vipbookdetail from '@/components/vipbook/vipbookdetail/vipbookdetail'
 import vipbookflow from '@/components/vipbook/vipbookflow/vipbookflow'
@@ -117,6 +118,11 @@ export default new Router({
       path: '/bankadd',
       name: 'bankadd',
       component: bankadd
+    },
+    {
+      path: '/bankaddco',
+      name: 'bankaddco',
+      component: bankaddco
     }, {
       path: '/chart',
       name: 'chart',

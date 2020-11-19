@@ -52,15 +52,15 @@ export default {
   },
   created() {
     this.postone();
- 
   },
   methods: {
     postone() {
       apiAddress({
         action: "getuser",
       }).then((res) => {
-        window.localStorage.setItem("subname",res.user.subname)
-        window.localStorage.setItem("subcom",res.user.subcom)
+        window.localStorage.setItem("subname", res.user.subname);
+        window.localStorage.setItem("subcom", res.user.subcom);
+        window.sessionStorage.setItem("username", res.user.username);
       });
     },
     onClickLeft() {
@@ -81,9 +81,7 @@ export default {
           this.comname = res.data.user.comname;
           this.username = res.data.user.username;
         })
-        .catch((err) => {
-       
-        });
+        .catch((err) => {});
       this.show = true;
     },
   },

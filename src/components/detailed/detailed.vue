@@ -204,8 +204,9 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    if (to.path === "/info") {
+    if (to.path === "/bankadd") {
       // 这是路由path
+      
 
       this.$store.commit("setKeepAlive", ["HellWorld"]); //这是此页面的name属性名字
     } else {

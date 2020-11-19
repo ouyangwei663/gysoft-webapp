@@ -12,7 +12,7 @@ import {
   };
   export const private_outone = p => { //   这个是收银开单
     p.action = "findby";
-    p.classname = "n_givemoney_hy";
+    p.classname = "n_private_hy";
     p.funcname = "canoutone";
     p.classmemo = "撤销收银单的权限"
     return post(second, p)

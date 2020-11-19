@@ -37,6 +37,16 @@ export default {
       });
     },
   },
+  beforeRouteLeave(to, from, next) {
+    if (to.path === "/bank") {
+      // 这是路由path
+      
+      console.log('去收银了')
+      this.$store.commit("setKeepAlive", ["bank",'bankadd']); //这是此页面的name属性名字
+    } else {
+    }
+    next();
+  },
 };
 </script>
 

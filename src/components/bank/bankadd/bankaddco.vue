@@ -1,17 +1,16 @@
 <template>
   <div class="hello">
     <van-nav-bar
-      title="来客登记"
+      title="修改收银单"
       :fixed="true"
       :left-arrow="true"
       @click-left="onClickLeft"
- 
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
-    <table class="banktoptable">
+    <!-- <table class="banktoptable">
       <tr>
         <td class="diyi">查找会员</td>
         <td class="dier">
@@ -41,9 +40,8 @@
           </a-select>
         </td>
       </tr>
-    </table>
-
-    <van-cell title="" left class="titletop">
+    </table> -->
+    <!-- <van-cell title="" left class="titletop">
       <template #label>
         <table class="bankadd">
           <tr>
@@ -60,7 +58,7 @@
           </tr>
         </table>
       </template>
-    </van-cell>
+    </van-cell> -->
 
     <van-form @submit="onSubmit" class="bankaddform">
       <van-field
@@ -146,6 +144,15 @@
         </van-button>
       </div>
     </van-form>
+    <van-button
+      :disabled="isout_one"
+      class="buttondanger"
+      round
+      block
+      type="danger"
+    >
+      {{ isout_one ? "无权限撤销订单" : "撤销订单" }}
+    </van-button>
   </div>
 </template>
 <script>
@@ -172,14 +179,14 @@ import {
 } from "vant";
 import contact from "./contact";
 import DropList from "vue-droplist";
-import { GetList_Erp ,GetList_Erp2} from "@/API/getlistvalue";
+import { GetList_Erp } from "@/API/getlistvalue";
 import { OutOne_open, OutOne_save } from "@/API/outone.js";
 import { getshop } from "@/methods/getshop";
 import { Customer_find } from "@/API/customer";
 import { Product_history, Product_type } from "@/API/product";
+import { private_outone } from "@/API/private";
 import { clean } from "@/methods/clean";
 export default {
-  name:"bankadd",
   data() {
     return {
       empty: "",
@@ -231,6 +238,7 @@ export default {
       billnotype: "",
       radio: "",
       cardno: "",
+      isout_one: true,
     };
   },
   components: {
@@ -278,11 +286,31 @@ export default {
     } else {
       this.workerselect = JSON.parse(sessionStorage.getItem("getlist_erp"));
     }
-    OutOne_open({ subcom: localStorage.getItem("subcom") }).then((res) => {
-      this.selfno = res.table[0].selfno;
-      this.datetime = res.table[0].out_date;
-    });
+
+    console.log("参数", this.$route.params);
+    this.cusid = this.$route.params.cus_name;
+    this.sex = this.$route.params.sex;
+    this.cardno = this.$route.params.cardno;
+    this.lastmoney = this.$route.params.lastmoney;
+    this.givehavemoney = this.$route.params.givehavemoney;
+    this.oneisorder = this.$route.params.oneisorder;
+    this.selfno = this.$route.params.selfno;
+    this.memo = this.$route.params.memo;
+    this.radio = this.$route.params.sex;
+    this.out_date=this.$route.params.out_date
+    console.log(this.out_date)
+
+    private_outone({ UserName: sessionStorage.getItem("username") }).then(
+      (res) => {
+        if (res.table[0].canoutone == "Y") {
+          this.isout_one = false;
+        } else {
+          this.isout_one = true;
+        }
+      }
+    );
   },
+  
   methods: {
     onClickLeft() {
       this.$router.go(-1);
@@ -297,40 +325,34 @@ export default {
     onSubmit(values) {
       var that = this;
       values.subcom = this.subno;
-      values.out_date = this.datetime;
-      if (values.firstemp == "") {
-        Toast.fail("请选择是否指名");
-      } else if (values.firstemp == "") {
-        Toast.fail("请选择员工");
-      } else if (values.sex == "") {
-        Toast.fail("请选择会员性别");
-      } else if (this.billtype == "") {
-        Toast.fail("请选择单据类别");
-      } else {
-        var pams = clean(values);
-        pams.cusid = this.cusid;
+      values.out_date = this.out_date
 
-        var pam = {};
+      var pams = clean(values);
+      pams.cusid = this.cusid;
 
-        pam.data = pams;
+      var pam = {};
 
-        OutOne_save(pam).then((res) => {
-          if (res.errmsg == "OK") {
-            console.log(res);
-            console.log("成功", res.table[0].hintstr);
-            var params = {};
-            params.cusid = that.cusid;
-            params.out_no = res.table[0].out_no;
+      pam.data = pams;
 
-            this.$router.push({
-              name: "qindan",
-              params,
-            });
-          } else {
-            alert(res.errmsg);
-          }
-        });
-      }
+      var params = {};
+
+
+      OutOne_save(pam).then((res) => {
+        if (res.errmsg == "OK") {
+          console.log(res);
+          console.log("成功", res.table[0].hintstr);
+          var params = {};
+          params.cusid = that.cusid;
+          params.out_no = res.table[0].out_no;
+
+          this.$router.push({
+            name: "qindan",
+            params,
+          });
+        } else {
+          alert(res.errmsg);
+        }
+      });
     },
 
     onConfirm(value) {
@@ -514,5 +536,9 @@ export default {
 
 /deep/ .colordanger .van-field__label span {
   color: #ff1493;
+}
+.buttondanger {
+  width: 80%;
+  margin-left: 10%;
 }
 </style>

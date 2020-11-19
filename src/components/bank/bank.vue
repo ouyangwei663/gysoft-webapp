@@ -124,7 +124,9 @@ import {
 import { timeday } from "@/methods/time";
 import { OutOne_find } from "@/API/outone.js";
 export default {
+  name:"bank",
   data() {
+   
     return {
       phone: "131351356485",
       List: [],
@@ -135,7 +137,7 @@ export default {
       showtime: false,
       showendtime: false,
       minDate: new Date(2016, 0, 1),
-      maxDate: new Date(2020, 10, 1),
+      maxDate: new Date(2020, 12, 1),
       currentDate: new Date(),
       outno: "",
       empty: false,
@@ -173,9 +175,9 @@ export default {
     },
     clickon(item) {
       var params = {};
-      params.out_no = item.out_no;
+      params=item
       this.$router.push({
-        name: "qindan",
+        name: "bankaddco",
         params,
       });
     },
@@ -244,6 +246,7 @@ export default {
     },
   },
   created() {
+    console.log('初始化了')
     if (JSON.stringify(this.$route.params) !== "{}") {
       var pam = this.$route.params;
       this.begindate = pam.begindate;
@@ -283,6 +286,17 @@ export default {
         }
       });
     }
+  },
+    beforeRouteLeave(to, from, next) {
+    if (to.path === "/bankadd") {
+      // 这是路由path
+      
+
+      this.$store.commit("setKeepAlive", ["bankadd","bank"]); //这是此页面的name属性名字
+    } else {
+      // this.$store.commit("setKeepAlive", []);
+    }
+    next();
   },
 };
 </script>

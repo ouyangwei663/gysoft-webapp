@@ -27,3 +27,13 @@ export const GetList_Erp = p => { //   这个员工下拉菜单的接口
   p.name = "员工"
   return post(second, p)
 };
+// export const GetList_Erp2 = p => { //   
+//   p.subcom = subcom
+//   p.action = action;
+
+//   p.classname = "n_employer_hy";
+//   p.funcname = "getmaster";
+//   p.classmemo = "员工"
+ 
+//   return post(second, p)
+// };

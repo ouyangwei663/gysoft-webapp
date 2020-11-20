@@ -5,7 +5,6 @@
       :fixed="true"
       :left-arrow="true"
       @click-left="onClickLeft"
- 
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
@@ -172,14 +171,14 @@ import {
 } from "vant";
 import contact from "./contact";
 import DropList from "vue-droplist";
-import { GetList_Erp ,GetList_Erp2} from "@/API/getlistvalue";
+import { GetList_Erp, GetList_Erp2 } from "@/API/getlistvalue";
 import { OutOne_open, OutOne_save } from "@/API/outone.js";
 import { getshop } from "@/methods/getshop";
 import { Customer_find } from "@/API/customer";
 import { Product_history, Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
 export default {
-  name:"bankadd",
+  name: "bankadd",
   data() {
     return {
       empty: "",
@@ -231,6 +230,7 @@ export default {
       billnotype: "",
       radio: "",
       cardno: "",
+      out_notwo: "",
     };
   },
   components: {
@@ -283,9 +283,16 @@ export default {
       this.datetime = res.table[0].out_date;
     });
   },
+  activated() {
+    console.log("第二次");
+    console.log(this.$route.params.out_notwo);
+    this.out_notwo = this.$route.params.out_notwo;
+  },
   methods: {
     onClickLeft() {
-      this.$router.go(-1);
+      this.$router.push({
+        name:"bank"
+      })
     },
     onSearch(val) {
       this.$refs.droplist.show();
@@ -296,8 +303,11 @@ export default {
     },
     onSubmit(values) {
       var that = this;
+      values.out_no = this.$route.params.out_notwo;
+
       values.subcom = this.subno;
       values.out_date = this.datetime;
+      console.log(values);
       if (values.firstemp == "") {
         Toast.fail("请选择是否指名");
       } else if (values.firstemp == "") {
@@ -308,6 +318,7 @@ export default {
         Toast.fail("请选择单据类别");
       } else {
         var pams = clean(values);
+
         pams.cusid = this.cusid;
 
         var pam = {};
@@ -319,6 +330,7 @@ export default {
             console.log(res);
             console.log("成功", res.table[0].hintstr);
             var params = {};
+
             params.cusid = that.cusid;
             params.out_no = res.table[0].out_no;
 

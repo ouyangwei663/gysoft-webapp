@@ -2,12 +2,12 @@
   <div class="hello">
     <van-nav-bar
       class="check"
-      title="次卡销售"
+      title="销售次卡"
       :fixed="true"
-      right-text="新增会员"
+   
       :left-arrow="true"
       @click-left="onClickLeft"
-      @click-right="onClickRight"
+   
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />

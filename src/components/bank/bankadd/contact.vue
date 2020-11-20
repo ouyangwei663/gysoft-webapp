@@ -89,7 +89,6 @@
             label="员工"
             show-search
             :value="newlist[index].name"
- 
             option-filter-prop="children"
             style="width: 50%"
             @change="handleChange"
@@ -398,7 +397,6 @@
         <van-checkbox v-model="message">是否短信通知</van-checkbox>
       </van-submit-bar>
     </van-popup>
-
   </div>
 </template>
 <script>
@@ -495,7 +493,14 @@ export default {
   },
   methods: {
     onClickLeft() {
-      this.$router.go(-1);
+      var params={
+        out_notwo:this.$route.params.out_no
+      }
+
+      this.$router.push({
+        name:"bankadd",
+        params
+      })
     },
     add() {
       this.newlist.push({});
@@ -528,6 +533,7 @@ export default {
               data[name] = value;
             }
           }
+          if(this.out_notwo){}
           data.goo_code = this.goo_code;
           data.out_no = that.$route.params.out_no;
           data.num = this.num;

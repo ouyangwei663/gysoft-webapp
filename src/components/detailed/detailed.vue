@@ -88,7 +88,7 @@
           <van-cell title="恢复会员" icon="share-o" is-link />
           <van-cell title="注销会员" icon="close" is-link />
           <van-cell
-            title="新增次卡"
+            title="销售次卡"
             icon="add-o"
             is-link
             @click="tocontscard(item)"

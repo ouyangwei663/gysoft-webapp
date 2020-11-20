@@ -9,6 +9,16 @@
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
+     
+      <template #right>
+         <van-button
+        :disabled="isout_one"
+        type="danger"
+        @click="right"
+        
+      >
+        {{isout_one?"无权":""}}{{ isout_two=="Y" ? "删除订单" : "撤销订单" }}
+      </van-button> </template>
     </van-nav-bar>
     <!-- <table class="banktoptable">
       <tr>
@@ -144,15 +154,7 @@
         </van-button>
       </div>
     </van-form>
-    <van-button
-      :disabled="isout_one"
-      class="buttondanger"
-      round
-      block
-      type="danger"
-    >
-      {{ isout_one ? "无权限撤销订单" : "撤销订单" }}
-    </van-button>
+ 
   </div>
 </template>
 <script>
@@ -186,6 +188,7 @@ import { Customer_find } from "@/API/customer";
 import { Product_history, Product_type } from "@/API/product";
 import { private_outone } from "@/API/private";
 import { clean } from "@/methods/clean";
+import { time } from "@/methods/time";
 export default {
   data() {
     return {
@@ -239,6 +242,7 @@ export default {
       radio: "",
       cardno: "",
       isout_one: true,
+      isout_two:""
     };
   },
   components: {
@@ -297,21 +301,26 @@ export default {
     this.selfno = this.$route.params.selfno;
     this.memo = this.$route.params.memo;
     this.radio = this.$route.params.sex;
-    this.out_date=this.$route.params.out_date
-    console.log(this.out_date)
+    this.out_date =time( this.$route.params.out_date)
+ 
+     this.out_two = this.$route.params.havepay;
+    console.log(this.out_date);
 
     private_outone({ UserName: sessionStorage.getItem("username") }).then(
       (res) => {
         if (res.table[0].canoutone == "Y") {
           this.isout_one = false;
+          console.log('有权删除')
         } else {
           this.isout_one = true;
+            console.log('无权删除')
         }
       }
     );
   },
-  
+
   methods: {
+    right(){console.log('')},
     onClickLeft() {
       this.$router.go(-1);
     },
@@ -325,7 +334,8 @@ export default {
     onSubmit(values) {
       var that = this;
       values.subcom = this.subno;
-      values.out_date = this.out_date
+      values.out_date = this.out_date;
+      values.out_no=this.$route.params.out_no
 
       var pams = clean(values);
       pams.cusid = this.cusid;
@@ -335,7 +345,6 @@ export default {
       pam.data = pams;
 
       var params = {};
-
 
       OutOne_save(pam).then((res) => {
         if (res.errmsg == "OK") {

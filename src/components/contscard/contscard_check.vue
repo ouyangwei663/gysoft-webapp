@@ -15,8 +15,20 @@
     </van-nav-bar>
 
     <van-form @submit="onSubmit" class="bankaddform">
-      <van-field clickable name="cardno" v-model="cardno" label="会员卡号" class="checktwo"/>
-      <van-field clickable name="mobileno" v-model="mobile" label="手机" class="checktwo" />
+      <van-field
+        clickable
+        name="cardno"
+        v-model="cardno"
+        label="会员卡号"
+        class="checktwo"
+      />
+      <van-field
+        clickable
+        name="mobileno"
+        v-model="mobile"
+        label="手机"
+        class="checktwo"
+      />
       <van-field
         readonly
         clickable
@@ -27,7 +39,30 @@
         @click="showviplevel = true"
         class="checktwo"
       />
-      <van-field v-model="goo_code" name="goo_code" label="项目" class="checktwo">
+      <van-cell
+      title="时间"
+        readonly
+        clickable
+        
+        :value="timename"
+        placeholder="点击选择时间"
+        @click="showlist = true"
+        class="checktwoone"
+      />
+      <van-popup v-model="showlist" position="bottom">
+        <van-picker
+          show-toolbar
+          :columns="timedate"
+          @confirm="onConfirmtime"
+          @cancel="showlist = false"
+        />
+      </van-popup>
+      <van-field
+        v-model="goo_code"
+        name="goo_code"
+        label="项目"
+        class="checktwo"
+      >
         <template #input>
           <a-select
             style="width: 100%"
@@ -72,27 +107,32 @@
           </a-select>
         </template>
       </van-field>
-      <van-field
-        class="checktwo"
-        readonly
-        clickable
-        name="begindate"
-        :value="begindate"
-        label="开始时间"
-        placeholder="点击选择开始日期"
-        @click="showtime = true"
-        
-      />
-      <van-field
-      class="checktwo"
-        readonly
-        clickable
-        name="enddate"
-        :value="enddate"
-        label="结束时间"
-        placeholder="点击选择结束日期"
-        @click="showendtime = true"
-      />
+
+      <van-collapse v-model="activeNames" class="banktimecenter">
+        <van-collapse-item name="1" left>
+          <template #title> 高级 </template>
+          <van-field
+            class="checktwo"
+            readonly
+            clickable
+            name="begindate"
+            :value="begindate"
+            label="开始时间"
+            placeholder="点击选择开始日期"
+            @click="showtime = true"
+          />
+          <van-field
+            class="checktwo"
+            readonly
+            clickable
+            name="enddate"
+            :value="enddate"
+            label="结束时间"
+            placeholder="点击选择结束日期"
+            @click="showendtime = true"
+          />
+        </van-collapse-item>
+      </van-collapse>
       <van-popup v-model="showtime" position="bottom">
         <van-datetime-picker
           v-model="currentDate"
@@ -168,11 +208,21 @@ import {
   Popup,
   Picker,
   DatetimePicker,
+  CollapseItem,
+  Collapse,
+  Cell
 } from "vant";
 import { Product_type, Goodsno_find } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Shop } from "@/API/getlistvalue.js";
-import { timeday, timetwoyearday } from "@/methods/time";
+import {
+  timeday,
+  timetwoyearday,
+  timeyesterday,
+  timesevenday,
+  timemonthday,
+  timeyearday,
+} from "@/methods/time";
 import { secondcard_find } from "@/API/secondcard";
 
 export default {
@@ -202,9 +252,39 @@ export default {
       goo_code: "",
       data: [],
       value0: "",
+      activeNames: [],
+      showlist: false,
+      timedate: ["今天", "昨天", "近一周", "本月", "全年"],
+      timename: "",
     };
   },
   methods: {
+    onConfirmtime(value) {
+      this.timename = value;
+      if (value == "今天") {
+        console.log("今天");
+        this.begindate = timeday();
+        this.enddate = timeday();
+      } else if (value == "昨天") {
+        console.log("昨天");
+        this.begindate = timeyesterday();
+        this.enddate = timeyesterday();
+      } else if (value == "近一周") {
+        console.log("近一周");
+        this.begindate = timesevenday().needday;
+        this.enddate = timesevenday().day;
+      } else if (value == "本月") {
+        console.log("本月");
+        this.begindate = timemonthday().needday;
+        this.enddate = timemonthday().day;
+      } else if (value == "全年") {
+        console.log("全年");
+        this.begindate = timeyearday().needday;
+        this.enddate = timeyearday().day;
+      }
+
+      this.showlist = false;
+    },
     onClickLeft() {
       this.$router.go(-1);
     },
@@ -315,6 +395,9 @@ export default {
     [Popup.name]: Popup,
     [Picker.name]: Picker,
     [DatetimePicker.name]: DatetimePicker,
+    [CollapseItem.name]: CollapseItem,
+    [Collapse.name]: Collapse,
+     [Cell.name]: Cell,
   },
   created() {
     if (sessionStorage.getItem("product_type") == null) {
@@ -402,5 +485,11 @@ export default {
 }
 /deep/ .checktwo .van-field__label span {
   color: #0f09af;
+}
+.checktwoone  {
+  width: 90%;
+  margin-left: 5%;
+  text-align: left;
+
 }
 </style>

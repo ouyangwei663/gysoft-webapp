@@ -1,0 +1,30 @@
+{
+  "id": "1992612",
+  "name": "666",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "4250711",
+      "name": "男",
+      "font_class": "nan",
+      "unicode": "e6c2",
+      "unicode_decimal": 59074
+    },
+    {
+      "icon_id": "11208334",
+      "name": "01-business woman",
+      "font_class": "-businesswoman",
+      "unicode": "e691",
+      "unicode_decimal": 59025
+    },
+    {
+      "icon_id": "12195264",
+      "name": "manager",
+      "font_class": "manager",
+      "unicode": "eca8",
+      "unicode_decimal": 60584
+    }
+  ]
+}

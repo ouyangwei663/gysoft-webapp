@@ -42,13 +42,15 @@
 
       <van-grid-item v-if="false" id="eigth" icon="fire" text="今日生日" />
       <van-grid-item v-if="false" id="ninth" icon="bill-o" text="充值" />
+      
       <van-grid-item v-if="false" id="tenth" icon="paid" text="取现" />
-      <van-grid-item
+       <van-grid-item v-if="true" id="ninth" icon="bill-o" text="职务权限" @click="toJug()" />
+      <!-- <van-grid-item
         id="eleventh"
         icon="records"
         text="积分录入"
         to="/bankadd"
-      />
+      /> -->
     </van-grid>
   </div>
 </template>
@@ -81,6 +83,11 @@ export default {
     toChart() {
       this.$router.push({
         name: "chart_route",
+      });
+    },
+        toJug() {
+      this.$router.push({
+        name: "jug",
       });
     },
   },

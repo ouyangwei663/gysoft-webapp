@@ -16,7 +16,7 @@
 
     <van-form @submit="onSubmit" class="bankaddform">
       <van-field v-model="name" name="empname" label="姓名" class="checktwo" />
-      <van-field v-model="phone" name="phone" label="手机号" class="checktwo"/>
+      <van-field v-model="phone" name="phone" label="手机号" class="checktwo" />
       <van-field
         readonly
         clickable
@@ -32,11 +32,9 @@
         :value="billnotype"
         label="工种"
         class="colordanger checktwo"
-        
         ><template #input>
           <a-select
             show-search
-      
             option-filter-prop="children"
             style="width: 100%"
             @change="handleChange2"
@@ -169,12 +167,18 @@ export default {
       this.billnotype = value;
     },
     onSubmit(values) {
-      console.log(values);
+      values.subcom = this.reallsubcom;
 
       var pams = clean(values);
+      console.log("员工查询条件", pams);
+
+      var params = pams;
+      this.$router.push({
+        name: "worker_info",
+        params,
+      });
     },
     onConfirm4(value, index) {
-      console.log(value, index);
       this.subcom = value;
       this.reallsubcom = this.columns22[index];
       this.showviplevel = false;

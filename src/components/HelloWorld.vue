@@ -13,6 +13,9 @@
       </template>
     </van-nav-bar>
 
+    <div id="tan">
+
+    </div>
     <van-form @submit="onSubmit" class="infoform">
       <van-field v-model="crashid" name="cus_name" placeholder="请输入姓名">
         <template #label>
@@ -85,6 +88,7 @@
           @confirm="onConfirmvip"
           @cancel="showvipPicker = false"
         />
+        6666666666666666
       </van-popup>
 
       <van-field v-model="card" name="cardno" placeholder="可以为空">
@@ -136,11 +140,23 @@
       v-if="isshow"
       round
       block
-      type="danger"
+      type="primary"
       class="gudingsecond"
+      @click="topass()"
+      >修改密码</van-button
+    >
+    <van-button
+      v-if="isshow"
+      round
+      block
+      type="danger"
+      class="gudingthird"
       @click="toMore()"
       >更多资料</van-button
     >
+    <van-popup v-model="show" get-container="#pop" >
+
+    </van-popup>
     <div class="air"></div>
   </div>
 </template>
@@ -171,7 +187,7 @@ import { time } from "@/methods/time";
 export default {
   name: "HellWorld",
   created() {
-    console.log('传递',this.$route.params)
+    console.log("传递", this.$route.params);
     this.getvip(),
       GetList_Shop({}).then((res) => {
         this.firstshop = res.table;
@@ -190,6 +206,7 @@ export default {
         if (that.first.sex == "女士") {
           that.first.sex = "N";
         }
+
         this.crashid = res.table[0].cus_name;
         this.phone = res.table[0].mobile;
         this.sex = res.table[0].sex;
@@ -231,8 +248,8 @@ export default {
     // this.value = window.localStorage.getItem("subname");
     // this.getshop();
   },
-  activated(){
-    console.log('动态',this.$route.params)
+  activated() {
+    console.log("动态", this.$route.params);
   },
   data() {
     return {
@@ -251,7 +268,7 @@ export default {
       columns: ["超级会员", "普通会员", "白金会员", "散客", "龙腾VIP"],
       showPicker: false,
       showtime: false,
-
+      show:true,
       minDate: new Date(2020, 0, 1),
       maxDate: new Date(2025, 10, 1),
       currentDate: new Date(),
@@ -428,6 +445,9 @@ export default {
         params,
       });
     },
+    topass(){
+      console.log('修改密码')
+    },
     validator(val) {
       if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(val) || val == "") {
         return true;
@@ -495,11 +515,15 @@ export default {
 .gudingfirst {
   position: fixed;
   margin-left: 22.5%;
-  bottom: 13vh;
+  bottom: 17vh;
 }
 .gudingsecond {
   position: fixed;
-  bottom: 5vh;
+  bottom: 10vh;
+}
+.gudingthird {
+  position: fixed;
+  bottom: 3vh;
 }
 .air {
   width: 100%;
@@ -507,12 +531,12 @@ export default {
 }
 
 .check {
-   color: #ff1493;
+  color: #ff1493;
 }
 /deep/ .checktwo .van-field__label span {
-   color: #ff1493;
+  color: #ff1493;
 }
-/deep/ .van-nav-bar__right .van-nav-bar__text{
+/deep/ .van-nav-bar__right .van-nav-bar__text {
   color: white;
 }
 </style>

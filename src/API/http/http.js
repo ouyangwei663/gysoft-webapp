@@ -10,8 +10,8 @@ import {
  */
 
 
+var token = window.localStorage.getItem("token")
 
- 
 export function get(url, params) {
   return new Promise((resolve, reject) => {
     axios.get(url, {
@@ -31,8 +31,8 @@ export function get(url, params) {
  * @param {Object} params [请求时携带的参数] 
  */
 export function post(url, params) {
-  params.token = "lx_mf"
-  params.aspnetid = "lx_mf"
+  params.token = token
+  params.aspnetid = token
   return new Promise((resolve, reject) => {
     axios.post(url, params)
       .then(res => {

@@ -1,10 +1,9 @@
 <template>
   <div>
     <van-nav-bar
-      title="会员资料"
+      title="员工资料"
       :fixed="true"
       left-text="返回"
-      right-text="按钮"
       :left-arrow="true"
       @click-left="onClickLeft"
     >
@@ -12,20 +11,6 @@
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
-    <!-- <div class="box">
-
-      <table>
-        <tr>
-          <td>会员名称</td>
-          <td>性别</td>
-          <td>会员级别</td>
-          <td>充值余额</td>
-          <td>赠送余额</td>
-          <td>手机号</td>
-          <td>卡号</td>
-        </tr>
-      </table>
-    </div>-->
 
     <div class="bb" v-for="(item, index) in List" :key="index">
       <van-card
@@ -34,50 +19,38 @@
       >
         <template #title>
           <div class="name">
-            {{ item.cus_name }}{{'   '
+            {{ item.empName }}{{ "   "
             }}<van-icon
-              v-show="item.sex !== '女士'"
+              v-show="item.sex !== '女'"
               class="iconfont"
               class-prefix="icon"
               name="nan"
               color="#15FFE7"
             /><van-icon
-              v-show="item.sex == '女士'"
+              v-show="item.sex == '女'"
               class="iconfont"
               class-prefix="icon"
               name="-businesswoman"
               color="#F5005C"
             />
-            <van-tag type="primary" round color="#703DD8" size="medium">{{
-              item.vipname
-            }}</van-tag>
           </div>
         </template>
         <template #desc>
           <table class="vipinfo">
             <tr>
-              <td>
-                充值余额：{{ item.lastmoney === null ? 0 : item.lastmoney }}
-              </td>
-              <td>卡号：{{ item.cardno }}</td>
-            </tr>
-            <tr>
-              <td>
-                赠送余额：{{
-                  item.givehavemoney === null ? 0 : item.givehavemoney
-                }}
-              </td>
-              <td>手机：{{ item.mobile }}</td>
+              <td>姓名：{{ item.englishname }}</td>
+              <td>手机号：{{ item.phone }}</td>
             </tr>
             <tr>
               <td colspan="2">
-                备注：{{ item.memo === null ? "无" : item.memo }}
+                入职时间：{{
+                  item.enterDate === null ? "暂无记录" : item.enterDate
+                }}
               </td>
             </tr>
             <tr>
-              <td>
-                地址：{{ item.address === null ? "暂无记录" : item.address }}
-              </td>
+              <td>备注：{{ item.memo === null ? "暂无记录" : item.memo }}</td>
+
               <td>
                 <van-button
                   type="primary"
@@ -90,27 +63,6 @@
           </table>
         </template>
       </van-card>
-      <van-action-sheet v-model="show" title="会员操作">
-        <div>
-          <van-cell
-            title="充值"
-            icon="gold-coin-o"
-            is-link
-            @click="tocrash()"
-          />
-          <van-cell title="取现" icon="idcard" is-link @click="tomoney()" />
-          <van-cell title="恢复会员" icon="share-o" is-link />
-          <van-cell title="注销会员" icon="close" is-link />
-          <van-cell
-            title="销售次卡"
-            icon="add-o"
-            is-link
-            @click="tocontscard(item)"
-          />
-          <van-cell title="赠送充值" icon="gift-o" is-link />
-          <van-cell title="赠送次卡" icon="gift-card-o" is-link />
-        </div>
-      </van-action-sheet>
     </div>
   </div>
 </template>
@@ -126,7 +78,7 @@ import {
   CellGroup,
 } from "vant";
 import "@/assets/icon/iconfont.css";
-import { Customer_find } from "@/API/customer";
+import { work_find } from "@/API/work";
 import "@/assets/icon2/iconfont.css";
 export default {
   data() {
@@ -151,11 +103,6 @@ export default {
   },
   created() {
     this.getdate();
-    this.vipname = JSON.parse(sessionStorage.getItem("vip_list")).map(function (
-      item
-    ) {
-      return item.name;
-    });
   },
 
   methods: {
@@ -172,13 +119,9 @@ export default {
 
     getdate() {
       var that = this;
-      Customer_find(this.$route.params).then((res) => {
+      work_find(this.$route.params).then((res) => {
         console.log(res);
         that.List = res.table;
-
-        that.List.map((item, index) => {
-          item.vipname = that.vipname[item.cus_type - 1];
-        });
       });
     },
     showoperate(item) {
@@ -208,23 +151,13 @@ export default {
       });
     },
     clickperson(item) {
-      var params = { cusid: item.cusid };
-      console.log(params);
+      var params = item;
+
       this.$router.push({
-        name: "HelloWorld",
+        name: "worker_push",
         params,
       });
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (to.path === "/info") {
-      // 这是路由path
-
-      this.$store.commit("setKeepAlive", ["HellWorld"]); //这是此页面的name属性名字
-    } else {
-      this.$store.commit("setKeepAlive", []);
-    }
-    next();
   },
 };
 </script>

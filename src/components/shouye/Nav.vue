@@ -16,7 +16,7 @@
         <van-icon name="bars" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
-    <van-dialog v-model="show" title="详情信息" theme="round">
+    <!-- <van-dialog v-model="show" title="详情信息" theme="round">
       <table class="alert">
         <tr>
           <td>公司名称：</td>
@@ -27,14 +27,14 @@
           <td>{{ username }}</td>
         </tr>
       </table>
-    </van-dialog>
+    </van-dialog> -->
   </div>
 </template>
 
 <script>
 import { NavBar, Toast, Icon, Dialog } from "vant";
 import jsonp from "jsonp";
-import { apiAddress } from "@/API/api";
+import { apiAddress, GetList_company } from "@/API/api";
 export default {
   name: "Nav",
   data() {
@@ -69,13 +69,7 @@ export default {
     },
 
     onClickRight() {
-      this.$axios
-        .get("erpcore/", {
-          params: {
-            action: "getuser",
-            token: "lx_mf",
-          },
-        })
+      GetList_company({})
         .then((res) => {
           console.log(res.data.user);
           this.comname = res.data.user.comname;

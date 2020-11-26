@@ -38,7 +38,6 @@
         :value="billnotype"
         label="工种"
         class="colordanger checktwo"
-        
         ><template #input>
           <a-select
             show-search
@@ -64,7 +63,7 @@
         label="入职时间"
         placeholder="点击选择开始日期"
         @click="showtime = true"
-         class="checktwo"
+        class="checktwo"
       />
       <van-popup v-model="showtime" position="bottom">
         <van-datetime-picker
@@ -123,7 +122,7 @@ import {
 import { Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Shop } from "@/API/getlistvalue.js";
-import { timeday, timetwoyearday } from "@/methods/time";
+import { timeday, timetwoyearday, time } from "@/methods/time";
 import worker_completeVue from "./worker_complete.vue";
 export default {
   data() {
@@ -148,6 +147,8 @@ export default {
       name: "",
       secondname: "",
       phone: "",
+      olddate: {},
+      diffData:null
     };
   },
   methods: {
@@ -160,11 +161,21 @@ export default {
     },
     onSubmit(values) {
       console.log(values);
-
       var pams = clean(values);
-      this.$router.push({
-        name: "worker_complete",
-      });
+      var newlist = pams;
+      if (this.$route.params.empId) {
+        for (let k in this.olddate) {
+          if (this.olddate[k] != this.values[k]) {
+            if (!this.diffData) {
+              this.diffData = {};
+            }
+            this.diffData[k] = this.devinfo[k];
+          }
+        }
+      }
+      // this.$router.push({
+      //   name: "worker_complete",
+      // });
     },
     onConfirm4(value, index) {
       console.log(value, index);
@@ -262,7 +273,19 @@ export default {
     this.subcom = localStorage.getItem("subname");
     this.reallsubcom = localStorage.getItem("subcom");
     this.begindate = timeday();
-    this.enddate = timetwoyearday();
+
+    if (this.$route.params.empId) {
+      this.selfno = this.$route.params.emp_no;
+      this.name = this.$route.params.empName;
+      this.secondname = this.$route.params.englishname;
+      this.begindate = time(this.$route.params.enterDate);
+      this.olddate = {
+        emp_no: this.$route.params.emp_no,
+        empName: this.$route.params.empName,
+        englishname: this.$route.params.englishname,
+        enterDate: this.$route.params.enterDate,
+      };
+    }
   },
   mounted() {},
 };

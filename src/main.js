@@ -1,5 +1,3 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
 import router from './router'
@@ -11,44 +9,75 @@ import VueTouch from 'vue-touch'
 Vue.use(VueTouch, {
   name: 'v-touch'
 })
-import {
-  WindowsBalloon
-} from 'node-notifier'
 Vue.use(Antd);
 Vue.prototype.$axios = axios
 
 
-window.localStorage.setItem("token", "lxmf")
+
+
+var port = location.port;
+function GetCurrDir() {
+
+  var domain = window.location.href.split(':')[0] + '://' + document.domain;
+
+  return domain; //替换空格  
+}
+
+
+
+
+function GetUrlParam(paraName) {
+  var url = document.location.toString();
+  // var url = "https://yw.36x.cn/hy/index.html?token=lx_mf#/"
+  var arrObj = url.split("?");
+  if (arrObj.length > 1) {
+    var arrPara = arrObj[1].split("&");
+    var arr;
+    for (var i = 0; i < arrPara.length; i++) {
+      arr = arrPara[i].split("=");
+      if (arr != null && arr[0] == paraName) {
+        return arr[1];
+      }
+    }
+    return "";
+  } else {
+    return "";
+  }
+}
+
+
+var str = GetUrlParam("token");
+var token = str.replace('#/', '')
+console.log("token", token)
+if (str !== "") {
+  window.localStorage.setItem("token", token)
+  var delet = 'token=' + token
+  var href = document.location.toString()
+  var secondhref = href.replace(delet, '')
+  window.location.href = secondhref
+
+}
+
 window.localStorage.setItem("second", "erpcore/")
 
 
+if (port) {
+  var baseURL = GetCurrDir() + ':' + port
+} else {
+  var baseURL = GetCurrDir()
+}
 
-var baseURL = window.global_url.BASE_URL
-
-axios.defaults.baseURL = baseURL
-axios.interceptors.request.use(function (config) {
-  // Do something before request is sent
-  let token = "lx_mf"
-  if (token) {
-    config.headers.token = token; //将token放到请求头发送给服务器
-    return config;
-    //这里经常搭配token使用，将token值配置到tokenkey中，将tokenkey放在请求头中
-    // config.headers['accessToken'] = Token;
-  }
-}, function (error) {
-  // Do something with request error
-  return Promise.reject(error);
-});
+console.log('API路径', baseURL + '/erpcore')
+window.localStorage.setItem("url", baseURL + '/erpcore')
 
 
-
-
+// axios.defaults.baseURL = baseURL
+window.localStorage.setItem("token", "lx_mf")
+axios.defaults.baseURL = "https://wintop.36x.cn"
 Vue.config.productionTip = false
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-
   router,
   store,
   components: {

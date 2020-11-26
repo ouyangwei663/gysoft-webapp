@@ -40,10 +40,9 @@
         class="checktwo"
       />
       <van-cell
-      title="时间"
+        title="时间"
         readonly
         clickable
-        
         :value="timename"
         placeholder="点击选择时间"
         @click="showlist = true"
@@ -210,7 +209,7 @@ import {
   DatetimePicker,
   CollapseItem,
   Collapse,
-  Cell
+  Cell,
 } from "vant";
 import { Product_type, Goodsno_find } from "@/API/product";
 import { clean } from "@/methods/clean";
@@ -301,18 +300,19 @@ export default {
       this.isplay = value;
     },
     onSubmit(values) {
+      values.begindate = this.begindate;
+      values.enddate = this.enddate;
       values.subcom = this.reallsubcom;
       values.count = this.count;
       values.ispay = this.ispay;
-      console.log(values.begindate);
-
       if (values.begindate == "") {
         Toast.fail("请输入开始时间");
       } else if (values.enddate == "") {
         Toast.fail("请输入结束时间");
       } else {
+        console.log("次卡查询");
         var pams = clean(values);
-        console.log(pams);
+        console.log("条件", pams);
         // secondcard_find({ begindate: "2016-01-01", enddate: "2017-11-13" }).then(
         //   (res) => {
         //     console.log("次卡查询", res);
@@ -397,7 +397,7 @@ export default {
     [DatetimePicker.name]: DatetimePicker,
     [CollapseItem.name]: CollapseItem,
     [Collapse.name]: Collapse,
-     [Cell.name]: Cell,
+    [Cell.name]: Cell,
   },
   created() {
     if (sessionStorage.getItem("product_type") == null) {
@@ -486,10 +486,9 @@ export default {
 /deep/ .checktwo .van-field__label span {
   color: #0f09af;
 }
-.checktwoone  {
+.checktwoone {
   width: 90%;
   margin-left: 5%;
   text-align: left;
-
 }
 </style>

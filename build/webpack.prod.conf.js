@@ -24,7 +24,7 @@ const webpackConfig = merge(baseWebpackConfig, {
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     path: config.build.assetsRoot,
-    filename: utils.assetsPath('js/[name].[chunkhash].js'),
+    filename: utils.assetsPath('js/[name].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
   },
   plugins: [
@@ -32,6 +32,12 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': env
     }),
+
+    new webpack.DllReferencePlugin({
+      context:path.join(__dirname,".."),
+      manifest:require("../static/build/vendor-manifest.json")
+    }),
+
     new UglifyJsPlugin({
       uglifyOptions: {
         compress: {
@@ -64,6 +70,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       filename: config.build.index,
       template: 'index.html',
       inject: true,
+      // favicon: path.resolve('favicon.ico'), //新增
       minify: {
         removeComments: true,
         collapseWhitespace: true,

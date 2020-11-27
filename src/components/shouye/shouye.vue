@@ -41,11 +41,13 @@ import Left from "./Left";
 import { GetList_Shop } from "@/API/getlistvalue.js";
 import { apiAddress } from "@/API/api.js";
 
+import { Button } from "ant-design-vue";
+
 export default {
   name: "shouye",
   created() {
     this.token = window.localStorage.getItem("token");
-    this.url=window.localStorage.getItem("url")
+    this.url = window.localStorage.getItem("url");
     // apiAddress({
     //   action: "getuser",
     // }).then((res) => {
@@ -61,7 +63,6 @@ export default {
       this.username = res.user.username;
     });
 
-  
     this.getshop();
   },
 
@@ -74,7 +75,7 @@ export default {
       subcom: "",
       username: "",
       head: "",
-      url:""
+      url: "",
     };
   },
   components: {

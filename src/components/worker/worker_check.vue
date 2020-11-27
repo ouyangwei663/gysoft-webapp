@@ -128,6 +128,7 @@ import { Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Shop } from "@/API/getlistvalue.js";
 import { timeday, timetwoyearday } from "@/methods/time";
+// import { Select } from "ant-design-vue";
 export default {
   data() {
     return {
@@ -230,6 +231,7 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [Cell.name]: Cell,
+    // ASelect: Select,
   },
   created() {
     if (sessionStorage.getItem("product_type") == null) {

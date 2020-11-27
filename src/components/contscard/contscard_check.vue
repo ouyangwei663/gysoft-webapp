@@ -214,6 +214,7 @@ import {
 import { Product_type, Goodsno_find } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Shop } from "@/API/getlistvalue.js";
+// import { Select } from "ant-design-vue";
 import {
   timeday,
   timetwoyearday,
@@ -223,6 +224,10 @@ import {
   timeyearday,
 } from "@/methods/time";
 import { secondcard_find } from "@/API/secondcard";
+import Select from 'ant-design-vue/lib/select';
+import 'ant-design-vue/lib/select/style/css'; 
+
+// import 'ant-design-vue/lib/select/style/css'; 
 
 export default {
   data() {
@@ -398,6 +403,7 @@ export default {
     [CollapseItem.name]: CollapseItem,
     [Collapse.name]: Collapse,
     [Cell.name]: Cell,
+    // ASelect: Select
   },
   created() {
     if (sessionStorage.getItem("product_type") == null) {

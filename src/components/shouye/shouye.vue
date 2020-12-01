@@ -5,31 +5,7 @@
       <Left></Left>
       <Gird></Gird>
 
-      <div>
-        <p>测试信息</p>
-        <table>
-          <tr>
-            <td>token:{{ token }}</td>
-          </tr>
-          <tr>
-            <td>使用人:{{ username }}</td>
-          </tr>
-          <tr>
-            <td>店铺分号:{{ subcom }}</td>
-          </tr>
-          <tr>
-            <td>店铺名:{{ subname }}</td>
-          </tr>
-          <tr>
-            <td>API路径:{{ url }}</td>
-          </tr>
-        </table>
-
-        <p>
-          <span>当前网页头信息</span>
-        </p>
-        <p>{{ head }}</p>
-      </div>
+      <span class="info">{{ subname }}({{ mccdp }}) {{ username }} 201201A</span>
     </div>
   </div>
 </template>
@@ -40,8 +16,6 @@ import Gird from "./Gird";
 import Left from "./Left";
 import { GetList_Shop } from "@/API/getlistvalue.js";
 import { apiAddress } from "@/API/api.js";
-
-import { Button } from "ant-design-vue";
 
 export default {
   name: "shouye",
@@ -58,9 +32,12 @@ export default {
     apiAddress({
       action: "getuser",
     }).then((res) => {
+      console.log(res);
       this.subname = res.user.subname;
       this.subcom = res.user.subcom;
       this.username = res.user.username;
+      this.mccdp = res.user.comname;
+      this.type = res.user.usertype;
     });
 
     this.getshop();
@@ -76,6 +53,8 @@ export default {
       username: "",
       head: "",
       url: "",
+      mccdp: "",
+      type: "",
     };
   },
   components: {
@@ -107,4 +86,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.info {
+  width: 80%;
+  position: absolute;
+  left: 10%;
+  bottom: 50px;
+}
 </style>

@@ -428,6 +428,7 @@ import {
 } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Erp } from "@/API/getlistvalue";
+// import { Select } from "ant-design-vue";
 export default {
   data() {
     return {
@@ -490,17 +491,19 @@ export default {
     [CellGroup.name]: CellGroup,
     [Dialog.name]: Dialog,
     [Toast.name]: Toast,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
   },
   methods: {
     onClickLeft() {
-      var params={
-        out_notwo:this.$route.params.out_no
-      }
+      var params = {
+        out_notwo: this.$route.params.out_no,
+      };
 
       this.$router.push({
-        name:"bankadd",
-        params
-      })
+        name: "bankadd",
+        params,
+      });
     },
     add() {
       this.newlist.push({});
@@ -533,7 +536,8 @@ export default {
               data[name] = value;
             }
           }
-          if(this.out_notwo){}
+          if (this.out_notwo) {
+          }
           data.goo_code = this.goo_code;
           data.out_no = that.$route.params.out_no;
           data.num = this.num;
@@ -874,11 +878,11 @@ export default {
       return total * 100;
     },
   },
-    beforeRouteLeave(to, from, next) {
+  beforeRouteLeave(to, from, next) {
     if (to.path === "/bank") {
       // 这是路由path
-      
-      console.log('去收银了')
+
+      console.log("去收银了");
       this.$store.commit("setKeepAlive", ["bank"]); //这是此页面的name属性名字
     } else {
     }

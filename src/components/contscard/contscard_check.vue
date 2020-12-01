@@ -224,10 +224,10 @@ import {
   timeyearday,
 } from "@/methods/time";
 import { secondcard_find } from "@/API/secondcard";
-import Select from 'ant-design-vue/lib/select';
-import 'ant-design-vue/lib/select/style/css'; 
+// import Select from "ant-design-vue/lib/select";
+// import "ant-design-vue/lib/select/style/css";
 
-// import 'ant-design-vue/lib/select/style/css'; 
+// import 'ant-design-vue/lib/select/style/css';
 
 export default {
   data() {
@@ -403,6 +403,8 @@ export default {
     [CollapseItem.name]: CollapseItem,
     [Collapse.name]: Collapse,
     [Cell.name]: Cell,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
     // ASelect: Select
   },
   created() {

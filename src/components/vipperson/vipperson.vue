@@ -171,6 +171,7 @@ import {
   Sticky,
 } from "vant";
 import { GetList_Shop, GetList_Hy } from "@/API/getlistvalue.js";
+import { clean } from "@/methods/clean.js";
 export default {
   data() {
     return {
@@ -250,7 +251,7 @@ export default {
       } else {
         delete pam.sata;
       }
-      var params = pam;
+      var params =clean(pam) ;
       this.$router.push({
         name: "detailed",
         params,

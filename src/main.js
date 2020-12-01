@@ -3,16 +3,19 @@ import App from './App'
 import router from './router'
 import store from './store/store'
 import axios from 'axios'
-
+// import Antd from 'ant-design-vue'
+// import "vant/lib/select/style";
 // import InputNumber from 'ant-design-vue/lib/input-number';
 // import Button from 'ant-design-vue/lib/button';
-// import Icon from 'ant-design-vue/lib/icon';
+import Select from 'ant-design-vue/lib/Select';
+Vue.use(Select)
+Vue.use(Select.Option)
 
 
 // import 'ant-design-vue/dist/antd.css';
-// import 'ant-design-vue/lib/select/style/css'; 
+import 'ant-design-vue/lib/select/style/css'; 
 
-// Vue.use(Select)
+
 // Vue.use(InputNumber)
 // Vue.use(Button)
 // Vue.use(Icon)

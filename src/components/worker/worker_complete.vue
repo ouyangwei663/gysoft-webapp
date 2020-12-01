@@ -110,7 +110,7 @@
       </van-field> -->
       <div style="margin: 16px">
         <van-button round block type="info" native-type="submit">
-         保存
+          保存
         </van-button>
       </div>
     </van-form>
@@ -130,11 +130,13 @@ import {
   Popup,
   Picker,
   DatetimePicker,
+  Dialog
 } from "vant";
 import { Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Shop } from "@/API/getlistvalue.js";
 import { timeday, timetwoyearday } from "@/methods/time";
+import { work_save } from "@/API/work.js";
 export default {
   data() {
     return {
@@ -155,15 +157,14 @@ export default {
       gegindate: "",
       minDate: new Date(2016, 0, 1),
       maxDate: new Date(2020, 9, 28),
-      mingzu:"",
-      idcard:"",
-      jiguan:"",
-      person:"",
-      money:"",
-      idno:"",
-      name:"",
-      personphone:""
-
+      mingzu: "",
+      idcard: "",
+      jiguan: "",
+      person: "",
+      money: "",
+      idno: "",
+      name: "",
+      personphone: "",
     };
   },
   methods: {
@@ -175,9 +176,17 @@ export default {
       this.billnotype = value;
     },
     onSubmit(values) {
-      console.log(values);
-
       var pams = clean(values);
+
+      pams.empId = this.$route.params.empId;
+      var pamms = {};
+      pamms.data = pams;
+      work_save(pamms).then((res) => {
+        Dialog.alert({
+          title: "保存成功",
+          message: res.table[0].hintstr,
+        });
+      });
     },
     onConfirm4(value, index) {
       console.log(value, index);
@@ -228,8 +237,10 @@ export default {
     [Popup.name]: Popup,
     [Picker.name]: Picker,
     [DatetimePicker.name]: DatetimePicker,
+    [Dialog.name]:Dialog
   },
   created() {
+    console.log("路由", this.$route);
     if (sessionStorage.getItem("product_type") == null) {
       //获取列表
 

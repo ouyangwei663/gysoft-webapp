@@ -14,15 +14,8 @@
 
     <van-form @submit="onSubmit" class="bankaddform">
       <van-field
-        v-model="selfno"
-        name="emp_no"
-        label="员工编码"
-        placeholder="请输入员工编码"
-        disabled
-      />
-      <van-field
         v-model="name"
-        name="empname"
+        name="empName"
         label="姓名"
         placeholder="请输入员工姓名"
         class="checktwo"
@@ -58,7 +51,7 @@
       <van-field
         readonly
         clickable
-        name="enterdate"
+        name="enterDate"
         :value="begindate"
         label="入职时间"
         placeholder="点击选择开始日期"
@@ -98,10 +91,21 @@
       </van-popup>
       <div style="margin: 16px">
         <van-button round block type="info" native-type="submit">
-          下一步
+          保存资料
         </van-button>
       </div>
     </van-form>
+    <div style="margin: 16px" v-if="showmore">
+      <van-button
+        round
+        block
+        type="danger"
+        native-type="submit"
+        @click="tomore"
+      >
+        更多资料
+      </van-button>
+    </div>
   </div>
 </template>
 
@@ -118,12 +122,15 @@ import {
   Popup,
   Picker,
   DatetimePicker,
+  Dialog,
 } from "vant";
 import { Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Shop } from "@/API/getlistvalue.js";
 import { timeday, timetwoyearday, time } from "@/methods/time";
+import { work_save } from "@/API/work.js";
 import worker_completeVue from "./worker_complete.vue";
+// import { Select } from "ant-design-vue";
 export default {
   data() {
     return {
@@ -148,10 +155,19 @@ export default {
       secondname: "",
       phone: "",
       olddate: {},
-      diffData:null
+      diffData: null,
+      showmore: false,
     };
   },
   methods: {
+    tomore() {
+      var params = {};
+      params.empId = this.$route.params.empId;
+      this.$router.push({
+        name: "worker_complete",
+        params,
+      });
+    },
     onClickLeft() {
       this.$router.go(-1);
     },
@@ -159,23 +175,57 @@ export default {
     handleChange2(value) {
       this.billnotype = value;
     },
+
     onSubmit(values) {
-      console.log(values);
-      var pams = clean(values);
-      var newlist = pams;
       if (this.$route.params.empId) {
-        for (let k in this.olddate) {
-          if (this.olddate[k] != this.values[k]) {
-            if (!this.diffData) {
-              this.diffData = {};
+        var last = {};
+        last.empId = this.$route.params.empId;
+        last.old = {};
+        last.data = {};
+        console.log(values);
+        var newlist = values;
+        var old = this.olddate;
+        if (this.$route.params.empId) {
+          for (let k in old) {
+            if (old[k] !== values[k]) {
+              last.old[k] = old[k];
+              last.data[k] = values[k];
             }
-            this.diffData[k] = this.devinfo[k];
           }
         }
+        var arr = Object.keys(last.data);
+        if (arr.length == "0") {
+          Toast.fail("数据没有改变");
+        } else {
+          console.log("提交的修改数据", last.data);
+          work_save(last).then((res) => {
+            Dialog.alert({
+              title: "保存成功",
+              message: res.table[0].hintstr,
+            });
+            console.log(res);
+          });
+        }
+      } else {
+        if (values.empName == "") {
+          Toast.fail("姓名不能为空");
+        } else if (values.englishname == "") {
+          Toast.fail("别名不能为空");
+        } else if (values.enterDate == "") {
+          Toast.fail("入职时间不能为空");
+        }
+        var pam = clean(values);
+        var pamms = {};
+        pamms.data = pam;
+
+        work_save(pamms).then((res) => {
+          console.log(res);
+          Dialog.alert({
+            title: "保存成功",
+            message: res.table[0].hintstr,
+          });
+        });
       }
-      // this.$router.push({
-      //   name: "worker_complete",
-      // });
     },
     onConfirm4(value, index) {
       console.log(value, index);
@@ -226,6 +276,9 @@ export default {
     [Popup.name]: Popup,
     [Picker.name]: Picker,
     [DatetimePicker.name]: DatetimePicker,
+    [Dialog.name]: Dialog,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
   },
   created() {
     if (sessionStorage.getItem("product_type") == null) {
@@ -275,6 +328,7 @@ export default {
     this.begindate = timeday();
 
     if (this.$route.params.empId) {
+      this.showmore = true;
       this.selfno = this.$route.params.emp_no;
       this.name = this.$route.params.empName;
       this.secondname = this.$route.params.englishname;

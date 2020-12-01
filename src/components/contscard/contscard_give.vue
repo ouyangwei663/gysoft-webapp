@@ -51,7 +51,6 @@
         </template>
       </van-field>
 
-
       <label class="left" for>员工</label>
       <div>
         <div
@@ -64,7 +63,6 @@
             label="员工"
             show-search
             :value="newlist[index].name"
-       
             option-filter-prop="children"
             style="width: 50%"
             @change="handleChange"
@@ -221,6 +219,7 @@ import {
 } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Erp } from "@/API/getlistvalue";
+// import {Select} from "ant-design-vue"
 export default {
   data() {
     return {
@@ -283,6 +282,8 @@ export default {
     [CellGroup.name]: CellGroup,
     [Dialog.name]: Dialog,
     [Toast.name]: Toast,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
   },
   methods: {
     onClickLeft() {
@@ -328,16 +329,16 @@ export default {
           var pamn = {};
           pamn.data = data;
 
-        //   Product_save(pamn).then((res) => {
-        //     console.log("保存/修改项目", res);
-        //     this.dataList = res.table;
+          //   Product_save(pamn).then((res) => {
+          //     console.log("保存/修改项目", res);
+          //     this.dataList = res.table;
 
-        //     var shop = this.dataList.map(function (item) {
-        //       return item;
-        //     });
-        //   });
+          //     var shop = this.dataList.map(function (item) {
+          //       return item;
+          //     });
+          //   });
 
-        console.log(pamn)
+          console.log(pamn);
 
           var namearr = [];
           namearr = this.newlist.map(function (item) {
@@ -385,14 +386,14 @@ export default {
           var pamn = {};
           pamn.data = data;
 
-        //   Product_save(pamn).then((res) => {
-        //     console.log("保存/修改项目", res);
-        //     this.dataList = res.table;
+          //   Product_save(pamn).then((res) => {
+          //     console.log("保存/修改项目", res);
+          //     this.dataList = res.table;
 
-        //     var shop = this.dataList.map(function (item) {
-        //       return item;
-        //     });
-        //   });
+          //     var shop = this.dataList.map(function (item) {
+          //       return item;
+          //     });
+          //   });
 
           var namearr = [];
           namearr = this.newlist.map(function (item) {

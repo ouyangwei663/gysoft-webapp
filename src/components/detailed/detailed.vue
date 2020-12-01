@@ -1,7 +1,6 @@
 <template>
   <div>
     <van-nav-bar
-      title="会员资料"
       :fixed="true"
       left-text="返回"
       right-text="按钮"
@@ -11,7 +10,21 @@
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
+      <template #title>
+        <span>会员资料</span>
+      </template>
     </van-nav-bar>
+    <van-sticky :offset-top="46">
+      <div style="width: 100%; background: white">
+        <van-pagination
+          @change="pagechange"
+          v-model="currentPage"
+          :page-count="totalpage"
+          mode="simple"
+          style="width: 80%; margin-left: 10%; margin-bottom: 3vh"
+        />
+      </div>
+    </van-sticky>
     <!-- <div class="box">
 
       <table>
@@ -34,8 +47,9 @@
       >
         <template #title>
           <div class="name">
-            {{ item.cus_name }}{{'   '
-            }}<van-icon
+            {{ item.cus_name }}&nbsp;{{ "        "
+            }}{{'('}}{{item.sex !== "女士" ? "男士" : "女士" }}{{')'}}
+            <!-- <van-icon
               v-show="item.sex !== '女士'"
               class="iconfont"
               class-prefix="icon"
@@ -47,7 +61,7 @@
               class-prefix="icon"
               name="-businesswoman"
               color="#F5005C"
-            />
+            /> -->
             <van-tag type="primary" round color="#703DD8" size="medium">{{
               item.vipname
             }}</van-tag>
@@ -90,6 +104,7 @@
           </table>
         </template>
       </van-card>
+
       <van-action-sheet v-model="show" title="会员操作">
         <div>
           <van-cell
@@ -112,6 +127,7 @@
         </div>
       </van-action-sheet>
     </div>
+    <div id="air"></div>
   </div>
 </template>
 <script>
@@ -124,6 +140,8 @@ import {
   ActionSheet,
   Cell,
   CellGroup,
+  Pagination,
+  Sticky,
 } from "vant";
 import "@/assets/icon/iconfont.css";
 import { Customer_find } from "@/API/customer";
@@ -137,6 +155,8 @@ export default {
       List: [],
       params: {},
       vipname: [],
+      currentPage: 1,
+      totalpage: "",
     };
   },
   components: {
@@ -148,6 +168,8 @@ export default {
     [ActionSheet.name]: ActionSheet,
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,
+    [Pagination.name]: Pagination,
+    [Sticky.name]: Sticky,
   },
   created() {
     this.getdate();
@@ -174,6 +196,7 @@ export default {
       var that = this;
       Customer_find(this.$route.params).then((res) => {
         console.log(res);
+        that.totalpage = res.extended.totalpage;
         that.List = res.table;
 
         that.List.map((item, index) => {
@@ -184,6 +207,11 @@ export default {
     showoperate(item) {
       this.show = true;
       this.params = item;
+    },
+    pagechange() {
+      this.$route.params.pageindex = this.currentPage;
+      console.log(this.$route.params);
+      this.getdate();
     },
     tocrash() {
       var params = this.params;
@@ -290,5 +318,9 @@ export default {
   text-align: left;
   width: 90%;
   margin-left: 5%;
+}
+#air {
+  width: 100%;
+  height: 5vh;
 }
 </style>

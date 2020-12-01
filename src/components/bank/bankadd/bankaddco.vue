@@ -9,16 +9,13 @@
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
-     
+
       <template #right>
-         <van-button
-        :disabled="isout_one"
-        type="danger"
-        @click="right"
-        
-      >
-        {{isout_one?"无权":""}}{{ isout_two=="Y" ? "删除订单" : "撤销订单" }}
-      </van-button> </template>
+        <van-button :disabled="isout_one" type="danger" @click="right">
+          {{ isout_one ? "无权" : ""
+          }}{{ isout_two == "Y" ? "删除订单" : "撤销订单" }}
+        </van-button>
+      </template>
     </van-nav-bar>
     <!-- <table class="banktoptable">
       <tr>
@@ -154,7 +151,6 @@
         </van-button>
       </div>
     </van-form>
- 
   </div>
 </template>
 <script>
@@ -189,6 +185,7 @@ import { Product_history, Product_type } from "@/API/product";
 import { private_outone } from "@/API/private";
 import { clean } from "@/methods/clean";
 import { time } from "@/methods/time";
+// import {Select} from  "ant-design-vue"
 export default {
   data() {
     return {
@@ -242,7 +239,7 @@ export default {
       radio: "",
       cardno: "",
       isout_one: true,
-      isout_two:""
+      isout_two: "",
     };
   },
   components: {
@@ -265,6 +262,8 @@ export default {
     [DropdownItem.name]: DropdownItem,
     [Picker.name]: Picker,
     [Toast.name]: Toast,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
   },
   created() {
     if (sessionStorage.getItem("product_type") == null) {
@@ -301,26 +300,28 @@ export default {
     this.selfno = this.$route.params.selfno;
     this.memo = this.$route.params.memo;
     this.radio = this.$route.params.sex;
-    this.out_date =time( this.$route.params.out_date)
- 
-     this.out_two = this.$route.params.havepay;
+    this.out_date = time(this.$route.params.out_date);
+
+    this.out_two = this.$route.params.havepay;
     console.log(this.out_date);
 
     private_outone({ UserName: sessionStorage.getItem("username") }).then(
       (res) => {
         if (res.table[0].canoutone == "Y") {
           this.isout_one = false;
-          console.log('有权删除')
+          console.log("有权删除");
         } else {
           this.isout_one = true;
-            console.log('无权删除')
+          console.log("无权删除");
         }
       }
     );
   },
 
   methods: {
-    right(){console.log('')},
+    right() {
+      console.log("");
+    },
     onClickLeft() {
       this.$router.go(-1);
     },
@@ -335,7 +336,7 @@ export default {
       var that = this;
       values.subcom = this.subno;
       values.out_date = this.out_date;
-      values.out_no=this.$route.params.out_no
+      values.out_no = this.$route.params.out_no;
 
       var pams = clean(values);
       pams.cusid = this.cusid;

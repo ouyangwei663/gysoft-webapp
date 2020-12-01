@@ -131,6 +131,7 @@ import { Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Shop } from "@/API/getlistvalue.js";
 import { timeday, timetwoyearday } from "@/methods/time";
+// import {Select} from "ant-design-vue"
 export default {
   data() {
     return {
@@ -215,6 +216,8 @@ export default {
     [Popup.name]: Popup,
     [Picker.name]: Picker,
     [DatetimePicker.name]: DatetimePicker,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
   },
   created() {
     if (sessionStorage.getItem("product_type") == null) {
@@ -261,8 +264,8 @@ export default {
     }
     this.subcom = localStorage.getItem("subname");
     this.reallsubcom = localStorage.getItem("subcom");
-    this.begindate=timeday();
-    this.enddate=timetwoyearday();
+    this.begindate = timeday();
+    this.enddate = timetwoyearday();
   },
   mounted() {},
 };

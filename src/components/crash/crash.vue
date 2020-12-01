@@ -86,7 +86,7 @@
         name="moneychangedate"
         label="存钱时间"
         placeholder="存钱时间"
-        :disabled="first"
+        :disabled="true"
       />
       <!-- <van-field
         v-model="person"
@@ -106,7 +106,7 @@
         name="selfno"
         label="手工单号"
         placeholder="请填写手工单号"
-        :disabled="first"
+        :disabled="true"
       />
       <van-field
         id="bg"
@@ -114,6 +114,7 @@
         v-model="payway"
         label="充值方式"
         :disabled="true"
+        class="xiaoshi"
       ></van-field>
       <van-radio-group v-model="payway">
         <van-cell-group>
@@ -229,7 +230,7 @@ export default {
       buttonsata: false,
       isable: false,
       first: false,
-      iscan:true,
+      iscan: true,
     };
   },
   components: {
@@ -281,10 +282,9 @@ export default {
           this.exertmoney = res.table[0].givemoney;
 
           console.log("有没有修改赠送余额的权限", res.table[0].cangive);
-          if(res.table[0].cangive=="Y"){
-            console.log('变更权限')
-          this.iscan=false
-         
+          if (res.table[0].cangive == "Y") {
+            console.log("变更权限");
+            this.iscan = false;
           }
         });
       }
@@ -352,6 +352,9 @@ export default {
   created() {
     this.viplevel = window.localStorage.getItem("subname");
     this.reallyshop = window.localStorage.getItem("subcom");
+    var arr = JSON.parse(window.localStorage.getItem("shop"));
+    console.log('字符串',arr)
+    console.log("缓存", window.localStorage);
     this.getkaidan();
     this.getshop();
   },
@@ -408,5 +411,8 @@ export default {
 .crashvipinfo td {
   text-align: left;
   width: 50%;
+}
+.xiaoshi /deep/ .van-field__value {
+  opacity: 0;
 }
 </style>

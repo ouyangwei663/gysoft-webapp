@@ -31,7 +31,7 @@
         label="结束时间"
         placeholder="点击选择结束日期"
         @click="showendtime = true"
-          class="checktwo"
+        class="checktwo"
       />
       <van-popup v-model="showtime" position="bottom">
         <van-datetime-picker
@@ -56,7 +56,12 @@
         />
       </van-popup>
 
-      <van-field name="havepay" label="付款状态" input-align="right"   class="checktwo">
+      <van-field
+        name="havepay"
+        label="付款状态"
+        input-align="right"
+        class="checktwo"
+      >
         <template #input>
           <van-radio-group v-model="sex" direction="horizontal">
             <van-radio name="Y">已付款</van-radio>
@@ -82,7 +87,7 @@
         label="卡类型"
         placeholder="点击选择卡类型"
         @click="showPicker = true"
-          class="checktwo"
+        class="checktwo"
       />
       <van-field v-model="crashid" name="cus_name" placeholder="请输入会员名称">
         <template #label>
@@ -108,7 +113,7 @@
         label="店铺名"
         placeholder="点击选择店铺"
         @click="showviplevel = true"
-          class="checktwo"
+        class="checktwo"
       />
       <van-field v-model="memo" name="memo" placeholder="备注">
         <template #label>
@@ -116,12 +121,17 @@
         </template>
       </van-field>
 
-      <van-field v-model="firstemp" name="firstemp" placeholder="" label="员工"   class="checktwo">
+      <van-field
+        v-model="firstemp"
+        name="firstemp"
+        placeholder=""
+        label="员工"
+        class="checktwo"
+      >
         <template #input>
           <a-select
             label="员工"
             show-search
-        
             option-filter-prop="children"
             style="width: 100%"
             @change="handleChange"
@@ -135,7 +145,7 @@
           </a-select>
         </template>
       </van-field>
-      <van-field name="isorder" label="指名"   class="checktwo">
+      <van-field name="isorder" label="指名" class="checktwo">
         <template #input>
           <van-radio-group v-model="isorder" direction="horizontal">
             <van-radio name="N" :style="{ width: '27%' }">指名</van-radio>
@@ -149,14 +159,14 @@
         v-model="minmoney"
         name="minmoney"
         placeholder="输入最小金额"
-          class="checktwo"
+        class="checktwo"
       />
       <van-field
         label="最大金额"
         v-model="maxmoney"
         name="maxmoney"
         placeholder="输入最大金额"
-          class="checktwo"
+        class="checktwo"
       />
       <div class="guding" ref="container">
         <van-sticky :container="container">
@@ -207,6 +217,7 @@ import {
   DatetimePicker,
 } from "vant";
 import { GetList_Shop, GetList_Hy } from "@/API/getlistvalue.js";
+// import { Select } from "ant-design-vue";
 export default {
   data() {
     return {
@@ -274,6 +285,8 @@ export default {
     [Popup.name]: Popup,
     [Sticky.name]: Sticky,
     [DatetimePicker.name]: DatetimePicker,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
   },
   created() {
     this.getpulldata();

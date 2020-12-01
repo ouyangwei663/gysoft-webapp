@@ -74,14 +74,7 @@
                 <div>
                   <table class="tablefirst">
                     <tr>
-                      <td>手工单号：</td>
-                      <td>
-                        <van-cell left title="显示员工">
-                          <template #right-icon>
-                            <van-switch v-model="item.bottom" size="15" />
-                          </template>
-                        </van-cell>
-                      </td>
+                      <td>{{ item.goo_name }}</td>
                     </tr>
                   </table>
                 </div>
@@ -89,25 +82,34 @@
               <template #label>
                 <table>
                   <tr>
-                    <td>消费单号：01G1709109</td>
-                    <td>消费时间：2017-09-28</td>
+                    <td>消费单号:{{ item.out_no }}</td>
+                    <td>消费时间:{{ item.out_date }}</td>
                   </tr>
                   <tr>
-                    <td>名称：洗剪吹（首席设计师）</td>
-                    <td>数量：1</td>
+                    <td>
+                      销售价:{{
+                        item.nodisprice == null ? item.price : item.nodisprice
+                      }}
+                    </td>
+                    <td>数量:{{ item.num }}</td>
                   </tr>
                   <tr>
-                    <td>销售价：￥120</td>
-                    <td>折扣：80</td>
+                    <td>
+                      折扣:{{
+                        item.detail_discountrate == null
+                          ? "1"
+                          : item.detail_discountrate
+                      }}
+                    </td>
+                    <td>实际销价:{{ item.price }}</td>
                   </tr>
                   <tr>
-                    <td>实际销价：￥96</td>
-                    <td>金额：￥96</td>
+                    <td>金额:{{ item.price * item.num }}</td>
+                    <td>消费方式：{{ item.accountway }}</td>
                   </tr>
 
                   <tr>
-                    <td>消费方式：9</td>
-                    <td>消费店:MM（青岛万龙）</td>
+                    <td>消费店:{{ item.subcom }}</td>
                   </tr>
                 </table>
                 <!-- <p>
@@ -149,11 +151,6 @@
           </van-popup>
         </div>
       </van-tab>
-
-      <van-tab title="项目分析">
-        <Echar></Echar>
-      </van-tab>
-
       <van-tab title="充值明细">
         <div v-for="(item, index) in liaocheng" :key="index">
           <van-cell-group>
@@ -161,18 +158,18 @@
               <template #label>
                 <table class="liaocheng">
                   <tr>
-                    <td colspan="2">充值时间：2017-09-15 13:25</td>
+                    <td colspan="2">充值时间:{{item.insdate}}</td>
                   </tr>
                   <tr>
-                    <td>充值：￥1000</td>
+                    <td>充值:{{item.addmoney}}</td>
                     <td>赠送余额：0</td>
                   </tr>
                   <tr>
-                    <td>开卡/续卡：开卡</td>
-                    <td>充值店：MM（青岛万象城）</td>
+                    <td>开卡/续卡:{{item.ins_type1=="A"?'开卡':'续费'}}</td>
+                    <td>充值店:{{item.subcom}}</td>
                   </tr>
                   <tr>
-                    <td>类型：存钱</td>
+                    <td>类型:{{item.ins_type=="A"?'赠送充值':'存钱'}}</td>
                   </tr>
                 </table>
                 <!-- <p>
@@ -393,10 +390,11 @@ import {
   CollapseItem,
   DatetimePicker,
 } from "vant";
-import Echar from "./qindan";
+import { detail_history, detail_Storelist } from "@/API/detail.js";
 export default {
   data() {
     return {
+      cusid: "!$7-NPX&AI3#30Q:",
       active: 0,
       checked: false,
       activeNames: [],
@@ -435,9 +433,21 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [DatetimePicker.name]: DatetimePicker,
-    Echar,
   },
   methods: {
+    gethistorylist() {
+      //获取历史消费
+      detail_history({ cusid: this.cusid }).then((res) => {
+        console.log("历史消费记录", res);
+        this.List = res.table;
+      });
+    },
+    getdetail() {
+      detail_Storelist({ cusid: this.cusid }).then((res) => {
+        console.log("历史充值明细", res);
+        this.liaocheng = res.table;
+      });
+    },
     onClickLeft() {
       //   this.$sotre.commit('changesata')
       this.$router.go(-1);
@@ -476,6 +486,10 @@ export default {
       var timer = date.getFullYear() + "-" + m + "-" + d;
       this.endtime = timer;
     },
+  },
+  created() {
+    this.gethistorylist();
+    this.getdetail();
   },
 };
 </script>

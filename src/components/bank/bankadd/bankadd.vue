@@ -177,6 +177,7 @@ import { getshop } from "@/methods/getshop";
 import { Customer_find } from "@/API/customer";
 import { Product_history, Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
+// import {Select} from "ant-design-vue"
 export default {
   name: "bankadd",
   data() {
@@ -253,6 +254,8 @@ export default {
     [DropdownItem.name]: DropdownItem,
     [Picker.name]: Picker,
     [Toast.name]: Toast,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
   },
   created() {
     if (sessionStorage.getItem("product_type") == null) {
@@ -291,8 +294,8 @@ export default {
   methods: {
     onClickLeft() {
       this.$router.push({
-        name:"bank"
-      })
+        name: "bank",
+      });
     },
     onSearch(val) {
       this.$refs.droplist.show();

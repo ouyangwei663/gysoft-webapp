@@ -130,11 +130,12 @@
 import { Goodsno_find } from "@/API/product";
 import { GetList_Erp } from "@/API/getlistvalue";
 import { Button, NavBar, Icon, Toast } from "vant";
+// import {Select} from "ant-design-vue"
 export default {
   props: { show: Boolean },
   data() {
     return {
-      newlist: [{num:"1"}],
+      newlist: [{ num: "1" }],
       index: "",
       index2: "",
       data: [],
@@ -244,7 +245,7 @@ export default {
           this.flag2 = false;
         } else {
           console.log(this.worklist);
-          console.log()
+          console.log();
           Toast.success("提交");
         }
       }
@@ -254,6 +255,8 @@ export default {
     [Button.name]: Button,
     [NavBar.name]: NavBar,
     [Icon.name]: Icon,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
   },
   created() {
     if (sessionStorage.getItem("getlist_erp") == null) {

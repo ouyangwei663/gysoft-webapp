@@ -14,31 +14,10 @@
       <van-field v-model="cus_name" name="cus_name" label="用户名" />
       <van-field v-model="memo" name="memo" label="备注" />
       <van-field v-model="comname" name="comname" label="公司" />
-      <van-field v-model="worktype" name="cworktype" label="职业" />
+      <van-field v-model="worktype" name="worktype" label="职业" />
       <van-field v-model="idcard" name="idcard" label="身份证" />
 
-      <van-field
-        v-model="first_date"
-        name="first_date"
-        label="首次到店时间"
-        disabled
-      />
-      <van-field
-        v-model="last_date"
-        name="last_date"
-        label="最后到店时间"
-        disabled
-      />
-      <van-field
-        v-model="effecttime"
-        name="effecttime"
-        label="有效日期"
-        disabled
-      />
-
-      <van-field v-model="bank" name="bank" label="银行" />
-      <van-field v-model="bankno" name="comname" label="银行卡号" />
-      <van-field v-model="address" name="addresss" label="地址" />
+      <van-field v-model="address" name="address" label="地址" />
       <van-field name="istemp" label="是否有卡">
         <template #input>
           <van-radio-group v-model="istemp" direction="horizontal">
@@ -55,9 +34,29 @@
           </van-radio-group>
         </template>
       </van-field>
+
+      <van-field
+        v-model="first_date"
+        name="first_date"
+        label="首次到店"
+        disabled
+      />
+      <van-field
+        v-model="last_date"
+        name="last_date"
+        label="最后到店"
+        disabled
+      />
+      <van-field
+        v-model="effecttime"
+        name="effecttime"
+        label="有效期"
+        disabled
+      />
+
       <div style="margin: 16px">
         <van-button round block type="info" native-type="submit">
-          提交
+          保存
         </van-button>
       </div>
     </van-form>

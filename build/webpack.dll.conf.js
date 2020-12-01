@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 module.exports = {
   entry: {
-    vendor: ['vue', 'vue-router', 'axios','vant'] //这里把vue,vue-router,axios提取出来，可以再添加
+    vendor: ['vue', 'vue-router', 'axios','vant','vue-touch'] //这里把vue,vue-router,axios提取出来，可以再添加
   },
   output: {
     path: path.join(__dirname, '../static/build'),

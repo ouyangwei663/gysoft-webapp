@@ -13,9 +13,7 @@
       </template>
     </van-nav-bar>
 
-    <div id="tan">
-
-    </div>
+    <div id="tan"></div>
     <van-form @submit="onSubmit" class="infoform">
       <van-field v-model="crashid" name="cus_name" placeholder="请输入姓名">
         <template #label>
@@ -88,7 +86,6 @@
           @confirm="onConfirmvip"
           @cancel="showvipPicker = false"
         />
-        6666666666666666
       </van-popup>
 
       <van-field v-model="card" name="cardno" placeholder="可以为空">
@@ -127,37 +124,51 @@
         </template>
       </van-field> -->
 
-      <van-button
-        round
-        block
-        type="info"
-        native-type="submit"
-        class="gudingfirst"
-        >保存资料</van-button
+      <div
+        style="
+           {
+            width: 100%;
+          }
+        "
       >
+        <van-button round type="info" native-type="submit">保存资料</van-button>
+        <van-button
+          v-if="isshow"
+          round
+          type="primary"
+          native-type="button"
+          @click.stop="topass()"
+          >修改密码</van-button
+        >
+        <van-button
+          v-if="isshow"
+          round
+          type="danger"
+          native-type="button"
+          @click.stop="toMore()"
+          >更多资料</van-button
+        >
+      </div>
     </van-form>
-    <van-button
-      v-if="isshow"
-      round
-      block
-      type="primary"
-      class="gudingsecond"
-      @click="topass()"
-      >修改密码</van-button
-    >
-    <van-button
-      v-if="isshow"
-      round
-      block
-      type="danger"
-      class="gudingthird"
-      @click="toMore()"
-      >更多资料</van-button
-    >
-    <van-popup v-model="show" get-container="#pop" >
 
+    <van-popup
+      v-model="show"
+      closeable
+      close-icon-position="top-right"
+      get-container="#pop"
+      :style="{ height: '30%', width: '80%' }"
+    >
+      <div>
+        <h2>修改密码</h2>
+
+        <van-field v-model="password" type="password" label="密码" />
+        <van-field v-model="secondpass" type="password" label="再次输入密码" />
+        <van-button round block type="primary" @click="changepass()"
+        style="margin-left:35%"
+          >修改密码</van-button
+        >
+      </div>
     </van-popup>
-    <div class="air"></div>
   </div>
 </template>
 
@@ -184,6 +195,7 @@ import {
 import { GetList_Shop, GetList_Hy } from "@/API/getlistvalue.js";
 import { Customer_find, Customer_open, Customer_save } from "@/API/customer.js";
 import { time } from "@/methods/time";
+import { modifypassword } from "@/API/pass.js";
 export default {
   name: "HellWorld",
   created() {
@@ -214,6 +226,7 @@ export default {
         // this.comname = res.table[0].comname;
         // ths.memo = res.table[0].memo;
         var str = res.table[0].appenddate;
+        console.log("时间数据", str);
         var arr = str.split("/");
         var arr2 = arr[2].split(" "); //时间格式修改方法定位（可封装）
         var timestr = arr2[0] + "-" + arr[0] + "-" + arr[1] + " " + arr2[1];
@@ -268,7 +281,7 @@ export default {
       columns: ["超级会员", "普通会员", "白金会员", "散客", "龙腾VIP"],
       showPicker: false,
       showtime: false,
-      show:true,
+      show: false,
       minDate: new Date(2020, 0, 1),
       maxDate: new Date(2025, 10, 1),
       currentDate: new Date(),
@@ -283,6 +296,7 @@ export default {
       memo: "", //备注
       first_date: "", //首次来店
       last_date: "", //末次来店
+      secondpass: "", //第二次密码
     };
   },
   components: {
@@ -350,6 +364,7 @@ export default {
         last.cusid = that.$route.params.cusid;
         last.data = really;
         last.old = old;
+
         if (this.$route.params.cusid) {
         } else {
           var newobj = old;
@@ -445,8 +460,22 @@ export default {
         params,
       });
     },
-    topass(){
-      console.log('修改密码')
+    topass() {
+      this.show = true;
+    },
+    changepass() {
+      if (this.password !== this.secondpass) {
+        Toast.fail("两次密码不一致");
+      } else if (this.password == "" || this.secondpass == "") {
+        Toast.fail("密码不能为空");
+      } else {
+        modifypassword({
+          cusid: this.$route.params.cusid,
+          newpass: this.password,
+        }).then((res) => {
+          console.log(res);
+        });
+      }
     },
     validator(val) {
       if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(val) || val == "") {
@@ -498,9 +527,9 @@ export default {
 
 .van-button {
   margin-top: 3%;
-  width: 45%;
+  width: 30%;
   height: 5vh;
-  margin-left: 27.5%;
+  /* margin-left: 27.5%; */
 }
 .van-checkbox-group {
   margin-left: 20%;

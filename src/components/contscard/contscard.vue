@@ -4,10 +4,8 @@
       class="check"
       title="销售次卡"
       :fixed="true"
-   
       :left-arrow="true"
       @click-left="onClickLeft"
-   
     >
       <template #left>
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
@@ -32,7 +30,12 @@
         @click="showviplevel = true"
         class="checktwo"
       />
-      <van-field v-model="project" name="goo_code" label="项目"   class="checktwo">
+      <van-field
+        v-model="project"
+        name="goo_code"
+        label="项目"
+        class="checktwo"
+      >
         <template #input>
           <a-select
             style="width: 100%"
@@ -58,7 +61,13 @@
           <!-- <a-input-number     style="width: 30%"  :min="0" :max="10" :step="0.1" @change="onChange11" /> -->
         </template>
       </van-field>
-      <van-field v-model="count" name="totalnum" type="digit" label="总次数"   class="checktwo"/>
+      <van-field
+        v-model="count"
+        name="totalnum"
+        type="digit"
+        label="总次数"
+        class="checktwo"
+      />
       <van-cell
         class="centercell"
         title="商品总价值"
@@ -73,7 +82,7 @@
         label="开始时间"
         placeholder="点击选择开始日期"
         @click="showtime = true"
-          class="checktwo"
+        class="checktwo"
       />
       <van-field
         readonly
@@ -83,7 +92,7 @@
         label="结束时间"
         placeholder="点击选择结束日期"
         @click="showendtime = true"
-          class="checktwo"
+        class="checktwo"
       />
       <van-popup v-model="showtime" position="bottom">
         <van-datetime-picker
@@ -112,11 +121,9 @@
         :value="billnotype"
         label="单据类型"
         class="colordanger checktwo"
-        
         ><template #input>
           <a-select
             show-search
-       
             option-filter-prop="children"
             style="width: 100%"
             @change="handleChange2"
@@ -180,6 +187,7 @@ import { secondcard_open, secondcard_save } from "@/API/secondcard.js";
 import { timeday, timetwoyearday } from "@/methods/time";
 import { Goodsno_find } from "@/API/product";
 import Second from "@/components/contscard/contscard_second";
+// import {Select} from "ant-design-vue"
 export default {
   data() {
     return {
@@ -324,6 +332,8 @@ export default {
     [DatetimePicker.name]: DatetimePicker,
     [Cell.name]: Cell,
     Second,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
   },
   created() {
     if (sessionStorage.getItem("product_type") == null) {
@@ -418,9 +428,9 @@ export default {
   margin-left: 5%;
 }
 .check {
-   color: #ff1493;
+  color: #ff1493;
 }
 /deep/ .checktwo .van-field__label span {
-   color: #ff1493;
+  color: #ff1493;
 }
 </style>

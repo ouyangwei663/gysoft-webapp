@@ -22,8 +22,8 @@ import {
 
     p.action = "findby";
     p.classname = "n_moneychange_hy"
-    p.funcname = "Toz";
-    p.classmemo = "会员账本查询"
+    p.funcname = "ToZ";
+    p.classmemo = "会员账本作废"
     return post(second, p)
   };
   

@@ -113,6 +113,30 @@ export function timeyearday() { //获取本年
   };
 
 }
+export function timethreeyearday() { //获取近来三年
+
+  var date = new Date();
+  var seperator1 = "-";
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  var strDate = date.getDate();
+  if (month >= 1 && month <= 9) {
+    month = "0" + month;
+  }
+  if (strDate >= 0 && strDate <= 9) {
+    strDate = "0" + strDate;
+  }
+  var currentdate = year + seperator1 + month + seperator1 + strDate;
+
+
+  var monthdate = year-3 + seperator1 + month + seperator1 + strDate;
+  return {
+
+    day: currentdate,
+    needday: monthdate
+  };
+
+}
 
 export function timethreeday() { //近三天
   function getDay(day) {

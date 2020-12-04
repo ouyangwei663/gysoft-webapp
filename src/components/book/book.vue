@@ -30,7 +30,7 @@
           @click="showviplevel = true"
           class="checktwoone"
         />
-        <van-cell clickable style="text-align: center">
+        <van-cell clickable style="text-align: center" @click="search">
           <template #title>
             <van-icon name="search" size="15" color="hotpink" /> 查询
           </template>
@@ -90,14 +90,15 @@
           v-model="currentPage"
           :page-count="totalpage"
           mode="simple"
-          style="width: 80%; margin-bottom: 3vh; float: left"
-        /><van-button
+          style="width: 80%; margin-bottom: 3vh; margin-left: 10%"
+        />
+        <!-- <van-button
           @click="reflash"
           type="primary"
           style="width: 20%; margin-bottom: 3vh"
         >
           刷新
-        </van-button>
+        </van-button> -->
         <div class="clear"></div>
       </div>
     </van-sticky>
@@ -105,13 +106,17 @@
     <div class="bb" v-for="(item, index) in Listtrue" :key="index">
       <van-card :class="index % 2 == 0 ? 'detailedcard' : 'detailedcard2'">
         <template #title>
-          <div class="name">{{ "符小萍" }}({{ "女士" }})</div>
+          <div class="name">
+            {{ item.cus_name == null ? "散客" : item.cus_name }}({{
+              item.sex == "Y" ? "男士" : "女士"
+            }})
+          </div>
         </template>
         <template #desc>
           <table class="vipinfo">
             <tr>
               <td>发生分店:{{ "伊美东平店" }}</td>
-              <td>时间:{{ "2020/12/01" }}</td>
+              <td>时间:{{ item.time }}</td>
             </tr>
             <tr>
               <td>充值金额:{{ "1000" }}</td>
@@ -124,7 +129,7 @@
             <tr>
               <td>赠送消费:{{ "0" }}</td>
               <td>
-                <van-button type="danger" size="mini" @click="bookdelet"
+                <van-button type="danger" size="mini" @click="bookdelet(item)"
                   >作废</van-button
                 >
               </td>
@@ -167,17 +172,18 @@ import {
   timemonthday,
   timeyearday,
 } from "@/methods/time";
-import { book_find } from "@/API/book";
+import { book_find, book_delet } from "@/API/book";
 import { GetList_Shop } from "@/API/getlistvalue.js";
+// import { timehalf } from "@/methods/time.js";
 export default {
-  name: "bank",
+  name: "book",
   data() {
     return {
       phone: "131351356485",
       List: [],
       columns: [],
       colums1: [],
-      columns2:[],
+      columns2: [],
       Listtrue: [{}, {}],
       activeNames: [],
       begindate: "",
@@ -228,7 +234,6 @@ export default {
         console.log("今天");
         this.begindate = timeday();
         this.enddate = timeday();
-        this.getbaninfo();
       } else if (value == "昨天") {
         console.log("昨天");
         this.begindate = timeyesterday();
@@ -249,13 +254,15 @@ export default {
 
       this.showlist = false;
     },
-    bookdelet() {
+    bookdelet(item) {
       Dialog.confirm({
         title: "确认作废吗？",
-        message: "弹窗内容",
+        message: item.cus_name == null ? "散客" : item.cus_name,
       })
         .then(() => {
-          // on confirm
+          book_delet({ id: item.id, cusid: item.cusid }).then((res) => {
+            console.log("作废", res);
+          });
         })
         .catch(() => {
           // on cancel
@@ -289,10 +296,17 @@ export default {
         params,
       });
     },
-    getbaninfo() {
-      console.log("1");
+    getbookinfo() {
+      book_find(this.pam).then((res) => {
+        console.log("账本资料", res);
+        this.totalpage = res.extended.totalpage;
+        this.Listtrue = res.table;
+        this.Listtrue.map((item) => {
+          item.time = timehalf(item.insdate);
+        });
+      });
     },
-   getpulldata() {
+    getpulldata() {
       //获取下拉菜单的数据
 
       var that = this;
@@ -319,7 +333,6 @@ export default {
       var timer = date.getFullYear() + "-" + m + "-" + d;
       this.begindate = timer;
       this.showtime = false;
-      this.getbaninfo();
     },
     endhandleEndDateConfirm(value) {
       this.timeShow = false;
@@ -335,20 +348,40 @@ export default {
       var timer = date.getFullYear() + "-" + m + "-" + d;
       this.enddate = timer;
       this.showendtime = false;
-      this.getbaninfo();
     },
     onConfirm4(value, index) {
       this.viplevel = this.columns2[index];
       this.viplevelreally = this.columns22[index];
       this.showviplevel = false;
     },
-  },
+    search() {
+      var pam = {};
+      pam.begindate = this.begindate;
+      pam.enddate = this.enddate;
 
+      book_find(pam).then((res) => {
+        console.log("账本资料", res);
+        this.totalpage = res.extended.totalpage;
+        this.Listtrue = res.table;
+        this.Listtrue.map((item) => {
+          item.time = timehalf(item.insdate);
+        });
+      });
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    if (to.path === "/book") {
+      next((vm) => {
+        vm.$store.commit("setKeepAlive", "book"); //这是此页面的name属性名字
+        console.log("vuex状态", vm.$store.state); //vm.permidata即methods内的方法使用的this.permidata
+      });
+    } else {
+    }
+    next();
+  },
   created() {
-    // book_find({}).then((res)=>{
-    //     console.log('账本资料',res)
-    // })
-   this.getpulldata();
+    this.getpulldata();
+    this.getbookinfo();
   },
 };
 </script>

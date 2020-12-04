@@ -40,7 +40,7 @@
         class="checktwo"
       />
       <van-cell
-        title="时间"
+        title="购买时间"
         readonly
         clickable
         :value="timename"
@@ -58,34 +58,10 @@
       </van-popup>
       <van-field
         v-model="goo_code"
-        name="goo_code"
+        name="goo_name"
         label="项目"
         class="checktwo"
       >
-        <template #input>
-          <a-select
-            style="width: 100%"
-            show-search
-            showArrow
-            :value="value0"
-            placeholder="输入价格或编码、名称"
-            :default-active-first-option="false"
-            :show-arrow="false"
-            :filter-option="false"
-            :not-found-content="null"
-            @search="handleSearch0"
-            @change="handleChange0"
-          >
-            <a-select-option
-              style="width: 200%"
-              v-for="(d, index) in data"
-              :key="index"
-              class="banktoselect"
-              >{{ d.goo_name }} {{ d.goo_price }}</a-select-option
-            >
-          </a-select>
-          <!-- <a-input-number     style="width: 30%"  :min="0" :max="10" :step="0.1" @change="onChange11" /> -->
-        </template>
       </van-field>
 
       <!-- <van-field name="count" v-model="count" label="次数">
@@ -97,16 +73,34 @@
           </a-select>
         </template>
       </van-field> -->
-      <van-field name="ispay" v-model="ispay" label="付款" class="checktwo">
+      <van-field
+        name="Status"
+        v-model="ispay"
+        label="次卡状态"
+        class="checktwo"
+      >
         <template #input>
           <a-select style="width: 100%" @change="handleChang1" v-model="ispay">
             <a-select-option value="A"> 全部 </a-select-option>
-            <a-select-option value="Y"> 已付清 </a-select-option>
-            <a-select-option value="N"> 未付清 </a-select-option>
+            <a-select-option value="Y"> 有效 </a-select-option>
+            <a-select-option value="N"> 退卡 </a-select-option>
+            <a-select-option value="B"> 用完 </a-select-option>
+            <a-select-option value="C"> 赠送 </a-select-option>
+            <a-select-option value="D"> 已删除 </a-select-option>
+            <a-select-option value="E"> 补款记录 </a-select-option>
+            <a-select-option value="F"> 过期 </a-select-option>
+            <!-- <a-select-option value="N"> 退卡 </a-select-option> -->
           </a-select>
         </template>
       </van-field>
-
+      <van-field
+        v-model="mobileno"
+        name="mobileno"
+        label="手机/卡号"
+        class="checktwo"
+      >
+      </van-field>
+      <!-- 
       <van-collapse v-model="activeNames" class="banktimecenter">
         <van-collapse-item name="1" left>
           <template #title> 高级 </template>
@@ -131,7 +125,7 @@
             @click="showendtime = true"
           />
         </van-collapse-item>
-      </van-collapse>
+      </van-collapse> -->
       <van-popup v-model="showtime" position="bottom">
         <van-datetime-picker
           v-model="currentDate"
@@ -222,6 +216,7 @@ import {
   timesevenday,
   timemonthday,
   timeyearday,
+  timethreeyearday,
 } from "@/methods/time";
 import { secondcard_find } from "@/API/secondcard";
 // import Select from "ant-design-vue/lib/select";
@@ -260,6 +255,7 @@ export default {
       showlist: false,
       timedate: ["今天", "昨天", "近一周", "本月", "全年"],
       timename: "",
+      mobileno:""
     };
   },
   methods: {
@@ -286,7 +282,6 @@ export default {
         this.begindate = timeyearday().needday;
         this.enddate = timeyearday().day;
       }
-
       this.showlist = false;
     },
     onClickLeft() {
@@ -309,7 +304,7 @@ export default {
       values.enddate = this.enddate;
       values.subcom = this.reallsubcom;
       values.count = this.count;
-      values.ispay = this.ispay;
+      // values.ispay = this.ispay;
       if (values.begindate == "") {
         Toast.fail("请输入开始时间");
       } else if (values.enddate == "") {
@@ -368,25 +363,6 @@ export default {
       this.enddate = timer;
       this.showendtime = false;
     },
-    handleSearch0(value) {
-      var that = this;
-
-      var pam = {};
-      // pam.card = value;
-      pam.card = value;
-      pam.out_no = that.$route.params.out_no;
-      if (value) {
-        Goodsno_find(pam).then((res) => {
-          that.data = res.table;
-        });
-      }
-    },
-    handleChange0(value) {
-      this.value0 = value;
-      // this.project = this.data[value].goo_name;
-      this.goo_code = this.data[value].goo_code;
-      console.log("打印", value);
-    },
   },
   components: {
     [NavBar.name]: NavBar,
@@ -408,6 +384,10 @@ export default {
     // ASelect: Select
   },
   created() {
+     var date= timethreeyearday()
+     this.begindate=date.needday
+     this.enddate=date.day
+    
     if (sessionStorage.getItem("product_type") == null) {
       //获取列表
 
@@ -450,8 +430,8 @@ export default {
         }
       );
     }
-    this.subcom = localStorage.getItem("subname");
-    this.reallsubcom = localStorage.getItem("subcom");
+    // this.subcom = localStorage.getItem("subname");
+    // this.reallsubcom = localStorage.getItem("subcom");
   },
   mounted() {},
 };

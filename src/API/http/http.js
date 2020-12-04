@@ -39,7 +39,12 @@ export function post(url, params) {
         console.log('查询条件', params)
         if (res.data.errcode == 0) {
           resolve(res.data);
-        } else(alert(res.data.errmsg))
+        } else(
+          // alert(res.data.errmsg)
+          console.log('错误日志', res.data.errmsg)
+  
+        
+        )
       })
       .catch(err => {
         reject(err.data)

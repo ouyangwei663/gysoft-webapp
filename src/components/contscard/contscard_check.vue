@@ -255,7 +255,7 @@ export default {
       showlist: false,
       timedate: ["今天", "昨天", "近一周", "本月", "全年"],
       timename: "",
-      mobileno:""
+      mobileno: "",
     };
   },
   methods: {
@@ -384,10 +384,10 @@ export default {
     // ASelect: Select
   },
   created() {
-     var date= timethreeyearday()
-     this.begindate=date.needday
-     this.enddate=date.day
-    
+    var date = timethreeyearday();
+    this.begindate = date.needday;
+    this.enddate = date.day;
+
     if (sessionStorage.getItem("product_type") == null) {
       //获取列表
 
@@ -478,5 +478,8 @@ export default {
   width: 90%;
   margin-left: 5%;
   text-align: left;
+}
+.checktwoone span {
+  color: #0f09af;
 }
 </style>

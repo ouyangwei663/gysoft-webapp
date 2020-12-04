@@ -26,13 +26,10 @@
         label="别名"
         placeholder="请输入员工别名"
       />
-      <van-field
-        name="worktype1"
-        :value="billnotype"
-        label="工种"
-        class="colordanger checktwo"
+      <van-field name="worktype1" label="工种" class="colordanger checktwo"
         ><template #input>
           <a-select
+            v-model="worktype1"
             show-search
             option-filter-prop="children"
             style="width: 100%"
@@ -90,22 +87,19 @@
         />
       </van-popup>
       <div style="margin: 16px">
-        <van-button round block type="info" native-type="submit">
-          保存资料
+        <van-button round type="info" native-type="submit"> 保存 </van-button>
+
+        <van-button
+          v-if="showmore"
+          round
+          type="danger"
+          native-type="submit"
+          @click="tomore"
+        >
+          更多
         </van-button>
       </div>
     </van-form>
-    <div style="margin: 16px" v-if="showmore">
-      <van-button
-        round
-        block
-        type="danger"
-        native-type="submit"
-        @click="tomore"
-      >
-        更多资料
-      </van-button>
-    </div>
   </div>
 </template>
 
@@ -132,6 +126,7 @@ import { work_save } from "@/API/work.js";
 import worker_completeVue from "./worker_complete.vue";
 // import { Select } from "ant-design-vue";
 export default {
+  name: "Info",
   data() {
     return {
       selfno: "",
@@ -157,12 +152,12 @@ export default {
       olddate: {},
       diffData: null,
       showmore: false,
+      worktype1: "",
     };
   },
   methods: {
     tomore() {
-      var params = {};
-      params.empId = this.$route.params.empId;
+      var params =this.$route.params
       this.$router.push({
         name: "worker_complete",
         params,
@@ -173,10 +168,11 @@ export default {
     },
     onClickRight() {},
     handleChange2(value) {
-      this.billnotype = value;
+      this.worktype1 = value;
     },
 
     onSubmit(values) {
+      values.worktype1 = this.worktype1;
       if (this.$route.params.empId) {
         var last = {};
         last.empId = this.$route.params.empId;
@@ -281,19 +277,7 @@ export default {
     // ASelectOption: Select.Option,
   },
   created() {
-    if (sessionStorage.getItem("product_type") == null) {
-      //获取列表
-
-      Product_type({}).then((res) => {
-        this.product_type = res.table;
-        sessionStorage.setItem(
-          "product_type",
-          JSON.stringify(this.product_type)
-        );
-      });
-    } else {
-      this.product_type = JSON.parse(sessionStorage.getItem("product_type"));
-    }
+    this.product_type = JSON.parse(sessionStorage.getItem("work_type"));
 
     if (sessionStorage.getItem("subcom") == null) {
       var that = this;
@@ -333,15 +317,25 @@ export default {
       this.name = this.$route.params.empName;
       this.secondname = this.$route.params.englishname;
       this.begindate = time(this.$route.params.enterDate);
+      this.worktype1 = this.$route.params.worktype1;
       this.olddate = {
-        emp_no: this.$route.params.emp_no,
         empName: this.$route.params.empName,
         englishname: this.$route.params.englishname,
         enterDate: this.$route.params.enterDate,
+        worktype1: this.$route.params.worktype1,
       };
     }
   },
   mounted() {},
+  beforeRouteLeave(to, from, next) {
+    if (to.path === "/worker_info") {
+      // 这是路由path
+
+      this.$store.commit("deletKeepAlive", "Info"); //这是此页面的name属性名字
+    } else {
+    }
+    next();
+  },
 };
 </script>
 

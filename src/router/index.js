@@ -38,160 +38,175 @@ Vue.use(Router)
 
 export default new Router({
   routes: [{
-      path: '/',
-      name: 'shouye',
-      component: () => import('@/components/shouye/shouye')
-    },
-    {
-      path: '/info',
-      name: 'HelloWorld',
-      component: () => import('@/components/HelloWorld')
-    }, {
-      path: '/infomore',
-      name: 'HelloWorldmore',
-      component: () => import('@/components/HelloWorldmore')
-    },
-    {
-      path: '/crash',
-      name: 'crash',
-      component: () => import('@/components/crash/crash')
-    },
-    {
-      path: '/datanote',
-      name: 'datanote',
-      component: () => import('@/components/datanote/datanote')
-    },
-    {
-      path: '/money',
-      name: "money",
-      component: () => import('@/components/money/money')
-    },
-    {
-      path: '/find',
-      name: find,
-      component: () => import('@/components/find/find')
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: () => import('@/components/register/register')
-    }, 
-    {
-      path: '/vipcheck',
-      name: 'vipcheck',
-      component: () => import('@/components/vipperson/vipperson')
-    },
-     {
-      path: '/operate',
-      name: 'operate',
-      component: () => import('@/components/operate/operate')
-    },
-    {
-      path: '/detailed',
-      name: 'detailed',
-      component: () => import('@/components/detailed/detailed')
-    }, {
-      path: '/bank',
-      name: 'bank',
-      component: () => import('@/components/bank/bank')
-    },
-    {
-      path: '/listcheck',
-      name: 'listcheck',
-      component: () => import('@/components/listcheck/listcheck')
-    },
-    {
-      path: '/vipbookdetail',
-      name: 'vipbookdetail',
-      component: () => import('@/components/vipbook/vipbookdetail/vipbookdetail')
-    },
-    {
-      path: '/vipbookflow',
-      name: 'vipbookflow',
-      component: () => import('@/components/vipbook/vipbookflow/vipbookflow')
-    }, {
-      path: '/qindan',
-      name: 'qindan',
-      component: () => import('@/components/bank/bankadd/contact')
-    },
-    {
-      path: '/bankcheck',
-      name: 'bankcheck',
-      component: () => import('@/components/bank/bankcheck')
-    },
-    {
-      path: '/bankadd',
-      name: 'bankadd',
-      component: () => import('@/components/bank/bankadd/bankadd')
-    },
-    {
-      path: '/bankaddco',
-      name: 'bankaddco',
-      component: () => import('@/components/bank/bankadd/bankaddco')
-    }, {
-      path: '/chart',
-      name: 'chart',
-      component: () => import('@/components/chart/chart')
-    }, {
-      path: '/chart_shop',
-      name: 'chart_shop',
-      component: () => import('@/components/chart/chart_shop')
-    }, {
-      path: '/chart_work',
-      name: 'chart_work',
-      component: () => import('@/components/chart/chart_work')
-    }, {
-      path: '/chart_route',
-      name: 'chart_route',
-      component: () => import('@/components/chart/chart_route')
-    }, {
-      path: '/chart_workmoney',
-      name: 'chart_workmoney',
-      component: () => import('@/components/chart/chart_workmoney')
-    },
-    {
-      path: '/contscard',
-      name: 'contscard',
-      component: () => import('@/components/contscard/contscard')
-    },
-    {
-      path: '/contscard_check',
-      name: 'contscard_check',
-      component: () => import('@/components/contscard/contscard_check')
-    }, {
-      path: '/contscard_info',
-      name: 'contscard_info',
-      component: () => import('@/components/contscard/contscard_info')
-    }, {
-      path: '/contscard_pay',
-      name: 'contscard_pay',
-      component: () => import('@/components/contscard/contscard_pay')
-    }, {
-      path: '/contscard_give',
-      name: 'contscard_give',
-      component: () => import('@/components/contscard/contscard_give')
-    }, {
-      path: '/worker_check',
-      name: 'worker_check',
-      component: () => import('@/components/worker/worker_check')
-    }, {
-      path: '/worker_push',
-      name: 'worker_push',
-      component: () => import('@/components/worker/worker_push')
-    }, {
-      path: '/worker_complete',
-      name: 'worker_complete',
-      component: () => import('@/components/worker/worker_complete')
-    },
-    {
-      path: '/worker_info',
-      name: 'worker_info',
-      component: () => import('@/components/worker/work_info')
-      // '@/components/worker/work_info'
-    }, {
-      path: '/jug',
-      name: 'jug',
-      component: () => import('@/components/jug/jug')
-    }
+    path: '/',
+    name: 'shouye',
+    component: () => import('@/components/shouye/shouye')
+  },
+  {
+    path: '/info',
+    name: 'HelloWorld',
+    component: () => import('@/components/HelloWorld')
+  }, {
+    path: '/infomore',
+    name: 'HelloWorldmore',
+    component: () => import('@/components/HelloWorldmore')
+  },
+  {
+    path: '/crash',
+    name: 'crash',
+    component: () => import('@/components/crash/crash')
+  },
+  {
+    path: '/datanote',
+    name: 'datanote',
+    component: () => import('@/components/datanote/datanote')
+  },
+  {
+    path: '/money',
+    name: "money",
+    component: () => import('@/components/money/money')
+  },
+  {
+    path: '/find',
+    name: find,
+    component: () => import('@/components/find/find')
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('@/components/register/register')
+  },
+  {
+    path: '/vipcheck',
+    name: 'vipcheck',
+    component: () => import('@/components/vipperson/vipperson')
+  },
+  {
+    path: '/operate',
+    name: 'operate',
+    component: () => import('@/components/operate/operate')
+  },
+  {
+    path: '/detailed',
+    name: 'detailed',
+    component: () => import('@/components/detailed/detailed')
+  }, {
+    path: '/bank',
+    name: 'bank',
+    component: () => import('@/components/bank/bank')
+  },
+  {
+    path: '/listcheck',
+    name: 'listcheck',
+    component: () => import('@/components/listcheck/listcheck')
+  },
+  {
+    path: '/vipbookdetail',
+    name: 'vipbookdetail',
+    component: () => import('@/components/vipbook/vipbookdetail/vipbookdetail')
+  },
+  {
+    path: '/vipbookflow',
+    name: 'vipbookflow',
+    component: () => import('@/components/vipbook/vipbookflow/vipbookflow')
+  }, {
+    path: '/qindan',
+    name: 'qindan',
+    component: () => import('@/components/bank/bankadd/contact')
+  },
+  {
+    path: '/bankcheck',
+    name: 'bankcheck',
+    component: () => import('@/components/bank/bankcheck')
+  },
+  {
+    path: '/bankadd',
+    name: 'bankadd',
+    component: () => import('@/components/bank/bankadd/bankadd')
+  },
+  {
+    path: '/bankaddco',
+    name: 'bankaddco',
+    component: () => import('@/components/bank/bankadd/bankaddco')
+  }, {
+    path: '/chart',
+    name: 'chart',
+    component: () => import('@/components/chart/chart')
+  }, {
+    path: '/chart_shop',
+    name: 'chart_shop',
+    component: () => import('@/components/chart/chart_shop')
+  }, {
+    path: '/chart_work',
+    name: 'chart_work',
+    component: () => import('@/components/chart/chart_work')
+  }, {
+    path: '/chart_route',
+    name: 'chart_route',
+    component: () => import('@/components/chart/chart_route')
+  }, {
+    path: '/chart_workmoney',
+    name: 'chart_workmoney',
+    component: () => import('@/components/chart/chart_workmoney')
+  },
+  {
+    path: '/contscard',
+    name: 'contscard',
+    component: () => import('@/components/contscard/contscard')
+  },
+  {
+    path: '/contscard_check',
+    name: 'contscard_check',
+    component: () => import('@/components/contscard/contscard_check')
+  }, {
+    path: '/contscard_info',
+    name: 'contscard_info',
+    component: () => import('@/components/contscard/contscard_info')
+  }, {
+    path: '/contscard_pay',
+    name: 'contscard_pay',
+    component: () => import('@/components/contscard/contscard_pay')
+  }, {
+    path: '/contscard_give',
+    name: 'contscard_give',
+    component: () => import('@/components/contscard/contscard_give')
+  },
+  {
+    path: '/contscard_third',
+    name: 'contscard_third',
+    component: () => import('@/components/contscard/contscard_third')
+  },
+  {
+    path: '/worker_check',
+    name: 'worker_check',
+    component: () => import('@/components/worker/worker_check')
+  }, {
+    path: '/worker_push',
+    name: 'worker_push',
+    component: () => import('@/components/worker/worker_push')
+  }, {
+    path: '/worker_complete',
+    name: 'worker_complete',
+    component: () => import('@/components/worker/worker_complete')
+  },
+  {
+    path: '/worker_info',
+    name: 'worker_info',
+    component: () => import('@/components/worker/work_info')
+    // '@/components/worker/work_info'
+  }, {
+    path: '/jug',
+    name: 'jug',
+    component: () => import('@/components/jug/jug')
+  }, {
+    path: '/book',
+    name: 'book',
+    component: () => import('@/components/book/book')
+  }
+    , {
+    path: '/bookcheck',
+    name: 'bookcheck',
+    component: () => import('@/components/book/bookcheck')
+  }
   ]
 })

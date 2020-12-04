@@ -131,14 +131,14 @@
           }
         "
       >
-        <van-button round type="info" native-type="submit">保存资料</van-button>
+        <van-button round type="info" native-type="submit">保存</van-button>
         <van-button
           v-if="isshow"
           round
           type="primary"
           native-type="button"
           @click.stop="topass()"
-          >修改密码</van-button
+          >改密码</van-button
         >
         <van-button
           v-if="isshow"
@@ -146,7 +146,7 @@
           type="danger"
           native-type="button"
           @click.stop="toMore()"
-          >更多资料</van-button
+          >更多</van-button
         >
       </div>
     </van-form>
@@ -489,7 +489,7 @@ export default {
     if (to.path === "/detailed") {
       // 这是路由path
 
-      this.$store.commit("setKeepAlive", [""]); //这是此页面的name属性名字
+      this.$store.commit("deletKeepAlive", "HellWorld"); //这是此页面的name属性名字
       console.log("置空");
     } else {
     }

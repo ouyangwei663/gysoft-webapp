@@ -47,8 +47,8 @@
       >
         <template #title>
           <div class="name">
-            {{ item.cus_name }}&nbsp;{{ "        "
-            }}{{'('}}{{item.sex !== "女士" ? "男士" : "女士" }}{{')'}}
+            {{ item.cus_name }}&nbsp;{{ "        " }}{{ "("
+            }}{{ item.sex !== "女士" ? "男士" : "女士" }}{{ ")" }}
             <!-- <van-icon
               v-show="item.sex !== '女士'"
               class="iconfont"
@@ -90,14 +90,16 @@
             </tr>
             <tr>
               <td>
-                地址：{{ item.address === null ? "暂无记录" : item.address }}
+                最后来店：{{
+                  item.last_date === null ? "暂无记录" : item.last_date
+                }}
               </td>
               <td>
                 <van-button
                   type="primary"
                   size="mini"
                   @click.stop="clickperson(item)"
-                  >修改资料</van-button
+                  >详细资料</van-button
                 >
               </td>
             </tr>
@@ -146,7 +148,9 @@ import {
 import "@/assets/icon/iconfont.css";
 import { Customer_find } from "@/API/customer";
 import "@/assets/icon2/iconfont.css";
+import { timetwo } from "@/methods/time.js";
 export default {
+  name: "Detailed",
   data() {
     return {
       money: "100",
@@ -159,6 +163,7 @@ export default {
       totalpage: "",
     };
   },
+  
   components: {
     [NavBar.name]: NavBar,
     [Icon.name]: Icon,
@@ -192,13 +197,18 @@ export default {
       Toast(item.name);
     },
 
+
     getdate() {
       var that = this;
       Customer_find(this.$route.params).then((res) => {
         console.log(res);
         that.totalpage = res.extended.totalpage;
         that.List = res.table;
-
+        this.List.map((item) => {
+          if (item.last_date) {
+            item.last_date = timetwo(item.last_date);
+          }
+        });
         that.List.map((item, index) => {
           item.vipname = that.vipname[item.cus_type - 1];
         });
@@ -219,6 +229,7 @@ export default {
         name: "crash",
         params,
       });
+      this.show = false;
     },
     tomoney() {
       var params = this.params;
@@ -226,6 +237,7 @@ export default {
         name: "money",
         params,
       });
+      this.show = false;
     },
     tocontscard(item) {
       var params = this.params;
@@ -234,6 +246,7 @@ export default {
         name: "contscard",
         params,
       });
+      this.show = false;
     },
     clickperson(item) {
       var params = { cusid: item.cusid };
@@ -248,9 +261,9 @@ export default {
     if (to.path === "/info") {
       // 这是路由path
 
-      this.$store.commit("setKeepAlive", ["HellWorld"]); //这是此页面的name属性名字
+      this.$store.commit("setKeepAlive", "HellWorld"); //这是此页面的name属性名字
     } else {
-      this.$store.commit("setKeepAlive", []);
+      this.$store.commit("setKeepAlive", "HellWorld");
     }
     next();
   },

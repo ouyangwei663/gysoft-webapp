@@ -42,7 +42,7 @@
             show-search
             showArrow
             :value="value0"
-            placeholder="Tags Mode"
+            placeholder="输入价格或编码、名称"
             :default-active-first-option="false"
             :show-arrow="false"
             :filter-option="false"

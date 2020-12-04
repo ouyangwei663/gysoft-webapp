@@ -18,7 +18,7 @@
             show-search
             showArrow
             :value="value0"
-            placeholder="Tags Mode"
+            placeholder="输入价格或编码、名称"
             :default-active-first-option="false"
             :show-arrow="false"
             :filter-option="false"
@@ -87,12 +87,10 @@
               >轮牌</a-select-option
             >
           </a-select>
-          <a-button type="dashed" @click="delet(index)">
-            <a-icon type="minus-circle-o" />
-          </a-button>
+          <button style="width: 25px" @click="delet(index)">删</button>
         </div>
         <a-button type="dashed" style="width: 60%" @click="add">
-          <a-icon type="plus" />添加员工
+         添加员工
         </a-button>
       </div>
 

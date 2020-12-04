@@ -16,9 +16,6 @@
         <template #title>
           <div class="name">
             {{ $route.params.cus_name }}
-            <van-tag type="primary" round color="#FFD90B" size="medium"
-              >超级会员</van-tag
-            >
           </div>
         </template>
         <template #desc>
@@ -338,6 +335,9 @@ export default {
                 });
                 that.first = true;
                 that.$route.params.lastmoney = res.table[0].aftermoney;
+                var params={}
+               params.cusid= that.$route.params.cusid
+                this.$router.push({name:'contscard_third',params})
               } else {
                 this.buttonsata = false;
               }
@@ -353,10 +353,14 @@ export default {
     this.viplevel = window.localStorage.getItem("subname");
     this.reallyshop = window.localStorage.getItem("subcom");
     var arr = JSON.parse(window.localStorage.getItem("shop"));
+    this.columns2=arr.map(item=>{
+      return item.name
+    })
+    this.columns22=arr.map(item=>{return item.no})
     console.log('字符串',arr)
     console.log("缓存", window.localStorage);
     this.getkaidan();
-    this.getshop();
+    // this.getshop();
   },
 };
 </script>

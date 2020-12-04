@@ -98,13 +98,14 @@ export default {
   },
   created() {
     this.info = this.$route.params;
-    console.log(this.info);
+    console.log("资料", this.info);
+    //  console.log('职业',this.info.worktype);
     this.cus_name = this.info.cus_name;
     this.memo = this.info.memo;
     this.comname = this.info.comname;
     this.first_date = this.info.first_date;
     this.last_date = this.info.last_date;
-    this.worktyp = this.info.worktype;
+    this.worktype = this.info.worktype;
     this.idcard = this.info.idcard;
     this.bank = this.info.bank;
     this.bankno = this.info.bankno;

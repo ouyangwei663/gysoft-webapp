@@ -16,7 +16,12 @@
 
     <van-form @submit="onSubmit" class="bankaddform">
       <van-field v-model="name" name="empname" label="姓名" class="checktwo" />
-      <van-field v-model="phone" name="phone" label="手机号" class="checktwo" />
+      <van-field
+        v-model="phone"
+        name="mobile"
+        label="手机号"
+        class="checktwo"
+      />
       <van-field
         readonly
         clickable
@@ -126,9 +131,10 @@ import {
 } from "vant";
 import { Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
-import { GetList_Shop } from "@/API/getlistvalue.js";
+import { GetList_Shop, GetList_Worktype } from "@/API/getlistvalue.js";
 import { timeday, timetwoyearday } from "@/methods/time";
-import {Select} from "ant-design-vue"
+
+// import {Select} from "ant-design-vue"
 // import { Select } from "ant-design-vue";
 export default {
   data() {
@@ -232,23 +238,22 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [Cell.name]: Cell,
-    ASelect: Select,
-    ASelectOption: Select.Option,
+    // ASelect: Select,
+    // ASelectOption: Select.Option,
     // ASelect: Select,
   },
   created() {
-    if (sessionStorage.getItem("product_type") == null) {
+
+    this.$store.commit("resetKeepAlive", [""]);
+    if (sessionStorage.getItem("work_type") == null) {
       //获取列表
 
-      Product_type({}).then((res) => {
+      GetList_Worktype({}).then((res) => {
         this.product_type = res.table;
-        sessionStorage.setItem(
-          "product_type",
-          JSON.stringify(this.product_type)
-        );
+        sessionStorage.setItem("work_type", JSON.stringify(this.product_type));
       });
     } else {
-      this.product_type = JSON.parse(sessionStorage.getItem("product_type"));
+      this.product_type = JSON.parse(sessionStorage.getItem("work_type"));
     }
 
     if (sessionStorage.getItem("subcom") == null) {
@@ -283,6 +288,15 @@ export default {
     this.reallsubcom = localStorage.getItem("subcom");
   },
   mounted() {},
+  beforeRouteLeave(to, from, next) {
+    if (to.path === "/worker_info") {
+      // 这是路由path
+
+      this.$store.commit("setKeepAlive", "Detailed"); //这是此页面的name属性名字
+    } else {
+    }
+    next();
+  },
 };
 </script>
 

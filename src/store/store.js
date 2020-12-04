@@ -7,7 +7,9 @@ const store = new Vuex.Store({
   state: {
     sata: false,
     keepAlive: [],
-    bankperson:{}
+    bankperson: {},
+    frompage:false
+    
   },
   getters: {
     keepAlive: state => state.keepAlive
@@ -17,13 +19,31 @@ const store = new Vuex.Store({
       state.sata = !state.sata
     },
     setKeepAlive: (state, keepAlive) => {
-      console.log("改变成功")
-      state.keepAlive = keepAlive;
+
+      state.keepAlive.push(keepAlive)
 
     },
-    changebankperson(state){
+    deletKeepAlive: (state, keepAlive) => {
+      state.keepAlive.splice(state.keepAlive.indexOf(keepAlive), 1);
+
+    },
+    changebankperson(state) {
       console.log(1)
-    }
+    }, resetKeepAlive: (state, keepAlive) => {
+
+      state.keepAlive = keepAlive
+
+    },
+    setbankperson: (state, keepAlive) => {
+
+      state.bankperson=keepAlive
+
+    },
+    setfrompage: (state, keepAlive) => {
+
+      state.frompage=keepAlive
+
+    },
 
   }
 })

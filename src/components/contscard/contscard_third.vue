@@ -56,12 +56,10 @@
           oninput="if(value<0||value>100)value=1"
           @change="onchangenum"
         />
-        <a-button type="dashed" @click="delet(index)">
-          <a-icon type="minus-circle-o" />
-        </a-button>
+        <button style="width: 25px" @click="delet(index)">删</button>
       </div>
       <a-button type="dashed" style="width: 60%" @click="add" class="thirdadd">
-        <a-icon type="plus" />添加项目 </a-button
+       添加项目 </a-button
       ><br />
 
       <hr />
@@ -111,12 +109,10 @@
           required="required"
           @change="onchangenum1"
         />
-        <a-button type="dashed" @click="delet1(index)">
-          <a-icon type="minus-circle-o" />
-        </a-button>
+        <button style="width: 25px" @click="delet(index)">删</button>
       </div>
       <a-button type="dashed" style="width: 60%" @click="add1" class="thirdadd">
-        <a-icon type="plus" />添加员工
+     添加员工
       </a-button>
 
       <div style="margin: 16px">
@@ -130,6 +126,11 @@
 import { Goodsno_find } from "@/API/product";
 import { GetList_Erp } from "@/API/getlistvalue";
 import { Button, NavBar, Icon, Toast } from "vant";
+// import {
+//   Button as aButton,
+//   Icon as aIcon,
+//   Input as aInput,
+// } from "ant-design-vue";
 // import {Select} from "ant-design-vue"
 export default {
   props: { show: Boolean },
@@ -156,7 +157,7 @@ export default {
   },
   methods: {
     onClickLeft() {
-      this.$emit("changeshow", false);
+      this.$router.go(-1);
     },
     handleChange(value) {
       this.newlist[this.index].name = this.workerselect[value].name;
@@ -247,6 +248,9 @@ export default {
           console.log(this.worklist);
           console.log();
           Toast.success("提交");
+          var params = {};
+          params.cusid = this.$route.params.cusid;
+          this.$router.push({ name: "detailed", params });
         }
       }
     },
@@ -255,10 +259,12 @@ export default {
     [Button.name]: Button,
     [NavBar.name]: NavBar,
     [Icon.name]: Icon,
-    // ASelect: Select,
-    // ASelectOption: Select.Option,
+    // AButton: aButton,
+    // AIcon: aIcon,
+    // AInput: aInput,
   },
   created() {
+    console.log(this.$route);
     if (sessionStorage.getItem("getlist_erp") == null) {
       GetList_Erp({}).then((res) => {
         this.workerselect1 = res.table;
@@ -274,6 +280,12 @@ export default {
 };
 </script>
 <style scoped>
+/deep/ .van-nav-bar {
+  background-color: #157aff;
+}
+/deep/ .van-nav-bar__title {
+  color: #ffffff;
+}
 .left {
   float: left;
   margin-left: 3vh;

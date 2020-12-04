@@ -51,11 +51,13 @@
           :disabled="isloading"
         >
           <template #label>
-            <a-icon
-              type="account-book"
-              :style="{ fontSize: '16px', color: 'red' }"
+            <van-icon
+              class="iconfont"
+              class-prefix="icon"
+              name="yue01"
+              color="red"
+              size="20"
             />
-
             会员余额支付
           </template>
         </van-field>
@@ -66,9 +68,12 @@
           :disabled="isloading"
         >
           <template #label>
-            <a-icon
-              type="dollar"
-              :style="{ fontSize: '16px', color: '#FF6600' }"
+            <van-icon
+              class="iconfont"
+              class-prefix="icon"
+              name="saleordertempSend"
+              color="#FF6600"
+              size="20"
             />
 
             会员赠送支付
@@ -81,9 +86,12 @@
           :disabled="isloading"
         >
           <template #label>
-            <a-icon
-              type="wechat"
-              :style="{ fontSize: '16px', color: 'green' }"
+            <van-icon
+              class="iconfont"
+              class-prefix="icon"
+              name="weixin"
+              color="green"
+              size="20"
             />
 
             微信支付
@@ -96,9 +104,12 @@
           :disabled="isloading"
         >
           <template #label>
-            <a-icon
-              type="alipay-circle"
-              :style="{ fontSize: '16px', color: '#08c' }"
+            <van-icon
+              class="iconfont"
+              class-prefix="icon"
+              name="iconfontrectangle390"
+              color="#08c"
+              size="20"
             />
 
             支付宝支付
@@ -111,10 +122,12 @@
           :disabled="isloading"
         >
           <template #label>
-            <a-icon
-              type="money-collect"
-              :style="{ fontSize: '16px' }"
-              theme="twoTone"
+            <van-icon
+              class="iconfont"
+              class-prefix="icon"
+              name="ziyuan"
+              color="#08c"
+              size="20"
             />
             其他支付
           </template>
@@ -156,6 +169,7 @@ import {
 } from "vant";
 import Third from "@/components/contscard/contscard_third";
 import { secondcard_save } from "@/API/secondcard.js";
+import "@/assets/icon2/iconfont.css";
 
 export default {
   props: { show: Boolean, data1: Object },

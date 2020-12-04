@@ -2,7 +2,7 @@
   <div class="hello">
     <van-nav-bar
       class="check"
-      title="收银查询"
+      title="会员账本查询"
       :fixed="true"
       :left-arrow="true"
       @click-left="onClickLeft"
@@ -56,19 +56,6 @@
         />
       </van-popup>
 
-      <van-field
-        name="havepay"
-        label="付款状态"
-        input-align="right"
-        class="checktwo"
-      >
-        <template #input>
-          <van-radio-group v-model="sex" direction="horizontal">
-            <van-radio name="Y">已付款</van-radio>
-            <van-radio name="N">未付款</van-radio>
-          </van-radio-group>
-        </template>
-      </van-field>
       <van-field v-model="mobile" name="selfno" placeholder="请输入单号">
         <template #label>
           <span class="check">单号</span>
@@ -96,21 +83,11 @@
       </van-field>
 
       <van-field
-        v-model="shougong"
-        name="shougong"
-        placeholder="请输入手工单号"
-      >
-        <template #label>
-          <span class="check">手工单号</span>
-        </template>
-      </van-field>
-
-      <van-field
         readonly
         clickable
         name="subcom"
         :value="viplevel"
-        label="店铺名"
+        label="发生分店"
         placeholder="点击选择店铺"
         @click="showviplevel = true"
         class="checktwo"
@@ -120,54 +97,30 @@
           <span class="check">备注</span>
         </template>
       </van-field>
-
       <van-field
-        v-model="firstemp"
-        name="firstemp"
-        placeholder=""
-        label="员工"
-        class="checktwo"
-      >
-        <template #input>
+      
+        name="billnotype"
+        v-model ="billnotype"
+        label="单据类型"
+        class="colordanger checktwo"
+        ><template #input>
           <a-select
-            label="员工"
             show-search
             option-filter-prop="children"
             style="width: 100%"
-            @change="handleChange"
+            @change="handleChange2"
           >
             <a-select-option
-              v-for="(d, index1) in workerselect"
-              :key="index1"
-              :value="d.no"
-              >{{ d.name }}( {{ d.workname }})</a-select-option
+              v-for="(item, index) in product_type"
+              :key="index"
+              :value="item.no"
             >
+              {{ item.name }}
+            </a-select-option>
           </a-select>
         </template>
       </van-field>
-      <van-field name="isorder" v-model="isorder" label="指名" class="checktwo">
-        <template #input>
-          <a-select style="width: 100%" @change="handleChange2">
-            <a-select-option value="Y">指名</a-select-option>
-            <a-select-option value="N">轮牌</a-select-option>
-            <a-select-option value="A">全部</a-select-option>
-          </a-select>
-        </template>
-      </van-field>
-      <van-field
-        label="最小金额"
-        v-model="minmoney"
-        name="minmoney"
-        placeholder="输入最小金额"
-        class="checktwo"
-      />
-      <van-field
-        label="最大金额"
-        v-model="maxmoney"
-        name="maxmoney"
-        placeholder="输入最大金额"
-        class="checktwo"
-      />
+
       <div class="guding" ref="container">
         <van-sticky :container="container">
           <van-button round block type="info" native-type="submit"
@@ -216,7 +169,8 @@ import {
   Sticky,
   DatetimePicker,
 } from "vant";
-import { GetList_Shop, GetList_Hy ,GetList_Erp} from "@/API/getlistvalue.js";
+import { GetList_Shop, GetList_Hy, GetList_Erp } from "@/API/getlistvalue.js";
+import { Product_type } from "@/API/product";
 // import { Select } from "ant-design-vue";
 export default {
   data() {
@@ -265,6 +219,8 @@ export default {
       maxmoney: "",
       workerselect: [],
       firstemp: "",
+      product_type: [],
+      billnotype:""
     };
   },
   components: {
@@ -289,9 +245,20 @@ export default {
     // ASelectOption: Select.Option,
   },
   created() {
+    if (sessionStorage.getItem("product_type") == null) {
+      Product_type({}).then((res) => {
+        this.product_type = res.table;
+        sessionStorage.setItem(
+          "product_type",
+          JSON.stringify(this.product_type)
+        );
+      });
+    } else {
+      this.product_type = JSON.parse(sessionStorage.getItem("product_type"));
+    }
     if (window.localStorage.getItem("subcom") !== "") {
       this.viplevelreally = window.localStorage.getItem("subcom");
-      this.viplevel= window.localStorage.getItem("subname")
+      this.viplevel = window.localStorage.getItem("subname");
     }
     this.getpulldata();
     this.getvip();
@@ -328,10 +295,11 @@ export default {
       }
 
       var params = pam;
-      this.$router.push({
-        name: "bank",
-        params,
-      });
+    //   this.$router.push({
+    //     name: "bank",
+    //     params,
+    //   });
+      console.log('账本查询',params)
     },
     onClickLeft() {
       //   this.$sotre.commit('changesata')
@@ -396,7 +364,10 @@ export default {
         });
       });
     },
-
+    handleChange2(value) {
+      this.billnotype = value;
+      console.log(value)
+    },
     handleEndDateConfirm(value) {
       this.timeShow = false;
       var date = value;
@@ -426,9 +397,6 @@ export default {
       var timer = date.getFullYear() + "-" + m + "-" + d;
       this.enddate = timer;
       this.showendtime = false;
-    },
-    handleChange2(value) {
-      this.isorder = value;
     },
   },
   mounted() {

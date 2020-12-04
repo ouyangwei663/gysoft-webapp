@@ -65,7 +65,24 @@
     />
 
     <van-empty v-if="empty" image="error" description="Data is empty" />
-
+    <van-sticky  :offset-top="46">
+      <div style="width: 100%; background: white">
+        <van-pagination v-if="!empty"
+          @change="pagechange"
+          v-model="currentPage"
+          :page-count="totalpage"
+          mode="simple"
+          style="width: 80%; margin-bottom: 3vh; float: left"
+        /><van-button
+          @click="reflash"
+          type="primary"
+          style="width: 20%; margin-bottom: 3vh;"
+        >
+          刷新
+        </van-button>
+        <div class="clear"></div>
+      </div>
+    </van-sticky>
     <div class="bb" v-for="(item, index) in Listtrue" :key="index">
       <van-card :class="index % 2 == 0 ? 'detailedcard' : 'detailedcard2'">
         <template #title>
@@ -74,31 +91,37 @@
         <template #desc>
           <table class="vipinfo">
             <tr>
-              <td colspan="2">
-                卡号： {{ item.cus_type }}
-                {{ item.cus_type == null ? "" : "(" + item.cardno + ")" }}
+              <td>
+                项目:{{ item.goodname }}
+                <!-- {{ item.cus_type == null ? "" : "(" + item.cardno + ")" }} -->
               </td>
+              <td>日期:{{ item.out_date1 }}</td>
             </tr>
             <tr>
               <td>
-                客户：{{
-                  item.salecusname === null ? "散客" : item.salecusname
-                }}({{ item.sex == "N" ? "女士" : "男士" }}) &nbsp;{{
-                  item.oneisorder == "Y" ? "指名" : "轮牌"
-                }}
+                客户：{{ item.cus_name === null ? "散客" : item.cus_name }}({{
+                  item.sex == "N" ? "女士" : "男士"
+                }}) &nbsp;{{ item.oneisorder == "Y" ? "指名" : "轮牌" }}
               </td>
               <td>
                 员工：{{ item.firstemp === null ? "暂无记录" : item.firstemp }}
               </td>
             </tr>
             <tr>
-              <td>是否付款：{{ item.havepay == "Y" ? "已付款" : "未付款" }}</td>
+              <td v-show="item.havepay == 'Y'" class="blue">
+                <span style="color: white"> 金额:{{ item.factmoney }}</span
+                >(已付款)
+              </td>
+              <td v-show="item.havepay == 'N'" class="red">
+                <span style="color: white"> 金额:{{ item.factmoney }}</span
+                >(未付款)
+              </td>
               <td>
                 <van-button
                   type="primary"
                   size="mini"
                   @click.stop="clickon(item)"
-                  >修改</van-button
+                  >详细资料</van-button
                 >
               </td>
             </tr>
@@ -126,10 +149,13 @@ import {
   Empty,
   Tag,
   Picker,
+  Pagination,
+  Sticky,
 } from "vant";
 
 import { OutOne_find } from "@/API/outone.js";
 import {
+  timehalf,
   timeday,
   timetwoyearday,
   timeyesterday,
@@ -158,6 +184,9 @@ export default {
       showlist: false,
       timedate: ["今天", "昨天", "近一周", "本月", "全年"],
       timename: "",
+      currentPage: 1,
+      totalpage: "",
+      pam: {},
     };
   },
   components: {
@@ -176,25 +205,38 @@ export default {
     [Empty.name]: Empty,
     [Tag.name]: Tag,
     [Picker.name]: Picker,
+    [Pagination.name]: Pagination,
+    [Sticky.name]: Sticky,
   },
   activated() {
+    this.$store.commit("setbankperson", {});
+    this.$store.commit("resetKeepAlive", ["bank"]);
+    this.$store.commit("setfrompage", false);
     console.log(this.$route.params);
     if (JSON.stringify(this.$route.params) !== "{}") {
       console.log(this.$route.params);
       this.begindate = this.$route.params.begindate;
       this.enddate = this.$route.params.enddate;
-      var pam= {};
+      var pam = {};
       pam.begindate = this.begindate;
       pam.enddate = this.enddate;
-      pam.subcom = window.localStorage.getItem("subcom");
+
+      if (this.$route.params.enddate == null) {
+        pam.subcom = window.localStorage.getItem("subcom");
+      } else {
+        pam.subcom = this.$route.params.subcom;
+      }
       OutOne_find(pam).then((res) => {
+        this.pam = pam;
         console.log("查询结果", res.table);
         if (res.table[0].subcom === null) {
           this.empty = true;
           this.Listtrue = [];
         } else {
           this.empty = false;
+          this.totalpage = res.extended.totalpage;
           this.Listtrue = res.table.map(function (item) {
+            item.out_date1 = timehalf(item.out_date);
             item.show = false;
             item.bottom = false;
             return item;
@@ -251,6 +293,13 @@ export default {
     clickon(item) {
       var params = {};
       params = item;
+      var bankperson = {
+        cus_name: item.cus_name,
+        sex: item.sex,
+        vip: item.carcname,
+        cardno: item.cardno,
+      };
+      this.$store.commit("setbankperson", bankperson);
       this.$router.push({
         name: "bankaddco",
         params,
@@ -299,19 +348,66 @@ export default {
         params,
       });
     },
+    pagechange() {
+      var pam = this.pam;
+      pam.indexpage = this.currentPage;
+      OutOne_find(pam).then((res) => {
+        if (res.table[0].subcom === null) {
+          this.empty = true;
+          this.Listtrue = [];
+        } else {
+          console.log("翻页了", res);
+          this.empty = false;
+
+          this.totalpage = res.extended.totalpage;
+
+          this.Listtrue = res.table.map(function (item) {
+            item.out_date1 = timehalf(item.out_date);
+            item.show = false;
+            item.bottom = false;
+            return item;
+          });
+        }
+      });
+    },
+    reflash() {
+      var pam = this.pam;
+      OutOne_find(pam).then((res) => {
+        if (res.table[0].subcom === null) {
+          this.empty = true;
+          this.Listtrue = [];
+        } else {
+          console.log("刷新了", res);
+          this.empty = false;
+
+          this.totalpage = res.extended.totalpage;
+
+          this.Listtrue = res.table.map(function (item) {
+            item.out_date1 = timehalf(item.out_date);
+            item.show = false;
+            item.bottom = false;
+            return item;
+          });
+        }
+      });
+    },
     getbaninfo() {
       var pam = {};
       pam.begindate = this.begindate;
       pam.enddate = this.enddate;
       pam.subcom = window.localStorage.getItem("subcom");
       OutOne_find(pam).then((res) => {
-        console.log("查询结果", res.table);
+        this.pam = pam;
         if (res.table[0].subcom === null) {
           this.empty = true;
           this.Listtrue = [];
         } else {
           this.empty = false;
+          console.log("查询出来", res);
+          this.totalpage = res.extended.totalpage;
+
           this.Listtrue = res.table.map(function (item) {
+            item.out_date1 = timehalf(item.out_date);
             item.show = false;
             item.bottom = false;
             return item;
@@ -320,19 +416,23 @@ export default {
       });
     },
   },
+
   created() {
     console.log("初始化了");
+    this.$store.commit("setfrompage", false);
     if (JSON.stringify(this.$route.params) !== "{}") {
       var pam = this.$route.params;
       this.begindate = pam.begindate;
       this.enddate = pam.enddate;
       OutOne_find(pam).then((res) => {
+        this.pam = pam;
         if (res.table[0].cusid === null) {
           this.empty = true;
         } else {
           this.empty = false;
           console.log("查询结果", res.table);
           this.Listtrue = res.table.map(function (item) {
+            this.totalpage = res.extended.totalpage;
             item.show = false;
             item.bottom = false;
             return item;
@@ -348,6 +448,7 @@ export default {
       pam.enddate = this.enddate;
       pam.subcom = window.localStorage.getItem("subcom");
       OutOne_find(pam).then((res) => {
+        this.pam = pam;
         console.log("查询结果", res.table);
         if (res.table[0].cusid === null) {
           this.empty = true;
@@ -366,8 +467,11 @@ export default {
     if (to.path === "/bankadd") {
       // 这是路由path
 
-      this.$store.commit("setKeepAlive", ["bankadd", "bank"]); //这是此页面的name属性名字
-    } else {
+      this.$store.commit("setKeepAlive", "bankadd"); //这是此页面的name属性名字
+      this.$store.commit("setKeepAlive", "bank"); //这是此页面的name属性名字
+    } else if (to.path === "/bankaddco") {
+      this.$store.commit("setKeepAlive", "bankadd"); //这是此页面的name属性名字
+      this.$store.commit("setKeepAlive", "bank"); //这是此页面的name属性名字
       // this.$store.commit("setKeepAlive", []);
     }
     next();
@@ -475,5 +579,14 @@ export default {
 }
 .bb table td {
   width: 50%;
+}
+.blue {
+  color: #cd5c5c;
+}
+.red {
+  color: red;
+}
+.clear {
+  clear: both;
 }
 </style>

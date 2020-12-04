@@ -11,6 +11,17 @@
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
+    <van-sticky :offset-top="46">
+      <div style="width: 100%; background: white">
+        <van-pagination
+          @change="pagechange"
+          v-model="currentPage"
+          :page-count="totalpage"
+          mode="simple"
+          style="width: 80%; margin-left: 10%; margin-bottom: 3vh"
+        />
+      </div>
+    </van-sticky>
 
     <div class="bb" v-for="(item, index) in List" :key="index">
       <van-card
@@ -20,19 +31,7 @@
         <template #title>
           <div class="name">
             {{ item.empName }}{{ "   "
-            }}<van-icon
-              v-show="item.sex !== '女'"
-              class="iconfont"
-              class-prefix="icon"
-              name="nan"
-              color="#15FFE7"
-            /><van-icon
-              v-show="item.sex == '女'"
-              class="iconfont"
-              class-prefix="icon"
-              name="-businesswoman"
-              color="#F5005C"
-            />
+            }}{{ item.sex == "女" ? "(女士)" : "(男士)" }}
           </div>
         </template>
         <template #desc>
@@ -56,7 +55,7 @@
                   type="primary"
                   size="mini"
                   @click.stop="clickperson(item)"
-                  >修改资料</van-button
+                  >详细资料</van-button
                 >
               </td>
             </tr>
@@ -76,11 +75,14 @@ import {
   ActionSheet,
   Cell,
   CellGroup,
+  Pagination,
+  Sticky,
 } from "vant";
 import "@/assets/icon/iconfont.css";
 import { work_find } from "@/API/work";
 import "@/assets/icon2/iconfont.css";
 export default {
+  name: "Detailed",
   data() {
     return {
       money: "100",
@@ -89,6 +91,8 @@ export default {
       List: [],
       params: {},
       vipname: [],
+      currentPage: 1,
+      totalpage: "",
     };
   },
   components: {
@@ -100,6 +104,8 @@ export default {
     [ActionSheet.name]: ActionSheet,
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,
+    [Pagination.name]: Pagination,
+    [Sticky.name]: Sticky,
   },
   created() {
     this.getdate();
@@ -120,6 +126,7 @@ export default {
     getdate() {
       var that = this;
       work_find(this.$route.params).then((res) => {
+        that.totalpage = res.extended.totalpage;
         console.log(res);
         that.List = res.table;
       });
@@ -134,6 +141,11 @@ export default {
         name: "crash",
         params,
       });
+    },
+    pagechange() {
+      this.$route.params.pageindex = this.currentPage;
+      console.log(this.$route.params);
+      this.getdate();
     },
     tomoney() {
       var params = this.params;
@@ -152,12 +164,23 @@ export default {
     },
     clickperson(item) {
       var params = item;
+      
 
       this.$router.push({
         name: "worker_push",
         params,
       });
     },
+  },
+  beforeRouteLeave(to, from, next) {
+    if (to.path === "/worker_push") {
+      // 这是路由path
+
+      this.$store.commit("setKeepAlive", "Info"); //这是此页面的name属性名字
+    } else {
+      this.$store.commit("deletKeepAlive", "Info");
+    }
+    next();
   },
 };
 </script>

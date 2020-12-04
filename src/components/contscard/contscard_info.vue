@@ -12,7 +12,17 @@
         <van-icon name="arrow-left" size="21" color="#FFFFFF" />
       </template>
     </van-nav-bar>
-
+    <van-sticky :offset-top="46">
+      <div style="width: 100%; background: white">
+        <van-pagination
+          @change="pagechange"
+          v-model="currentPage"
+          :page-count="totalpage"
+          mode="simple"
+          style="width: 80%; margin-left: 10%; margin-bottom: 3vh"
+        />
+      </div>
+    </van-sticky>
     <div class="bb" v-for="(item, index) in List" :key="index">
       <van-card
         :class="index % 2 == 0 ? 'detailedcard' : 'detailedcard2'"
@@ -65,6 +75,8 @@ import {
   ActionSheet,
   Cell,
   CellGroup,
+  Pagination,
+  Sticky,
 } from "vant";
 import "@/assets/icon/iconfont.css";
 import { Customer_find } from "@/API/customer";
@@ -78,6 +90,8 @@ export default {
       show: false,
       List: [],
       params: {},
+      currentPage: 1,
+      totalpage: "",
     };
   },
   components: {
@@ -89,10 +103,12 @@ export default {
     [ActionSheet.name]: ActionSheet,
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,
+    [Pagination.name]: Pagination,
+    [Sticky.name]: Sticky,
   },
   created() {
     console.log(this.$route.params.enddate);
-    if (this.$route.params.enddate !==undefined) {
+    if (this.$route.params.enddate !== undefined) {
       this.getdate();
     }
   },
@@ -126,14 +142,21 @@ export default {
         params,
       });
     },
+    pagechange() {
+      this.$route.params.pageindex=this.currentPage
+      secondcard_find(this.$route.params).then((res) => {
+        console.log(res);
+        this.List = res.table;
+      });
+    },
   },
   beforeRouteLeave(to, from, next) {
     if (to.path === "/contscard_pay") {
       // 这是路由path
 
-      this.$store.commit("setKeepAlive", ["HellWorld"]); //这是此页面的name属性名字
+      this.$store.commit("setKeepAlive", "HellWorld"); //这是此页面的name属性名字
     } else {
-      this.$store.commit("setKeepAlive", []);
+      this.$store.commit("deletKeepAlive", "HellWorld");
     }
     next();
   },

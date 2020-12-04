@@ -158,18 +158,22 @@
               <template #label>
                 <table class="liaocheng">
                   <tr>
-                    <td colspan="2">充值时间:{{item.insdate}}</td>
+                    <td colspan="2">充值时间:{{ item.insdate }}</td>
                   </tr>
                   <tr>
-                    <td>充值:{{item.addmoney}}</td>
+                    <td>充值:{{ item.addmoney }}</td>
                     <td>赠送余额：0</td>
                   </tr>
                   <tr>
-                    <td>开卡/续卡:{{item.ins_type1=="A"?'开卡':'续费'}}</td>
-                    <td>充值店:{{item.subcom}}</td>
+                    <td>
+                      开卡/续卡:{{ item.ins_type1 == "A" ? "开卡" : "续费" }}
+                    </td>
+                    <td>充值店:{{ item.subcom }}</td>
                   </tr>
                   <tr>
-                    <td>类型:{{item.ins_type=="A"?'赠送充值':'存钱'}}</td>
+                    <td>
+                      类型:{{ item.ins_type == "A" ? "赠送充值" : "存钱" }}
+                    </td>
                   </tr>
                 </table>
                 <!-- <p>
@@ -390,11 +394,16 @@ import {
   CollapseItem,
   DatetimePicker,
 } from "vant";
-import { detail_history, detail_Storelist } from "@/API/detail.js";
+import {
+  detail_history,
+  detail_Storelist,
+  detail_Nurselist,
+  detail_Billlist,
+} from "@/API/detail.js";
 export default {
   data() {
     return {
-      cusid: "!$7-NPX&AI3#30Q:",
+      cusid: "39700",
       active: 0,
       checked: false,
       activeNames: [],
@@ -448,6 +457,19 @@ export default {
         this.liaocheng = res.table;
       });
     },
+    getsecondcard() {
+      detail_Nurselist({ cusid: this.cusid }).then((res) => {
+        console.log("疗程明细", res);
+        // this.liaocheng = res.table;
+      });
+    },
+    getbill() {
+      detail_Billlist({ cusid: this.cusid }).then((res) => {
+        console.log("对账单", res);
+        // this.liaocheng = res.table;
+      });
+    },
+
     onClickLeft() {
       //   this.$sotre.commit('changesata')
       this.$router.go(-1);
@@ -490,6 +512,8 @@ export default {
   created() {
     this.gethistorylist();
     this.getdetail();
+    this.getsecondcard();
+    this.getbill() 
   },
 };
 </script>

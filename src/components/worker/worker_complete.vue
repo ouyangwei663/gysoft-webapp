@@ -130,7 +130,7 @@ import {
   Popup,
   Picker,
   DatetimePicker,
-  Dialog
+  Dialog,
 } from "vant";
 import { Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
@@ -237,7 +237,7 @@ export default {
     [Popup.name]: Popup,
     [Picker.name]: Picker,
     [DatetimePicker.name]: DatetimePicker,
-    [Dialog.name]:Dialog
+    [Dialog.name]: Dialog,
   },
   created() {
     console.log("路由", this.$route);
@@ -283,10 +283,15 @@ export default {
         }
       );
     }
-    this.subcom = localStorage.getItem("subname");
-    this.reallsubcom = localStorage.getItem("subcom");
-    this.begindate = timeday();
-    this.enddate = timetwoyearday();
+    this.mingzu = this.$route.params.nation;
+    this.begindate = this.$route.params.born;
+    this.idcard = this.$route.params.idno;
+    this.jiguan = this.$route.params.whereborn;
+    this.person = this.$route.params.introman;
+    this.money = this.$route.params.basewage;
+    this.idno = this.$route.params.empgroup;
+    this.name = this.$route.params.linkman;
+    this.personphone = this.$route.params.intr_phone;
   },
   mounted() {},
 };

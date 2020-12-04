@@ -20,11 +20,21 @@
         @click="toBank()"
       />
       <van-grid-item v-if="false" id="seventh" icon="aim" text="回访跟踪" />
-      <van-grid-item id="seventh" icon="manager" text="员工"    to="/worker_check" />
+      <van-grid-item
+        id="seventh"
+        icon="manager"
+        text="员工"
+        to="/worker_check"
+      />
 
       <van-grid-item v-if="false" id="third" icon="star" text="会员积分" />
 
-      <van-grid-item v-if="false" id="fourth" icon="calendar-o" text="预约管理" />
+      <van-grid-item
+        v-if="false"
+        id="fourth"
+        icon="calendar-o"
+        text="预约管理"
+      />
       <van-grid-item
         id="fifth"
         icon="credit-pay"
@@ -39,12 +49,24 @@
         text="报表"
         @click="toChart()"
       />
-
+      <van-grid-item
+        v-if="true"
+        id="ninth"
+        icon="bill-o"
+        text="会员账本"
+        @click="tobook()"
+      />
       <van-grid-item v-if="false" id="eigth" icon="fire" text="今日生日" />
       <van-grid-item v-if="false" id="ninth" icon="bill-o" text="充值" />
-      
+
       <van-grid-item v-if="false" id="tenth" icon="paid" text="取现" />
-       <van-grid-item v-if="true" id="ninth" icon="bill-o" text="职务权限" @click="toJug()" />
+      <van-grid-item
+        v-if="false"
+        id="ninth"
+        icon="bill-o"
+        text="职务权限"
+        @click="toJug()"
+      />
       <!-- <van-grid-item
         id="eleventh"
         icon="records"
@@ -85,9 +107,14 @@ export default {
         name: "chart_route",
       });
     },
-        toJug() {
+    toJug() {
       this.$router.push({
         name: "jug",
+      });
+    },
+    tobook() {
+      this.$router.push({
+        name: "book",
       });
     },
   },

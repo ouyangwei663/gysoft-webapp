@@ -229,9 +229,11 @@ export default {
     [Sticky.name]: Sticky,
   },
   created() {
+    this.$store.commit("resetKeepAlive", [""]);
     this.getpulldata();
     this.getvip();
   },
+  
 
   methods: {
     onSubmit(values) {
@@ -251,7 +253,7 @@ export default {
       } else {
         delete pam.sata;
       }
-      var params =clean(pam) ;
+      var params = clean(pam);
       this.$router.push({
         name: "detailed",
         params,
@@ -341,6 +343,15 @@ export default {
   mounted() {
     this.container = this.$refs.container;
   },
+  beforeRouteLeave(to, from, next) {
+    if (to.path === "/detailed") {
+      // 这是路由path
+
+      this.$store.commit("setKeepAlive", "Detailed"); //这是此页面的name属性名字
+    } else {
+    }
+    next();
+  },
 };
 </script>
 
@@ -390,7 +401,7 @@ export default {
   position: fixed;
   width: 100%;
   height: 5rem;
-  bottom: 0vh;
+  bottom: 20px;
 }
 .checkroll {
   height: 130vh;

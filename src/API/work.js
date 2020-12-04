@@ -15,7 +15,7 @@ import {
   export const work_save = p => { //   员工的保存
 
     p.action = "findby";
-    p.classname = "n_employer_hy "
+    p.classname = "n_employer_hy"
     p.funcname = "save";
     p.classmemo = "员工保存"
 
@@ -26,11 +26,10 @@ import {
   export const work_find = p => { //   员工的查询
 
     p.action = "findby";
-    p.classname = "n_employer_hy "
+    p.classname = "n_employer_hy"
     p.funcname = "find";
     p.classmemo = "员工查询"
 
     return post(second, p)
   };
   
- 

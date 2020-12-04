@@ -20,7 +20,7 @@
             show-search
             showArrow
             :value="value0"
-            placeholder="Tags Mode"
+            placeholder="输入价格或编码、名称"
             :default-active-first-option="false"
             :show-arrow="false"
             :filter-option="false"
@@ -113,12 +113,13 @@
               >轮牌</a-select-option
             >
           </a-select>
-          <a-button type="dashed" @click="delet(index)">
-            <a-icon type="minus-circle-o" />
-          </a-button>
+          <!-- <a-button type="dashed" @click="delet(index)" > -->
+
+          <!-- </a-button> -->
+          <button style="width: 25px" @click="delet(index)">删</button>
         </div>
         <a-button type="dashed" style="width: 60%" @click="add">
-          <a-icon type="plus" />添加员工
+          添加员工
         </a-button>
       </div>
 
@@ -293,16 +294,31 @@
         </template>
       </van-cell>
 
-      <van-cell title="会员信息" class="popupmoney">
+      <van-cell
+        v-if="$store.state.bankperson.cus_name"
+        title="会员信息"
+        class="popupmoney"
+      >
         <template #label>
           <table class="moneytable">
             <tr>
-              <td>姓名：高利基(女士)</td>
-              <td>Vip会员卡8(889251)</td>
+              <td>姓名:{{ $store.state.bankperson.cus_name }}</td>
+              <td>
+                {{ $store.state.bankperson.vip
+                }}{{ "(" + $store.state.bankperson.cardno + ")" }}
+              </td>
             </tr>
             <tr>
-              <td>卡内余额： <span class="red">815</span></td>
-              <td>赠送余额： <span class="red">0</span></td>
+              <td>
+                卡内余额：
+                <span class="red">{{ $store.state.bankperson.lastmoney }}</span>
+              </td>
+              <td>
+                赠送余额：
+                <span class="red">{{
+                  $store.state.bankperson.givehavemoney
+                }}</span>
+              </td>
             </tr>
           </table>
         </template>
@@ -315,11 +331,15 @@
             label-width="10em"
             type="number"
             :disabled="isloading"
+            v-if="$store.state.bankperson.cus_name"
           >
             <template #label>
-              <a-icon
-                type="account-book"
-                :style="{ fontSize: '16px', color: 'red' }"
+              <van-icon
+                class="iconfont"
+                class-prefix="icon"
+                name="yue01"
+                color="red"
+                size="20"
               />
 
               会员余额支付
@@ -330,11 +350,15 @@
             label-width="10em"
             type="number"
             :disabled="isloading"
+            v-if="$store.state.bankperson.cus_name"
           >
             <template #label>
-              <a-icon
-                type="dollar"
-                :style="{ fontSize: '16px', color: '#FF6600' }"
+              <van-icon
+                class="iconfont"
+                class-prefix="icon"
+                name="saleordertempSend"
+                color="#FF6600"
+                size="20"
               />
 
               会员赠送支付
@@ -347,9 +371,12 @@
             :disabled="isloading"
           >
             <template #label>
-              <a-icon
-                type="wechat"
-                :style="{ fontSize: '16px', color: 'green' }"
+              <van-icon
+                class="iconfont"
+                class-prefix="icon"
+                name="weixin"
+                color="green"
+                size="20"
               />
 
               微信支付
@@ -362,9 +389,12 @@
             :disabled="isloading"
           >
             <template #label>
-              <a-icon
-                type="alipay-circle"
-                :style="{ fontSize: '16px', color: '#08c' }"
+              <van-icon
+                class="iconfont"
+                class-prefix="icon"
+                name="iconfontrectangle390"
+                color="#08c"
+                size="20"
               />
 
               支付宝支付
@@ -377,10 +407,12 @@
             :disabled="isloading"
           >
             <template #label>
-              <a-icon
-                type="money-collect"
-                :style="{ fontSize: '16px' }"
-                theme="twoTone"
+              <van-icon
+                class="iconfont"
+                class-prefix="icon"
+                name="ziyuan"
+                color="#08c"
+                size="20"
               />
               其他支付
             </template>
@@ -428,6 +460,7 @@ import {
 } from "@/API/product";
 import { clean } from "@/methods/clean";
 import { GetList_Erp } from "@/API/getlistvalue";
+import "@/assets/icon2/iconfont.css";
 // import { Select } from "ant-design-vue";
 export default {
   data() {
@@ -474,6 +507,7 @@ export default {
       needsendsms: true,
       disable: false,
       isloading: false,
+      page: undefined,
     };
   },
   components: {
@@ -494,16 +528,30 @@ export default {
     // ASelect: Select,
     // ASelectOption: Select.Option,
   },
+  beforeRouteEnter(to, from, next) {
+    if (from.path === "/bankaddco") {
+      next((vm) => {
+        vm.$store.commit("setfrompage", true);
+        console.log("设置成功");
+      });
+    } else {
+    }
+    next();
+  },
+
   methods: {
     onClickLeft() {
-      var params = {
-        out_notwo: this.$route.params.out_no,
-      };
-
-      this.$router.push({
-        name: "bankadd",
-        params,
-      });
+      if (this.$store.state) {
+        this.$router.go(-1);
+      } else {
+        var params = {
+          out_notwo: this.$route.params.out_no,
+        };
+        this.$router.push({
+          name: "bankadd",
+          params,
+        });
+      }
     },
     add() {
       this.newlist.push({});
@@ -823,6 +871,8 @@ export default {
     },
   },
   created() {
+    console.log("page", this.page);
+    console.log("路由", this.$route);
     this.out_no = this.$route.params.out_no;
     if (sessionStorage.getItem("getlist_erp") == null) {
       GetList_Erp({}).then((res) => {
@@ -883,7 +933,7 @@ export default {
       // 这是路由path
 
       console.log("去收银了");
-      this.$store.commit("setKeepAlive", ["bank"]); //这是此页面的name属性名字
+      this.$store.commit("setKeepAlive", "bank"); //这是此页面的name属性名字
     } else {
     }
     next();

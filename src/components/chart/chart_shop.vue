@@ -42,7 +42,9 @@
           @click="onClickRight"
         >
           <template #title
-            ><a-icon type="search" :style="{ color: 'hotpink' }" /> 查询
+            >
+            
+            <van-icon name="search" size="15" color="hotpink"/> 查询
           </template>
         </van-cell>
         <van-popup v-model="showshop" position="bottom">

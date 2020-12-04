@@ -5,21 +5,24 @@ import store from './store/store'
 import axios from 'axios'
 // import Antd from 'ant-design-vue'
 // import "vant/lib/select/style";
-// import InputNumber from 'ant-design-vue/lib/input-number';
-// import Button from 'ant-design-vue/lib/button';
+import InputNumber from 'ant-design-vue/lib/input-number';
+import Button from 'ant-design-vue/lib/button';
 import Select from 'ant-design-vue/lib/Select';
+
+import Input from 'ant-design-vue/lib/Input';
+// import InputNumber from 'ant-design-vue/lib/input-number';
+Vue.use(InputNumber)
+Vue.use(Button)
+Vue.use(Input)
 Vue.use(Select)
 Vue.use(Select.Option)
 
 
-// import 'ant-design-vue/dist/antd.css';
 import 'ant-design-vue/lib/select/style/css'; 
-
-
-// Vue.use(InputNumber)
-// Vue.use(Button)
-// Vue.use(Icon)
+import 'ant-design-vue/lib/input-number/style/css'; 
+import 'ant-design-vue/lib/button/style/css'; 
 import VueTouch from 'vue-touch'
+// import { Button } from 'ant-design-vue'
 Vue.use(VueTouch, {
   name: 'v-touch'
 })

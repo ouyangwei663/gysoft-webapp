@@ -19,7 +19,7 @@
             show-search
             showArrow
             :value="value"
-            placeholder="Tags Mode"
+            placeholder="输入价格或编码、名称"
             :default-active-first-option="false"
             :show-arrow="false"
             :filter-option="false"
@@ -42,17 +42,15 @@
       </tr>
     </table>
 
-    <van-cell title="" left class="titletop">
+    <van-cell title="" left class="titletop" v-if="ischange">
       <template #label>
         <table class="bankadd">
           <tr>
-            <td class="bigtd">
-              会员：{{ cus_name }}({{ sex == "N" ? "女士" : "男士" }})
-            </td>
+            <td class="bigtd">会员：{{ cus_name }}{{ sex }}</td>
             <td class="bigtd">开卡:{{ subcom }}</td>
           </tr>
           <tr>
-            <td>综合六折卡({{ cardno }})</td>
+            <td>{{ vip }}{{ cardno }}</td>
             <td class="red">
               余额:{{ lastmoney }} &nbsp; &nbsp; &nbsp; 赠送{{ givehavemoney }}
             </td>
@@ -168,12 +166,15 @@ import {
   DropdownItem,
   Picker,
   Toast,
+  shop,
 } from "vant";
 import contact from "./contact";
 import DropList from "vue-droplist";
-import { GetList_Erp, GetList_Erp2 } from "@/API/getlistvalue";
+import { GetList_Erp, GetList_Erp2, GetList_Hy } from "@/API/getlistvalue";
+// import { GetList_Shop} from "@/API/getlistvalue.js";
+
 import { OutOne_open, OutOne_save } from "@/API/outone.js";
-import { getshop } from "@/methods/getshop";
+import { getshop, getvip } from "@/methods/getshop";
 import { Customer_find } from "@/API/customer";
 import { Product_history, Product_type } from "@/API/product";
 import { clean } from "@/methods/clean";
@@ -182,6 +183,7 @@ export default {
   name: "bankadd",
   data() {
     return {
+      ischange: false,
       empty: "",
       active: 0,
       value: "",
@@ -232,6 +234,7 @@ export default {
       radio: "",
       cardno: "",
       out_notwo: "",
+      vip: "",
     };
   },
   components: {
@@ -258,6 +261,9 @@ export default {
     // ASelectOption: Select.Option,
   },
   created() {
+    var bankperson = {};
+    this.$store.commit("setbankperson", bankperson);
+
     if (sessionStorage.getItem("product_type") == null) {
       Product_type({}).then((res) => {
         this.product_type = res.table;
@@ -270,6 +276,20 @@ export default {
       this.product_type = JSON.parse(sessionStorage.getItem("product_type"));
     }
 
+    // if (localStorage.getItem("shop") == null) {
+    //   GetList_Hy({}).then((res) => {
+    //     this.shop = res.table;
+    //     sessionStorage.setItem(
+    //       "product_type",
+    //       JSON.stringify(this.product_type)
+    //     );
+    //   });
+    // } else {
+    //   this.product_type = JSON.parse(sessionStorage.getItem("product_type"));
+    // }
+
+    // console.log('乱来',sessionStorage.getItem("getlist_erp222"))
+
     if (sessionStorage.getItem("getlist_erp") == null) {
       GetList_Erp({}).then((res) => {
         this.workerselect = res.table;
@@ -281,6 +301,7 @@ export default {
     } else {
       this.workerselect = JSON.parse(sessionStorage.getItem("getlist_erp"));
     }
+
     OutOne_open({ subcom: localStorage.getItem("subcom") }).then((res) => {
       this.selfno = res.table[0].selfno;
       this.datetime = res.table[0].out_date;
@@ -311,7 +332,7 @@ export default {
       values.subcom = this.subno;
       values.out_date = this.datetime;
       console.log(values);
-      if (values.firstemp == "") {
+      if (values.oneisorder == "") {
         Toast.fail("请选择是否指名");
       } else if (values.firstemp == "") {
         Toast.fail("请选择员工");
@@ -395,16 +416,27 @@ export default {
       }
     },
     handleChange(value) {
-      console.log("选中资料", this.data[value]);
+      // console.log("选中资料", this.data[value]);
+      this.ischange = true;
       var that = this;
       this.cus_name = this.data[value].cus_name;
-      this.cardno = this.data[value].cardno;
-      this.sex = this.data[value].sex;
+      this.cardno = "(" + this.data[value].cardno + ")";
+      this.sex = this.data[value].sex == "N" ? "(女士)" : "(男士)";
       this.subno = this.data[value].subcom;
       this.subcom = getshop(this.data[value].subcom);
+      this.vip = getvip(this.data[value].cus_type);
       this.lastmoney = this.data[value].lastmoney;
       this.givehavemoney = this.data[value].givehavemoney;
       this.cusid = this.data[value].cusid;
+      var bankperson = {
+        cus_name: this.data[value].cus_name,
+        sex: this.data[value].sex,
+        vip: this.vip,
+        cardno: this.data[value].cardno,
+        lastmoney: this.data[value].lastmoney,
+        givehavemoney: this.data[value].givehavemoney,
+      };
+      this.$store.commit("setbankperson", bankperson);
     },
     handleChange1(value) {
       this.firstemp = value;

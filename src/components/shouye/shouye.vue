@@ -5,7 +5,9 @@
       <Left></Left>
       <Gird></Gird>
 
-      <span class="info">{{ subname }}({{ mccdp }}) {{ username }} 201201A</span>
+      <span class="info"
+        >{{ subname }}({{ mccdp }}) {{ username }} 201203C</span
+      >
     </div>
   </div>
 </template>
@@ -35,6 +37,9 @@ export default {
       console.log(res);
       this.subname = res.user.subname;
       this.subcom = res.user.subcom;
+      window.localStorage.setItem("subcom", res.user.subcom);
+      window.localStorage.setItem("subname", res.user.subname);
+
       this.username = res.user.username;
       this.mccdp = res.user.comname;
       this.type = res.user.usertype;
@@ -76,7 +81,8 @@ export default {
       // 这是路由path
 
       console.log("去收银了");
-      this.$store.commit("setKeepAlive", ["bank", "bankadd"]); //这是此页面的name属性名字
+      this.$store.commit("setKeepAlive", "bank"); //这是此页面的name属性名字
+      this.$store.commit("setKeepAlive", "bankadd"); //这是此页面的name属性名字
     } else {
     }
     next();

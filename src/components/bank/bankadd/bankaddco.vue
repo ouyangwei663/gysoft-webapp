@@ -187,6 +187,7 @@ import { clean } from "@/methods/clean";
 import { time } from "@/methods/time";
 // import {Select} from  "ant-design-vue"
 export default {
+  name:"bankadd",
   data() {
     return {
       empty: "",
@@ -291,7 +292,7 @@ export default {
     }
 
     console.log("参数", this.$route.params);
-    this.cusid = this.$route.params.cus_name;
+    this.cusid = this.$route.params.cusid;
     this.sex = this.$route.params.sex;
     this.cardno = this.$route.params.cardno;
     this.lastmoney = this.$route.params.lastmoney;

@@ -21,7 +21,15 @@ export const GetList_Hy = p => { //   这个会员下拉菜单的接口
   return post(second, p)
 };
 
-export const GetList_Erp = p => { //   这个员工下拉菜单的接口
+export const GetList_Worktype = p => { //   这个员工下拉菜单的接口
+  p.subcom = subcom
+  p.action = action;
+  p.name = "员工工种"
+  return post(second, p)
+};
+
+
+export const GetList_Erp = p => { //   这个是工种
   p.subcom = subcom
   p.action = action;
   p.name = "员工"
